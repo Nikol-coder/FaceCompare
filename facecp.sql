@@ -11,7 +11,7 @@
  Target Server Version : 80034
  File Encoding         : 65001
 
- Date: 11/12/2023 18:37:03
+ Date: 12/12/2023 21:59:28
 */
 
 SET NAMES utf8mb4;
@@ -22,7 +22,7 @@ SET FOREIGN_KEY_CHECKS = 0;
 -- ----------------------------
 DROP TABLE IF EXISTS `admintable`;
 CREATE TABLE `admintable`  (
-  `adminid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `adminid` double(255, 0) NOT NULL AUTO_INCREMENT,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `adminname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`adminid`) USING BTREE
@@ -37,8 +37,8 @@ CREATE TABLE `admintable`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `pictable`;
 CREATE TABLE `pictable`  (
-  `picid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `userid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `picid` double(255, 0) NOT NULL AUTO_INCREMENT,
+  `userid` double(255, 0) NOT NULL,
   `name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `age` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `province` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
@@ -56,7 +56,7 @@ CREATE TABLE `pictable`  (
 -- ----------------------------
 DROP TABLE IF EXISTS `usertable`;
 CREATE TABLE `usertable`  (
-  `userid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `userid` double(255, 0) NOT NULL AUTO_INCREMENT,
   `username` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `province` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
@@ -67,13 +67,16 @@ CREATE TABLE `usertable`  (
 -- ----------------------------
 -- Records of usertable
 -- ----------------------------
+INSERT INTO `usertable` VALUES (1, '小明', '123', '四川', 'jane@example.com');
+INSERT INTO `usertable` VALUES (2, '小红', '789', '北京', '7412');
+INSERT INTO `usertable` VALUES (3, 'John', '4563', '河北', 'john@example.com');
 
 -- ----------------------------
 -- Table structure for videotable
 -- ----------------------------
 DROP TABLE IF EXISTS `videotable`;
 CREATE TABLE `videotable`  (
-  `videoid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `videoid` double(255, 0) NOT NULL AUTO_INCREMENT,
   `place` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `time` datetime(0) NOT NULL,
   PRIMARY KEY (`videoid`) USING BTREE
