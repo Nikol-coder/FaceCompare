@@ -1,0 +1,118 @@
+<!DOCTYPE html>  
+<html lang="en">     
+<head>     
+ <meta charset="UTF-8"> <!----编码----->     
+ <title>案例</title>     
+   <style type="text/css">     
+       *{ margin:0;padding:0; }     
+    body {
+        background-image: url("../static/images/index.jpg");
+        background-size: cover;
+        background-repeat: no-repeat;
+        }
+       #Logo{     
+           width:895px;height:45px;     
+           /*margin:上下 左右*/     
+           margin:50px auto;     
+           border-radius:10px;     
+           /*html + css3 渐变画图 */     
+               background-image:-webkit-linear-gradient(rgba(41,41,41,0.75) 0% ,rgba(54,54,54,0.72) 50%,rgba(24,23,23,0.94) 51%);     
+           box-shadow:1px 1px 33px #fff;/*设计阴影的*/     
+       }     
+       #Logo ul li     
+       {     
+           width:127px; height:45px;     
+           list-style:none;/*去掉圆点*/     
+           float:left;/*水平显示*/     
+           color:white;/* #fff */     
+           font-size:18px;     
+           font-family:"微软雅黑";     
+           text-align:center;     
+           line-height:45px;/* 行高跟 高度一致时，竖直居中*/     
+           border-right:1px solid #000;/*右边框*/     
+       }     
+       #Logo ul li a     
+       {     
+           color:white;/* #fff */     
+           font-size:18px;     
+           font-family:"微软雅黑";     
+           text-decoration:none;     
+       }     
+       #Logo ul li:hover     
+       {     
+           background:rgba(10,5,5,0.45);     
+       }     
+       #Logo ul li.first:hover     
+       {     
+           border-radius:10px 0px 0px 10px;/*左上 左下 圆弧显示 */     
+       }     
+       #Logo ul li.last:hover     
+       {     
+           border-radius:0px 10px 10px 0px;/*右上 右下 圆弧显示 */     
+       }     
+       #Logo ul li ul li      
+       {     
+           border:none;     
+           border-top:1px solid #989898;     
+           background:rgba(10,5,5,0.45);/*颜色透明度 */     
+           border-radius:10px;     
+       }     
+       #Logo ul li ul     
+       {     
+           display:none;/*不显示*/     
+       }     
+       #Logo ul li ul li:hover     
+       {     
+           background:rgba(10,5,5,0.8);/*颜色透明度 */     
+           border-radius:10px;     
+       }     
+       #Logo ul li:hover ul     
+       {     
+           display:block;     
+           -webkit-animation:roll 1s ease;/*roll 旋转名称，1s旋转效果 */     
+       }     
+       @-webkit-keyframes roll /*roll旋转名称与上面一致*/     
+       {     
+           0% {-webkit-transform:rotate(0deg);}     
+           100% {-webkit-transform:rotate(360deg);}     
+       }     
+   </style>     
+</head>    
+ 
+<body>     
+   <div id="Logo">     
+       <ul>     
+           <li class="first">      
+               <a href="#">网址<a>     
+               <ul>     
+                   <li>     
+                       <a href="http://www.baidu.com">百度</a>     
+                   </li>     
+                   <li>     
+                       <a href="http://www.sina.com">新浪</a>     
+                   </li>     
+               </ul>     
+           </li>     
+           <li>      
+               <a href="#">新闻<a>     
+           </li>     
+           <li>      
+               <a href="#">视频<a>     
+           </li>     
+           <li>      
+               <a href="#">音乐<a>     
+           </li>     
+           <li>      
+               <a href="#">地图<a>     
+           </li>     
+           <li>      
+               <a href="#">问问<a>     
+           </li>     
+           <li class="last" style="border:none;">      
+               <a href="#">关于<a>     
+           </li>     
+       </ul>     
+   </div>     
+</body>     
+</html>  
+
