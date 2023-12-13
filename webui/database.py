@@ -33,7 +33,8 @@ cursor = db.cursor()
 @app.route('/')
 def index():
     # 返回结果
-    return render_template('selectuser.html')
+    # return render_template('selectuser.html')
+    return render_template('manager_login.html')
 
 #查询用户
 @app.route('/search')
@@ -129,10 +130,102 @@ def delete_user():
         return render_template('deleteuser.html')
 
 
+# -------manager--------
 
-# ------------manager------------------
+# 返回未处理的任务
+@app.route('/show_user_Task')
+def show_user_Task():
+    cursor.execute("SELECT * FROM pictable WHERE flag = 0")    # 待修改 flag 应有三种状态
+    result = cursor.fetchall()
+    # 处理查询结果
+    tasks = []
+    for row in result:
+        task = {
+            'picture': row[0],
+            'name': row[2],
+            'age': row[3],
+            'province': row[4],
+            'price': row[5]            
+        }
+    tasks.append(task)
+
+    print(tasks)
+ 
+    # 返回结果
+    return render_template('/Admin/user_Task.html', tasks=tasks)
+
+
+# 视频管理页面
+@app.route('/manage_video')
+def manage_video():
+    cursor.execute("SELECT * FROM videotable") 
+    result = cursor.fetchall()
+    # 处理查询结果
+    videos = []
+    for row in result:
+        video = {
+            'videoid': row[0],
+            'place': row[1],
+            'time': row[2],
+          
+        }
+    videos.append(video)
+
+    print(videos)
+ 
+    # 返回结果
+    return render_template('/Admin/manage_video.html', videos=videos)
+
+
+# 用户管理
+@app.route('/user_manage')
+def user_manage():
+    # 执行查询语句
+    cursor.execute("SELECT * FROM usertable")
+    result = cursor.fetchall()
+    
+    # 处理查询结果
+    users = []
+    for row in result:
+        user = {
+            'userid': row[0],
+            'username': row[1],
+            'password': row[2],
+            'province': row[3],
+            'tel': row[4]            
+        }
+        users.append(user)
+
+    print(users)
+ 
+    # 返回结果
+    return render_template('/Admin/user_manage.html', users=users)
+
+
+# 悬赏管理
+@app.route('/task_manage')
+def task_manage():
+    cursor.execute("SELECT * FROM pictable WHERE flag = 1")    # 待修改 flag 应有三种状态
+    result = cursor.fetchall()
+    # 处理查询结果
+    tasks = []
+    for row in result:
+        task = {
+            'picture': row[0],
+            'name': row[2],
+            'age': row[3],
+            'province': row[4],
+            'price': row[5]            
+        }
+    tasks.append(task)
+
+    print(tasks)
+ 
+    # 返回结果
+    return render_template('/Admin/task_manage.html', tasks=tasks)
 
 
 
 if __name__ == '__main__':
     app.run()
+
