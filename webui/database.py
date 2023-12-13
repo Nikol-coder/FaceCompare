@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, jsonify
 import pymysql
 from flask import request, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -51,7 +51,7 @@ def index():
     print(users)
  
     # 返回结果
-    return render_template('login.html', users=users)
+    return render_template('adduser.html', users=users)
 
 #插入数据
 @app.route('/create_user', methods=['GET', 'POST'])
@@ -77,18 +77,25 @@ def create_user():
     return render_template('login.html')
 
 #更新数据
-@app.route('/update_user')
+@app.route('/update_user', methods=['POST'])
 def update_user():
-    id = 1
-    tel = 'jane@example.com'
-    
-    # 执行更新语句
+  id = request.form.get('id')
+  tel = request.form.get('tel')
+
+  # 执行更新语句
+  if tel and tel.strip():
     cursor.execute("UPDATE usertable SET tel = %s WHERE userid = %s", (tel, id))
-    
+
     # 提交事务
     db.commit()
-    
-    return 'User updated successfully'
+
+    print('User updated successfully')
+
+    return render_template('login.html')
+  else:
+
+    print('User updated unsuccessfully')
+    return render_template('adduser.html')
 
 #删除数据
 @app.route('/delete_user')
@@ -102,7 +109,6 @@ def delete_user():
     db.commit()
     
     return 'User deleted successfully'
-
 
 
 if __name__ == '__main__':
