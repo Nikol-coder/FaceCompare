@@ -11,7 +11,7 @@
  Target Server Version : 80034
  File Encoding         : 65001
 
- Date: 12/12/2023 21:59:28
+ Date: 13/12/2023 21:19:36
 */
 
 SET NAMES utf8mb4;
@@ -26,11 +26,12 @@ CREATE TABLE `admintable`  (
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `adminname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`adminid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 111 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of admintable
 -- ----------------------------
+INSERT INTO `admintable` VALUES (110, '110', '管理员');
 
 -- ----------------------------
 -- Table structure for pictable
@@ -43,13 +44,15 @@ CREATE TABLE `pictable`  (
   `age` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `province` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
   `price` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `flag` binary(255) NOT NULL,
+  `flag` double(1, 0) UNSIGNED NOT NULL,
   PRIMARY KEY (`picid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pictable
 -- ----------------------------
+INSERT INTO `pictable` VALUES (1, 1, '彤彤', '5', '四川', '5000', 0);
+INSERT INTO `pictable` VALUES (2, 1, '果果', '4', '天津', '4200', 1);
 
 -- ----------------------------
 -- Table structure for usertable
@@ -62,12 +65,12 @@ CREATE TABLE `usertable`  (
   `province` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `tel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`userid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of usertable
 -- ----------------------------
-INSERT INTO `usertable` VALUES (1, '小明', '123', '四川', 'jane@example.com');
+INSERT INTO `usertable` VALUES (1, '小明', '123', '四川', '456');
 INSERT INTO `usertable` VALUES (2, '小红', '789', '北京', '7412');
 INSERT INTO `usertable` VALUES (3, 'John', '4563', '河北', 'john@example.com');
 
@@ -77,13 +80,15 @@ INSERT INTO `usertable` VALUES (3, 'John', '4563', '河北', 'john@example.com')
 DROP TABLE IF EXISTS `videotable`;
 CREATE TABLE `videotable`  (
   `videoid` double(255, 0) NOT NULL AUTO_INCREMENT,
-  `place` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `time` datetime(0) NOT NULL,
+  `time` date NOT NULL COMMENT '失踪时间',
+  `place` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '失踪地点',
   PRIMARY KEY (`videoid`) USING BTREE
-) ENGINE = InnoDB CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of videotable
 -- ----------------------------
+INSERT INTO `videotable` VALUES (1, '2023-12-14', '北京市怀柔区');
+INSERT INTO `videotable` VALUES (2, '2023-11-09', '上海市');
 
 SET FOREIGN_KEY_CHECKS = 1;
