@@ -1,7 +1,8 @@
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>任务管理</title>
+    <title>悬赏照片管理</title>
 </head>
 
 
@@ -10,10 +11,8 @@
     <ul>
     {% for task in tasks %}
         <li>{{ task.name , task.age, task.province, task.price}}</li>
-        <a href="/permit_task">通过悬赏</a>
-        <a href="/deny_task">拒绝悬赏</a>
+        <a href="/permit_task">删除悬赏</a>
     {% endfor %}
     </ul>
-    
 </body>
 </html>

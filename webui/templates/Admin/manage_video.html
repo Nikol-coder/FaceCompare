@@ -1,0 +1,17 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>上传</title>
+</head>
+
+
+<body>
+    <h1>video List</h1>
+    <ul>
+    {% for video in videos %}
+        <li>{{ video.videoid , video.place ,video.time}}</li>
+        <a href="/delete_video">删除</a>
+    {% endfor %}
+    </ul>
+</body>
+</html>

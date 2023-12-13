@@ -129,5 +129,10 @@ def delete_user():
         return render_template('deleteuser.html')
 
 
+
+# ------------manager------------------
+
+
+
 if __name__ == '__main__':
     app.run()
