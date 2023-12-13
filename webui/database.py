@@ -32,6 +32,12 @@ cursor = db.cursor()
 # 查询数据
 @app.route('/')
 def index():
+    # 返回结果
+    return render_template('selectuser.html')
+
+#查询用户
+@app.route('/search')
+def search():
     # 执行查询语句
     cursor.execute("SELECT * FROM usertable")
     result = cursor.fetchall()
@@ -51,30 +57,31 @@ def index():
     print(users)
  
     # 返回结果
-    return render_template('adduser.html', users=users)
+    return render_template('user.html', users=users)
 
 #插入数据
-@app.route('/create_user', methods=['GET', 'POST'])
+@app.route('/create_user', methods=['GET','POST'])
 def create_user():
-    username = 'John'
-    password = '4563'
-    province = '河北'
-    tel = 'john@example.com'
 
     if request.method == 'POST':
-        username = request.form.get('username')
-        password = request.form.get('password')
-        # 根据用户名和密码查询用户
+        # 结合createuser.html页面，创建用户
+        userid = request.form.get("id")
+        username = request.form.get("username") 
+        password = request.form.get("pwd1") 
+        province = request.form.get("pro") 
+        tel = request.form.get("tel")
 
-    # 执行插入语句
-    cursor.execute("INSERT INTO usertable (username, password, province, tel) VALUES (%s, %s, %s, %s)", (username, password, province, tel))
-    
-    # 提交事务
-    db.commit()
-    
-    print('User created successfully')
+        # 执行插入语句
+        cursor.execute("INSERT INTO usertable (userid,username, password, province, tel) VALUES (%s,%s, %s, %s, %s)", (userid,username, password, province, tel))
+        
+        # 提交事务
+        db.commit()
+        
+        print('User created successfully')
 
-    return render_template('login.html')
+        return render_template('login.html')
+    else:
+        return render_template('createuser.html')
 
 #更新数据
 @app.route('/update_user', methods=['POST'])
@@ -95,20 +102,31 @@ def update_user():
   else:
 
     print('User updated unsuccessfully')
-    return render_template('adduser.html')
+    return render_template('updateuser.html')
 
 #删除数据
-@app.route('/delete_user')
+@app.route('/delete_user',methods=['GET','POST'])
 def delete_user():
-    id = 1
-    
-    # 执行删除语句
-    cursor.execute("DELETE FROM usertable WHERE userid = %s", (id,))
-    
-    # 提交事务
-    db.commit()
-    
-    return 'User deleted successfully'
+    if request.method == 'POST':
+        id = request.form.get('id') 
+        pwd = request.form.get('pwd')
+        print(id)
+        print(pwd)
+        # 执行删除语句
+        if pwd and pwd.strip():
+            cursor.execute("DELETE FROM usertable WHERE userid = %s and password = %s", (id,pwd))
+        
+            # 提交事务
+            db.commit()
+            
+            print('User deleted successfully')
+
+            return render_template('login.html')
+        else:
+            print('User deleted unsuccessfully')
+            return render_template('deleteuser.html')
+    else:
+        return render_template('deleteuser.html')
 
 
 if __name__ == '__main__':
