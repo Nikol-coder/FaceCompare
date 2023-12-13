@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>添加用户</title>
+
+  <script>
+    function addForm() {
+      // 获取两个 text 的值
+      const id = document.querySelector('input[name="id"]').value;
+      const name = document.querySelector('input[name="username"]').value;  
+      const pwd1 = document.querySelector('input[name="pwd1"]').value;   
+      const pwd2 = document.querySelector('input[name="pwd2"]').value;   
+      const province = document.querySelector('select[name="pro"]').value;
+      const tel = document.querySelector('input[name="tel"]').value;
+
+      // 判断两个 text 是否为空
+      if (!id || !tel || !name || !pwd1 || !province || !pwd2) {
+        alert('输入信息不完整');
+        event.preventDefault(); // 阻止默认行为
+      }
+
+      // 判断两次密码是否一致
+        if (pwd1 !== pwd2) {
+            alert('两次密码不一致');
+            event.preventDefault(); // 阻止默认行为
+        }
+
+      // 提交表单
+      document.querySelector('form').submit();
+    }
+  </script>
+
+</head>
+
+<body>
+  <form action="/create_user" method="post">
+    <input type="text" name="id" placeholder="用户 ID">
+    <input type="text" name="tel" placeholder="电话号码">
+    <input type="text" name="username" placeholder="用户名">
+    <input type="password" name="pwd1" placeholder="密码">
+    <input type="password" name="pwd2" placeholder="重复密码">
+
+    <!-- 省份使用下拉框选择 -->
+    <select name="pro" placeholder="省份">
+        <option value="广东">广东</option>
+        <option value="北京">北京</option>
+        <option value="上海">上海</option>
+        <!-- 更多的选项... -->
+    </select>
+    
+    <button type="submit" onclick="addForm()">添加用户</button>
+  </form>
+</body>
+
+</html>
