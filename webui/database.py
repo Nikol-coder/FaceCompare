@@ -191,7 +191,7 @@ def show_user_Task():
         tasks.append(task)
     print(tasks)
 
-    data_json = {"code": 0, "msg": "响应失败？", "count": tasks.count(), "data": tasks}
+    data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
 
     with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
@@ -217,7 +217,7 @@ def manage_video():
         }
         videos.append(video)
 
-    data_json = {"code": 0, "msg": "响应失败？", "count": videos.count(), "data": videos}
+    data_json = {"code": 0, "msg": "响应失败？", "count": len(videos), "data": videos}
 
     with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
@@ -246,7 +246,7 @@ def user_manage():
         }
         users.append(user)
 
-    data_json = {"code": 0, "msg": "响应失败？", "count": users.count(), "data": users}
+    data_json = {"code": 0, "msg": "响应失败？", "count": len(users), "data": users}
 
     with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
@@ -275,7 +275,7 @@ def task_manage():
         }
         tasks.append(task)
 
-    data_json = {"code": 0, "msg": "响应失败？", "count": tasks.count(), "data": tasks}
+    data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
 
     with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
