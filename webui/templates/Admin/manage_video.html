@@ -2,31 +2,107 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <title>table 组件综合演示 - Layui</title>
+  <title>视频管理</title>
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link href="//cdn.staticfile.org/layui/2.9.1/css/layui.css" rel="stylesheet">
 </head>
 <body>
+
+  <div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+      <div class="layui-logo layui-hide-xs layui-bg-black">管理员任务</div>
+  
+      <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
+          <a href="javascript:;">
+            <img src="//unpkg.com/outeres@0.0.10/img/layui/icon-v2.png" class="layui-nav-img">
+            Admin
+          </a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">Your Profile</a></dd>
+            <dd><a href="javascript:;">Settings</a></dd>
+            <dd><a href="javascript:;">Sign out</a></dd>
+          </dl>
+  
+      </ul>
+    </div>
+  
+    <div class="layui-side layui-bg-black">
+      <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" lay-filter="test">
+  
+          <li class="layui-nav-item"><a href="/show_user_Task">用户任务管理</a></li>
+          <li class="layui-nav-item"><a href="/manage_video">视频管理</a></li>
+          <li class="layui-nav-item"><a href="/user_manage">用户管理</a></li>
+          <li class="layui-nav-item"><a href="/task_manage">悬赏管理</a></li>
+  
+        </ul>
+      </div>
+    </div>
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+
+      <div style="padding: 16px;"> 
+        <table class="layui-hide" id="test" lay-filter="test"></table>
+      </div>
+
+
+      <!---->
+    </div>
+    <div class="layui-footer">
+      <!-- 底部固定区域 -->
+      FaceCompare
+    </div>
+  </div>
+  
+  <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+  <script>
+  //JS
+  layui.use(['element', 'layer', 'util'], function(){
+    var element = layui.element;
+    var layer = layui.layer;
+    var util = layui.util;
+    var $ = layui.$;
+  
+    //头部事件
+    util.event('lay-header-event', {
+      menuLeft: function(othis){ // 左侧菜单事件
+        layer.msg('展开左侧菜单的操作', {icon: 0});
+      },
+      menuRight: function(){  // 右侧菜单事件
+        layer.open({
+          type: 1,
+          title: '更多',
+          content: '<div style="padding: 15px;">处理右侧面板的操作</div>',
+          area: ['260px', '100%'],
+          offset: 'rt', // 右上角
+          anim: 'slideLeft', // 从右侧抽屉滑出
+          shadeClose: true,
+          scrollbar: false
+        });
+      }
+    });
+  });
+  </script>
+
+
+
 <!-- 
 本「综合演示」包含：自定义头部工具栏、获取表格数据、表格重载、自定义模板、单双行显示、单元格编辑、自定义底部分页栏、表格相关事件与操作、与其他组件的结合等相对常用的功能，以便快速掌握 table 组件的使用。
 -->
-<div style="padding: 16px;"> 
-  <table class="layui-hide" id="test" lay-filter="test"></table>
-</div>
+
 <script type="text/html" id="toolbarDemo">
   <div class="layui-btn-container">
     <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
     <button class="layui-btn layui-btn-sm" lay-event="getData">获取当前页数据</button>
     <button class="layui-btn layui-btn-sm" id="dropdownButton">
-      下拉按钮 
+      上传视频 
       <i class="layui-icon layui-icon-down layui-font-12"></i>
     </button>
-    <button class="layui-btn layui-btn-sm layui-bg-blue" id="reloadTest">
-      重载测试 
-      <i class="layui-icon layui-icon-down layui-font-12"></i>
-    </button>
+
     
   </div>
 </script>
@@ -117,81 +193,6 @@ layui.use(['table', 'dropdown'], function(){
       });
  
       // 重载测试
-      dropdown.render({
-        elem: '#reloadTest', // 可绑定在任意元素中，此处以上述按钮为例
-        data: [{
-          id: 'reload',
-          title: '重载'
-        },{
-          id: 'reload-deep',
-          title: '重载 - 参数叠加'
-        },{
-          id: 'reloadData',
-          title: '仅重载数据'
-        },{
-          id: 'reloadData-deep',
-          title: '仅重载数据 - 参数叠加'
-        }],
-        // 菜单被点击的事件
-        click: function(obj){
-          switch(obj.id){
-            case 'reload':
-              // 重载 - 默认（参数重置）
-              table.reload('test', {
-                where: {
-                  abc: '123456',
-                  //test: '新的 test2',
-                  //token: '新的 token2'
-                },
-                /*
-                cols: [[ // 重置表头
-                  { type: 'checkbox', fixed: 'left' },
-                  { field: 'videoid', width: 80, title: 'ID' },
-                  { field: 'place', width: 80, title: '地点' },
-                  { field: 'time', title: '时间' },
-                  { fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#barDemo' }
-                ]]
-                */
-              });
-            break;
-            case 'reload-deep':
-              // 重载 - 深度（参数叠加）
-              table.reload('test', {
-                where: {
-                  abc: 123,
-                  test: '新的 test1'
-                },
-                //defaultToolbar: ['print'], // 重载头部工具栏右侧图标
-                //cols: ins1.config.cols
-              }, true);
-            break;
-            case 'reloadData':
-              // 数据重载 - 参数重置
-              table.reloadData('test', {
-                where: {
-                  abc: '123456',
-                  //test: '新的 test2',
-                  //token: '新的 token2'
-                },
-                scrollPos: 'fixed',  // 保持滚动条位置不变 - v2.7.3 新增
-                height: 2000, // 测试无效参数（即与数据无关的参数设置无效，此处以 height 设置无效为例）
-                //url: '404',
-                //page: {curr: 1, limit: 30} // 重新指向分页
-              });
-            break;
-            case 'reloadData-deep':
-              // 数据重载 - 参数叠加
-              table.reloadData('test', {
-                where: {
-                  abc: 123,
-                  test: '新的 test1'
-                }
-              }, true);
-            break;
-          }
-          layer.msg('可观察 Network 请求参数的变化');
-        }
-      });
     },
     error: function(res, msg){
       console.log(res, msg)
@@ -199,35 +200,9 @@ layui.use(['table', 'dropdown'], function(){
   });
   
   // 工具栏事件
-  table.on('toolbar(test)', function(obj){
-    var id = obj.config.id;
-    var checkStatus = table.checkStatus(id);
-    var othis = lay(this);
-    switch(obj.event){
-      case 'getCheckData':
-        var data = checkStatus.data;
-        layer.alert(layui.util.escape(JSON.stringify(data)));
-      break;
-      case 'getData':
-        var getData = table.getData(id);
-        console.log(getData);
-        layer.alert(layui.util.escape(JSON.stringify(getData)));
-      break;
-      case 'LAYTABLE_TIPS':
-        layer.alert('自定义工具栏图标按钮');
-      break;
-    };
-  });
+  
   // 表头自定义元素工具事件 --- 2.8.8+
-  table.on('colTool(test)', function(obj){
-    var event = obj.event;
-    console.log(obj);
-    if(event === 'email-tips'){
-      layer.alert(layui.util.escape(JSON.stringify(obj.col)), {
-        title: '当前列属性配置项'
-      });
-    }
-  });
+
   
   // 触发单元格工具事件
   table.on('tool(test)', function(obj){ // 双击 toolDouble

@@ -1,67 +1,292 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <meta charset="UTF-8">
-    <title>悬赏照片管理</title>
+  <meta charset="utf-8">
+  <title>视频管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="//cdn.staticfile.org/layui/2.9.1/css/layui.css" rel="stylesheet">
 </head>
-<style>
-    .table11_7 table {
-        width:100%;
-        margin:15px 0;
-        border:0;
-    }
-    .table11_7 th {
-        background-color:#00A5FF;
-        color:#FFFFFF
-    }
-    .table11_7,.table11_7 th,.table11_7 td {
-        font-size:0.95em;
-        text-align:center;
-        padding:4px;
-        border-collapse:collapse;
-    }
-    .table11_7 th,.table11_7 td {
-        border: 1px solid #2087fe;
-        border-width:1px 0 1px 0;
-        border:2px inset #ffffff;
-    }
-    .table11_7 tr {
-        border: 1px solid #ffffff;
-    }
-    .table11_7 tr:nth-child(0){
-        background-color:#aae1fe;
-    }
-
-</style>
-
 <body>
-    <h1>Task List</h1>
 
-    <table class=table11_7>
-        <thead>
-            <tr>
-                <th>姓名</th>
-                <th>年龄</th>
-                <th>省份</th>
-                <th>悬赏</th>
-                <th>操作</th>
-            </tr>
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+          <div class="layui-logo layui-hide-xs layui-bg-black">管理员任务</div>
+      
+          <ul class="layui-nav layui-layout-right">
+            <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
+              <a href="javascript:;">
+                <img src="//unpkg.com/outeres@0.0.10/img/layui/icon-v2.png" class="layui-nav-img">
+                Admin
+              </a>
+              <dl class="layui-nav-child">
+                <dd><a href="javascript:;">Your Profile</a></dd>
+                <dd><a href="javascript:;">Settings</a></dd>
+                <dd><a href="javascript:;">Sign out</a></dd>
+              </dl>
+      
+          </ul>
+        </div>
+      
+        <div class="layui-side layui-bg-black">
+          <div class="layui-side-scroll">
+            <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+            <ul class="layui-nav layui-nav-tree" lay-filter="test">
+      
+              <li class="layui-nav-item"><a href="/show_user_Task">用户任务管理</a></li>
+              <li class="layui-nav-item"><a href="/manage_video">视频管理</a></li>
+              <li class="layui-nav-item"><a href="/user_manage">用户管理</a></li>
+              <li class="layui-nav-item"><a href="/task_manage">悬赏管理</a></li>
+      
+            </ul>
+          </div>
+        </div>
+        <div class="layui-body">
+          <!-- 内容主体区域 -->
 
-            {% for task in tasks %}
-                <tr>
-                    <td>{{task.name}}</td>
-                    <td>{{task.age}}</td>
-                    <td>{{task.province}}</td>
-                    <td>{{task.price}}</td>
-                    <td>
-                        <a href="/delete_reward">删除悬赏</a>
-                        <a href="/modify_reward">修改悬赏</a>
-                    </td>
+          <div style="padding: 16px;"> 
+            <table class="layui-hide" id="test" lay-filter="test"></table>
+          </div>
 
-                </tr>
-            {% endfor %}
 
-        </thead>
-    </table>
+          <!---->
+        </div>
+        <div class="layui-footer">
+          <!-- 底部固定区域 -->
+          FaceCompare
+        </div>
+      </div>
+      
+      <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+      <script>
+      //JS
+      layui.use(['element', 'layer', 'util'], function(){
+        var element = layui.element;
+        var layer = layui.layer;
+        var util = layui.util;
+        var $ = layui.$;
+      
+        //头部事件
+        util.event('lay-header-event', {
+          menuLeft: function(othis){ // 左侧菜单事件
+            layer.msg('展开左侧菜单的操作', {icon: 0});
+          },
+          menuRight: function(){  // 右侧菜单事件
+            layer.open({
+              type: 1,
+              title: '更多',
+              content: '<div style="padding: 15px;">处理右侧面板的操作</div>',
+              area: ['260px', '100%'],
+              offset: 'rt', // 右上角
+              anim: 'slideLeft', // 从右侧抽屉滑出
+              shadeClose: true,
+              scrollbar: false
+            });
+          }
+        });
+      });
+      </script>
+
+
+
+<!-- 
+本「综合演示」包含：自定义头部工具栏、获取表格数据、表格重载、自定义模板、单双行显示、单元格编辑、自定义底部分页栏、表格相关事件与操作、与其他组件的结合等相对常用的功能，以便快速掌握 table 组件的使用。
+-->
+
+<script type="text/html" id="toolbarDemo">
+  <div class="layui-btn-container">
+    <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+    <button class="layui-btn layui-btn-sm" lay-event="getData">获取当前页数据</button>
+    <button class="layui-btn layui-btn-sm" id="dropdownButton">
+      悬赏管理
+      <i class="layui-icon layui-icon-down layui-font-12"></i>
+    </button>
+
+    
+  </div>
+</script>
+<script type="text/html" id="barDemo">
+  <div class="layui-clear-space">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="more">
+      更多 
+      <i class="layui-icon layui-icon-down"></i>
+    </a>
+  </div>
+</script>  
+<script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+<script>
+layui.use(['table', 'dropdown'], function(){
+  var table = layui.table;
+  var dropdown = layui.dropdown;
+  
+  // 创建渲染实例
+  table.render({
+    elem: '#test',
+    url: './static/json/manager/demo1.json', // 此处为静态模拟数据，实际使用时需换成真实接口
+    toolbar: '#toolbarDemo',
+    defaultToolbar: ['filter', 'exports', 'print', {
+      title: '提示',
+      layEvent: 'LAYTABLE_TIPS',
+      icon: 'layui-icon-tips'
+    }],
+    height: 'full-35', // 最大高度减去其他容器已占有的高度差
+    css: [ // 重设当前表格样式
+      '.layui-table-tool-temp{padding-right: 145px;}'
+    ].join(''),
+    cellMinWidth: 80,
+    totalRow: true, // 开启合计行
+    page: true,
+    cols: [[
+      { type: 'checkbox', fixed: 'left' },
+      { field: 'name', width: 80, title: '姓名' },
+      { field: 'age', width: 80, title: '年龄' },
+      { field: 'province', width: 80, title: '地点' },
+      { field: 'price', title: '悬赏' },
+      { fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#barDemo' }
+    ]],
+    done: function(){
+      var id = this.id;
+      // 下拉按钮测试
+      dropdown.render({
+        elem: '#dropdownButton', // 可绑定在任意元素中，此处以上述按钮为例
+        data: [{
+          id: 'add',
+          title: '添加'
+        },{
+          id: 'update',
+          title: '编辑'
+        },{
+          id: 'delete',
+          title: '删除'
+        }],
+        // 菜单被点击的事件
+        click: function(obj){
+          var checkStatus = table.checkStatus(id)
+          var data = checkStatus.data; // 获取选中的数据
+          switch(obj.id){
+            case 'add':
+              layer.open({
+                title: '添加',
+                type: 1,
+                area: ['80%','80%'],
+                content: '<div style="padding: 16px;">自定义表单元素</div>'
+              });
+            break;
+            case 'update':
+              if(data.length !== 1) return layer.msg('请选择一行');
+              layer.open({
+                title: '编辑',
+                type: 1,
+                area: ['80%','80%'],
+                content: '<div style="padding: 16px;">自定义表单元素</div>'
+              });
+            break;
+            case 'delete':
+              if(data.length === 0){
+                return layer.msg('请选择一行');
+              }
+              layer.msg('delete event');
+            break;
+          }
+        }
+      });
+ 
+      // 重载测试
+    },
+    error: function(res, msg){
+      console.log(res, msg)
+    }
+  });
+  
+  // 工具栏事件
+  
+  // 表头自定义元素工具事件 --- 2.8.8+
+
+  
+  // 触发单元格工具事件
+  table.on('tool(test)', function(obj){ // 双击 toolDouble
+    var data = obj.data; // 获得当前行数据
+    // console.log(obj)
+    if(obj.event === 'edit'){
+      layer.open({
+        title: '编辑 - id:'+ data.id,
+        type: 1,
+        area: ['80%','80%'],
+        content: '<div style="padding: 16px;">自定义表单元素</div>'
+      });
+    } else if(obj.event === 'more'){
+      // 更多 - 下拉菜单
+      dropdown.render({
+        elem: this, // 触发事件的 DOM 对象
+        show: true, // 外部事件触发即显示
+        data: [{
+          title: '查看',
+          id: 'detail'
+        },{
+          title: '删除',
+          id: 'del'
+        }],
+        click: function(menudata){
+          if(menudata.id === 'detail'){
+            layer.msg('查看操作，当前行 ID:'+ data.id);
+          } else if(menudata.id === 'del'){
+            layer.confirm('真的删除行 [id: '+ data.id +'] 么', function(index){
+              obj.del(); // 删除对应行（tr）的DOM结构
+              layer.close(index);
+              // 向服务端发送删除指令
+            });
+          } 
+        },
+        align: 'right', // 右对齐弹出
+        style: 'box-shadow: 1px 1px 10px rgb(0 0 0 / 12%);' // 设置额外样式
+      })
+    }
+  });
+ 
+  // 触发表格复选框选择
+  table.on('checkbox(test)', function(obj){
+    console.log(obj)
+  });
+ 
+  // 触发表格单选框选择
+  table.on('radio(test)', function(obj){
+    console.log(obj)
+  });
+  
+  // 行单击事件
+  table.on('row(test)', function(obj){
+    //console.log(obj);
+    //layer.closeAll('tips');
+  });
+  // 行双击事件
+  table.on('rowDouble(test)', function(obj){
+    console.log(obj);
+  });
+ 
+  // 单元格编辑事件
+  table.on('edit(test)', function(obj){
+    var field = obj.field; // 得到字段
+    var value = obj.value; // 得到修改后的值
+    var data = obj.data; // 得到所在行所有键值
+    // 值的校验
+    if(field === 'email'){
+      if(!/^([a-zA-Z0-9_\.\-])+\@(([a-zA-Z0-9\-])+\.)+([a-zA-Z0-9]{2,4})+$/.test(obj.value)){
+        layer.tips('输入的邮箱格式不正确，请重新编辑', this, {tips: 1});
+        return obj.reedit(); // 重新编辑 -- v2.8.0 新增
+      }
+    }
+    // 编辑后续操作，如提交更新请求，以完成真实的数据更新
+    // …
+    layer.msg('编辑成功', {icon: 1});
+    
+    // 其他更新操作
+    var update = {};
+    update[field] = value;
+    obj.update(update);
+  });
+});
+</script>
 </body>
 </html>
