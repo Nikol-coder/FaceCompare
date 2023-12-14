@@ -179,6 +179,7 @@ def show_user_Task():
     result = cursor.fetchall()
     # 处理查询结果
     tasks = []
+
     for row in result:
         task = {
             'picture': row[0],
@@ -187,12 +188,17 @@ def show_user_Task():
             'province': row[4],
             'price': row[5]            
         }
-    tasks.append(task)
-
+        tasks.append(task)
     print(tasks)
+
+    data_json = {"code": 0, "msg": "响应失败？", "count": tasks.count(), "data": tasks}
+
+    with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
+        json.dump(data_json, f, indent=4, ensure_ascii=False)
+        f.close()
  
     # 返回结果
-    return render_template('/Admin/user_Task.html', tasks=tasks)
+    return render_template('/Admin/user_Task.html')
 
 
 # 视频管理页面
@@ -202,16 +208,16 @@ def manage_video():
     result = cursor.fetchall()
     # 处理查询结果
     videos = []
-    with open("./static/json/manager/demo1.json", "w",encoding='utf-8') as f:
-        for row in result:
-            video = {
-                'videoid': row[0],
-                'place': row[2],
-                'time': row[1].strftime('%Y-%m-%d'),
-            }
 
-            videos.append(video)
-        data_json = {"code": 0, "msg": "响应失败？", "count": videos.count(), "data": videos}
+    for row in result:
+        video = {
+            'videoid': row[0],
+            'place': row[2],
+            'time': row[1].strftime('%Y-%m-%d'),
+        }
+        videos.append(video)
+
+    data_json = {"code": 0, "msg": "响应失败？", "count": videos.count(), "data": videos}
 
     with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
@@ -234,16 +240,22 @@ def user_manage():
         user = {
             'userid': row[0],
             'username': row[1],
-            'password': row[2],
+            # 'password': row[2],
             'province': row[3],
             'tel': row[4]            
         }
         users.append(user)
 
+    data_json = {"code": 0, "msg": "响应失败？", "count": users.count(), "data": users}
+
+    with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
+        json.dump(data_json, f, indent=4, ensure_ascii=False)
+        f.close()
+
     print(users)
  
     # 返回结果
-    return render_template('/Admin/user_manage.html', users=users)
+    return render_template('/Admin/user_manage.html')
 
 
 # 悬赏管理
@@ -261,12 +273,17 @@ def task_manage():
             'province': row[4],
             'price': row[5]            
         }
-    tasks.append(task)
+        tasks.append(task)
 
+    data_json = {"code": 0, "msg": "响应失败？", "count": tasks.count(), "data": tasks}
+
+    with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
+        json.dump(data_json, f, indent=4, ensure_ascii=False)
+        f.close()
     print(tasks)
  
     # 返回结果
-    return render_template('/Admin/task_manage.html', tasks=tasks)
+    return render_template('/Admin/task_manage.html')
 
 # 删除视频      --- 视频管理
 @app.route('/delete_video',methods=['GET','POST'])
