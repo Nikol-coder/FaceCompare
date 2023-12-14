@@ -4,14 +4,64 @@
     <title>用户管理</title>
 </head>
 
+<style>
+    .table11_7 table {
+        width:100%;
+        margin:15px 0;
+        border:0;
+    }
+    .table11_7 th {
+        background-color:#00A5FF;
+        color:#FFFFFF
+    }
+    .table11_7,.table11_7 th,.table11_7 td {
+        font-size:0.95em;
+        text-align:center;
+        padding:4px;
+        border-collapse:collapse;
+    }
+    .table11_7 th,.table11_7 td {
+        border: 1px solid #2087fe;
+        border-width:1px 0 1px 0;
+        border:2px inset #ffffff;
+    }
+    .table11_7 tr {
+        border: 1px solid #ffffff;
+    }
+
+</style>
 
 <body>
     <h1>User List</h1>
-    <ul>
-    {% for user in users %}
-        <li>{{ user.username }}</li>
-    {% endfor %}
-    </ul>
+
+    <table class=table11_7>
+        <thead>
+            <tr>
+                <th>用户ID</th>
+                <th>姓名</th>
+                <th>省份</th>
+                <th>电话</th>
+                <th>操作</th>
+            </tr>
+
+            {% for user in users %}
+                <tr>
+                    <td>{{user.userid}}</td>
+                    <td>{{user.username}}</td>
+                    <td>{{user.province}}</td>
+                    <td>{{user.tel}}</td>
+                    <td>
+                        <a href="/blockade_user">封禁</a>
+                        <a href="/change_user_passwd">修改密码</a>
+                    </td>
+
+                </tr>
+            {% endfor %}
+
+        </thead>
+    </table>
+
+
 
     <a href="/create_user">添加用户</a>
     <a href="/delete_user">删除用户</a>

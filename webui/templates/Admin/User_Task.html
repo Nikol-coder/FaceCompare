@@ -5,15 +5,67 @@
 </head>
 
 
+<style>
+    .table11_7 table {
+        width:100%;
+        margin:15px 0;
+        border:0;
+    }
+    .table11_7 th {
+        background-color:#00A5FF;
+        color:#FFFFFF
+    }
+    .table11_7,.table11_7 th,.table11_7 td {
+        font-size:0.95em;
+        text-align:center;
+        padding:4px;
+        border-collapse:collapse;
+    }
+    .table11_7 th,.table11_7 td {
+        border: 1px solid #2087fe;
+        border-width:1px 0 1px 0;
+        border:2px inset #ffffff;
+    }
+    .table11_7 tr {
+        border: 1px solid #ffffff;
+    }
+    .table11_7 tr:nth-child(odd){
+        background-color:#aae1fe;
+    }
+    .table11_7 tr:nth-child(even){
+        background-color:#ffffff;
+    }
+</style>
+
+
 <body>
     <h1>Task List</h1>
-    <ul>
-    {% for task in tasks %}
-        <li>{{ task.name , task.age, task.province, task.price}}</li>
-        <a href="/permit_task">通过悬赏</a>
-        <a href="/deny_task">拒绝悬赏</a>
-    {% endfor %}
-    </ul>
-    
+    <table class=table11_7>
+        <thead>
+            <tr>
+                <th>姓名</th>
+                <th>年龄</th>
+                <th>省份</th>
+                <th>悬赏</th>
+                <th>操作</th>
+            </tr>
+
+            {% for task in tasks %}
+                <tr>
+                    <td>{{task.name}}</td>
+                    <td>{{task.age}}</td>
+                    <td>{{task.province}}</td>
+                    <td>{{task.price}}</td>
+                    <td>
+                        <a href="/permit_task">通过悬赏</a>
+                        <a href="/deny_task">拒绝悬赏</a>
+                    </td>
+
+                </tr>
+            {% endfor %}
+
+        </thead>
+    </table>
+
 </body>
 </html>

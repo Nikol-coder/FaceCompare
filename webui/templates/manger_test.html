@@ -27,7 +27,10 @@
       重载测试 
       <i class="layui-icon layui-icon-down layui-font-12"></i>
     </button>
-    
+    <button class="layui-btn layui-btn-sm layui-btn-primary" id="rowMode">
+      <span>{{= d.lineStyle ? '多行' : '单行' }}模式</span>
+      <i class="layui-icon layui-icon-down layui-font-12"></i>
+    </button>
   </div>
 </script>
 <script type="text/html" id="barDemo">
@@ -63,11 +66,11 @@ layui.use(['table', 'dropdown'], function(){
     totalRow: true, // 开启合计行
     page: true,
     cols: [[
-      { type: 'checkbox', fixed: 'left' },
-      { field: 'videoid', width: 80, title: 'ID' },
-      { field: 'place', width: 80, title: '地点' },
-      { field: 'time', title: '时间' },
-      { fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#barDemo' }
+    { type: 'checkbox', fixed: 'left' },
+              { field: 'videoid', width: 80, title: 'ID' },
+              { field: 'place', width: 80, title: '地点' },
+              { field: 'time', title: '时间' },
+              { fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#barDemo' }
     ]],
     done: function(){
       var id = this.id;
@@ -145,11 +148,12 @@ layui.use(['table', 'dropdown'], function(){
                 },
                 /*
                 cols: [[ // 重置表头
-                  { type: 'checkbox', fixed: 'left' },
-                  { field: 'videoid', width: 80, title: 'ID' },
-                  { field: 'place', width: 80, title: '地点' },
-                  { field: 'time', title: '时间' },
-                  { fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#barDemo' }
+                  {type: 'checkbox', fixed: 'left'},
+                  {field:'id', title:'ID', width:80, fixed: 'left', unresize: true, sort: true, totalRowText: '合计：'},
+                  {field:'sex', title:'性别', width:80, edit: 'text', sort: true},
+                  {field:'experience', title:'积分', width:80, sort: true, totalRow: true, templet: '<div>{{= d.experience }} 分</div>'},
+                  {field:'logins', title:'登入次数', width:100, sort: true, totalRow: true},
+                  {field:'joinTime', title:'加入时间', width:120}
                 ]]
                 */
               });
@@ -190,6 +194,38 @@ layui.use(['table', 'dropdown'], function(){
             break;
           }
           layer.msg('可观察 Network 请求参数的变化');
+        }
+      });
+ 
+      // 行模式
+      dropdown.render({
+        elem: '#rowMode',
+        data: [{
+          id: 'default-row',
+          title: '单行模式（默认）'
+        },{
+          id: 'multi-row',
+          title: '多行模式'
+        }],
+        // 菜单被点击的事件
+        click: function(obj){
+          var checkStatus = table.checkStatus(id)
+          var data = checkStatus.data; // 获取选中的数据
+          switch(obj.id){
+            case 'default-row':
+              table.reload('test', {
+                lineStyle: null // 恢复单行
+              });
+              layer.msg('已设为单行');
+            break;
+            case 'multi-row':
+              table.reload('test', {
+                // 设置行样式，此处以设置多行高度为例。若为单行，则没必要设置改参数 - 注：v2.7.0 新增
+                lineStyle: 'height: 95px;' 
+              });
+              layer.msg('即通过设置 lineStyle 参数可开启多行');
+            break;
+          }
         }
       });
     },

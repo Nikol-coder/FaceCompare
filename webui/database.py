@@ -3,6 +3,7 @@ import pymysql
 from flask import request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from mimacode import jiami, jiemi, chuli
+import json
 
 # app = Flask(__name__)
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
@@ -15,7 +16,7 @@ app = Flask(__name__, instance_relative_config=True, template_folder='templates'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
-app.config['MYSQL_DB'] = 'facecp'
+app.config['MYSQL_DB'] = 'face'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -35,8 +36,8 @@ cursor = db.cursor()
 def index():
     # 返回结果
     # return render_template('selectuser.html')
-    # return render_template('manager_login.html')
-    return render_template('selectuser.html')
+    return render_template('manager_login.html')
+    # return render_template('.html')
 
 #查询用户
 @app.route('/search')
@@ -201,19 +202,23 @@ def manage_video():
     result = cursor.fetchall()
     # 处理查询结果
     videos = []
-    for row in result:
-        video = {
-            'videoid': row[0],
-            'place': row[1],
-            'time': row[2],
-          
-        }
-    videos.append(video)
+    with open("./static/json/manager/demo1.json", "w",encoding='utf-8') as f:
+        for row in result:
+            video = {
+                'videoid': row[0],
+                'place': row[2],
+                'time': row[1].strftime('%Y-%m-%d'),
+            }
 
-    print(videos)
- 
+            videos.append(video)
+        data_json = {"code": 0, "msg": "响应失败？", "count": videos.count(), "data": videos}
+
+    with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
+        json.dump(data_json, f, indent=4, ensure_ascii=False)
+        f.close()
+
     # 返回结果
-    return render_template('/Admin/manage_video.html', videos=videos)
+    return render_template('/Admin/manage_video.html')
 
 
 # 用户管理
@@ -263,7 +268,47 @@ def task_manage():
     # 返回结果
     return render_template('/Admin/task_manage.html', tasks=tasks)
 
+# 删除视频      --- 视频管理
+@app.route('/delete_video',methods=['GET','POST'])
+def delete_video():
+    pass
 
+# 修改视频信息  --- 视频管理
+@app.route('/modify_video',methods=['GET','POST'])
+def modify_video():
+    pass
+
+# 通过悬赏   --- 审核悬赏过程
+@app.route('/permit_task',methods=['GET','POST'])
+def permit_task():
+    pass
+
+# 拒绝悬赏   ----审核悬赏过程
+@app.route('/deny_task',methods=['GET','POST'])
+def deny_task():
+    pass
+
+
+# 删除悬赏   --- 管理悬赏过程
+@app.route('/delete_reward',methods=['GET','POST'])
+def delete_reward():
+    pass
+
+# 修改悬赏   --- 管理悬赏过程
+@app.route('/modify_reward',methods=['GET','POST'])
+def modify_reward():
+    pass
+
+# 封禁   --- 管理用户
+@app.route('/blockade_user',methods=['GET','POST'])
+def blockade_user():
+    pass
+
+
+# 修改用户密码   --- 管理用户
+@app.route('/change_user_passwd',methods=['GET','POST'])
+def change_user_passwd():
+    pass
 
 if __name__ == '__main__':
     app.run()
