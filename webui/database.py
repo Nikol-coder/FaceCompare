@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 import pymysql
 from flask import request, render_template
 from flask_sqlalchemy import SQLAlchemy
+from mimacode import jiami, jiemi, chuli
 
 # app = Flask(__name__)
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
@@ -35,7 +36,7 @@ def index():
     # 返回结果
     # return render_template('selectuser.html')
     # return render_template('manager_login.html')
-    return render_template('index.html')
+    return render_template('selectuser.html')
 
 #查询用户
 @app.route('/search')
@@ -72,10 +73,14 @@ def create_user():
         password = request.form.get("pwd1") 
         province = request.form.get("pro") 
         tel = request.form.get("tel")
-
+        password = jiami(password)
+        print("加密代码：",password)
+        password = str(password)
         # 执行插入语句
         cursor.execute("INSERT INTO usertable (userid,username, password, province, tel) VALUES (%s,%s, %s, %s, %s)", (userid,username, password, province, tel))
-        
+        jiemicode = jiemi(password)
+
+        print("解密代码: ",jiemicode)
         # 提交事务
         db.commit()
         
@@ -84,6 +89,38 @@ def create_user():
         return render_template('login.html')
     else:
         return render_template('createuser.html')
+
+#登录
+@app.route('/login', methods=['GET','POST'])
+#插入数据
+def login():
+
+    if request.method == 'POST':
+        # 结合createuser.html页面，创建用户
+        userid = request.form.get("username")
+        password = request.form.get("password") 
+        pwd = jiami(password)
+        print("加密代码：",pwd)
+        # 执行插入语句
+            # 执行查询语句
+        cursor.execute("SELECT * FROM usertable where userid = %s", (userid))
+        result = cursor.fetchall()
+        mima = result[0][2]
+        jiemicode = jiemi(mima)
+
+        print("\n解密代码: ",jiemicode)
+        # 提交事务
+        db.commit()
+        password = chuli(password)
+        if password == jiemicode:
+            print('User login successfully')
+            return render_template('selectuser.html')
+        else:
+            print('User login unsuccessfully')
+            return render_template('login.html')
+
+    else:
+        return render_template('login.html')
 
 #更新数据
 @app.route('/update_user', methods=['POST'])
@@ -114,6 +151,7 @@ def delete_user():
         pwd = request.form.get('pwd')
         print(id)
         print(pwd)
+        pwd = jiami(pwd)
         # 执行删除语句
         if pwd and pwd.strip():
             cursor.execute("DELETE FROM usertable WHERE userid = %s and password = %s", (id,pwd))
