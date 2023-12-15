@@ -1,25 +1,14 @@
 {
     "code": 0,
     "msg": "响应失败？",
-    "count": 3,
+    "count": 1,
     "data": [
         {
-            "userid": 1.0,
-            "username": "小明",
+            "pictureid": 1.0,
+            "name": "彤彤",
+            "age": "5",
             "province": "四川",
-            "tel": "456"
-        },
-        {
-            "userid": 2.0,
-            "username": "小红",
-            "province": "北京",
-            "tel": "7412"
-        },
-        {
-            "userid": 3.0,
-            "username": "John",
-            "province": "河北",
-            "tel": "john@example.com"
+            "price": "5000"
         }
     ]
 }
