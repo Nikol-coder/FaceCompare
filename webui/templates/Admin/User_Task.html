@@ -107,7 +107,7 @@
 </script>
 <script type="text/html" id="barDemo">
   <div class="layui-clear-space">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    <a class="layui-btn layui-btn-xs" lay-event="permit">通过</a>
     <a class="layui-btn layui-btn-xs" lay-event="more">
       更多 
       <i class="layui-icon layui-icon-down"></i>
@@ -115,15 +115,18 @@
   </div>
 </script>  
 <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 layui.use(['table', 'dropdown'], function(){
   var table = layui.table;
   var dropdown = layui.dropdown;
+  var layer = layui.layer;
+  var util = layui.util;
   
   // 创建渲染实例
   table.render({
     elem: '#test',
-    url: './static/json/manager/demo1.json', // 此处为静态模拟数据，实际使用时需换成真实接口
+    url: './static/json/manager/demo1.json', // 真实接口
     toolbar: '#toolbarDemo',
     defaultToolbar: ['filter', 'exports', 'print', {
       title: '提示',
@@ -139,6 +142,7 @@ layui.use(['table', 'dropdown'], function(){
     page: true,
     cols: [[
       { type: 'checkbox', fixed: 'left' },
+      { field: 'pictureid', width: 80, title: '任务ID' },
       { field: 'name', width: 80, title: '姓名' },
       { field: 'age', width: 80, title: '年龄' },
       { field: 'province', width: 80, title: '地点' },
@@ -147,7 +151,7 @@ layui.use(['table', 'dropdown'], function(){
     ]],
     done: function(){
       var id = this.id;
-      // 下拉按钮测试
+      // 下拉按钮测试    ---   悬赏任务管理
       dropdown.render({
         elem: '#dropdownButton', // 可绑定在任意元素中，此处以上述按钮为例
         data: [{
@@ -204,17 +208,26 @@ layui.use(['table', 'dropdown'], function(){
   // 表头自定义元素工具事件 --- 2.8.8+
 
   
-  // 触发单元格工具事件
+  // 触发单元格工具事件         ----------单元格处理    任务是否通过
   table.on('tool(test)', function(obj){ // 双击 toolDouble
     var data = obj.data; // 获得当前行数据
     // console.log(obj)
-    if(obj.event === 'edit'){
-      layer.open({
-        title: '编辑 - id:'+ data.id,
-        type: 1,
-        area: ['80%','80%'],
-        content: '<div style="padding: 16px;">自定义表单元素</div>'
-      });
+    if(obj.event === 'permit'){
+      layer.confirm('确认通过 ID' + data.pictureid + " 的悬赏？", {icon: 3,title:'提示'}, function(){
+          layer.msg('审核已通过', {icon: 1});
+          
+          // 发送数据到后端
+          var requestData = { pictureid: data.pictureid };
+          $.ajax({
+            url: '/permit_task',
+            method: 'POST',
+            data: requestData,
+            
+          });
+
+        }, function(){
+          layer.msg('取消确认');
+        });
     } else if(obj.event === 'more'){
       // 更多 - 下拉菜单
       dropdown.render({
@@ -243,6 +256,8 @@ layui.use(['table', 'dropdown'], function(){
       })
     }
   });
+
+  
  
   // 触发表格复选框选择
   table.on('checkbox(test)', function(obj){
@@ -285,7 +300,21 @@ layui.use(['table', 'dropdown'], function(){
     update[field] = value;
     obj.update(update);
   });
+
+  // 事件
+  util.on('lay-on', {
+    "test-confirm": function(){
+        layer.confirm('一个询问框的示例？', {icon: 3}, function(){
+          layer.msg('点击确定的回调', {icon: 1});
+        }, function(){
+          layer.msg('点击取消的回调');
+        });
+      }
+  });
 });
 </script>
+
+
+
 </body>
 </html>

@@ -2,6 +2,7 @@ from flask import Flask, jsonify
 import pymysql
 from flask import request, render_template
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Null
 from mimacode import jiami, jiemi, chuli
 import json
 
@@ -182,7 +183,7 @@ def show_user_Task():
 
     for row in result:
         task = {
-            'picture': row[0],
+            'pictureid': row[0],
             'name': row[2],
             'age': row[3],
             'province': row[4],
@@ -298,7 +299,19 @@ def modify_video():
 # 通过悬赏   --- 审核悬赏过程
 @app.route('/permit_task',methods=['GET','POST'])
 def permit_task():
-    pass
+    pictureid = None
+    if request.method == 'POST':
+        pictureid = request.form["pictureid"]
+
+    elif request.method == 'GET':
+        pictureid = request.args.get("pictureid")
+
+    if pictureid is None:
+        print("no pictureid!!!!")
+    else:
+        print(pictureid)
+        print("收到消息！！！")
+    
 
 # 拒绝悬赏   ----审核悬赏过程
 @app.route('/deny_task',methods=['GET','POST'])
