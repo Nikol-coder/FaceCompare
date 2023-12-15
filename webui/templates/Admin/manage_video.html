@@ -52,6 +52,7 @@
 
       <!---->
     </div>
+
     <div class="layui-footer">
       <!-- 底部固定区域 -->
       FaceCompare
@@ -131,12 +132,12 @@ layui.use(['table', 'dropdown'], function(){
       layEvent: 'LAYTABLE_TIPS',
       icon: 'layui-icon-tips'
     }],
-    height: 'full-35', // 最大高度减去其他容器已占有的高度差
+    height: 'full-125', // 最大高度减去其他容器已占有的高度差
     css: [ // 重设当前表格样式
       '.layui-table-tool-temp{padding-right: 145px;}'
     ].join(''),
     cellMinWidth: 80,
-    totalRow: true, // 开启合计行
+    // totalRow: true, // 开启合计行
     page: true,
     cols: [[
       { type: 'checkbox', fixed: 'left' },
