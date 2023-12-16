@@ -222,8 +222,17 @@ layui.use(['table', 'dropdown'], function(){
             url: '/permit_task',
             method: 'POST',
             data: requestData,
-            
+
+            success: function(response) {
+              // 请求成功的处理逻辑
+              console.log(response);
+            },
+            error: function(error) {
+              // 请求失败的处理逻辑
+              console.error(error);
+            }
           });
+          obj.del();     // 删除该行
 
         }, function(){
           layer.msg('取消确认');
@@ -237,17 +246,35 @@ layui.use(['table', 'dropdown'], function(){
           title: '查看',
           id: 'detail'
         },{
-          title: '删除',
-          id: 'del'
+          title: '驳回',
+          id: 'reject'
         }],
         click: function(menudata){
           if(menudata.id === 'detail'){
             layer.msg('查看操作，当前行 ID:'+ data.id);
-          } else if(menudata.id === 'del'){
-            layer.confirm('真的删除行 [id: '+ data.id +'] 么', function(index){
+          } else if(menudata.id === 'reject'){
+            layer.confirm('驳回 [id: '+ data.pictureid +'] 么？', {icon: 3,title:'提示'},function(){
+              layer.msg('已驳回', {icon: 1});
+              var requestData = { pictureid: data.pictureid };
+              $.ajax({
+                url: '/deny_task',
+                method: 'POST',
+                data: requestData,
+                success: function(response) {
+                  // 请求成功的处理逻辑
+                  console.log(response);
+                },
+                error: function(error) {
+                  // 请求失败的处理逻辑
+                  console.error(error);
+                }
+              });
+
               obj.del(); // 删除对应行（tr）的DOM结构
-              layer.close(index);
+              // layer.close(index);
               // 向服务端发送删除指令
+            }, function(){
+              layer.msg('取消确认');
             });
           } 
         },

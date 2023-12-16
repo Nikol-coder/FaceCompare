@@ -1,4 +1,5 @@
 from flask import Flask, jsonify
+import flask
 import pymysql
 from flask import request, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -312,11 +313,39 @@ def permit_task():
         print(pictureid)
         print("收到消息！！！")
     
+    response_data = {
+        'status': 'success',
+        'message': '审核已通过'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
+    
 
 # 拒绝悬赏   ----审核悬赏过程
 @app.route('/deny_task',methods=['GET','POST'])
 def deny_task():
-    pass
+    pictureid = None
+    if request.method == 'POST':
+        pictureid = request.form["pictureid"]
+
+    elif request.method == 'GET':
+        pictureid = request.args.get("pictureid")
+
+    if pictureid is None:
+        print("no pictureid!!!!")
+    else:
+        print(pictureid)
+        print("收到消息！！！")
+
+    response_data = {
+        'status': 'success',
+        'message': '已拒绝'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
+
 
 
 # 删除悬赏   --- 管理悬赏过程
