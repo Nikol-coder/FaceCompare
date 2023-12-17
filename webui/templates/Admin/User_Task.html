@@ -251,8 +251,32 @@ layui.use(['table', 'dropdown'], function(){
         }],
         click: function(menudata){
           if(menudata.id === 'detail'){
-            layer.msg('查看操作，当前行 ID:'+ data.id);
-          } else if(menudata.id === 'reject'){
+            layer.msg('查看操作，当前行 ID:'+ data.id);          // 查看图片
+            var requestData = { pictureid: data.pictureid };
+            $.ajax({
+              url: '/get_image', // 后端接口地址
+              method: 'GET', // 请求方法
+              data: requestData,
+              success: function(response) {
+                  // 请求成功的处理逻辑
+                  // 假设response是一个包含图片URL的对象
+                  var imageUrl = response.imageUrl;
+                  console.log(response.imageUrl);
+
+                  layer.open({
+                    title: '添加',
+                    type: 1,
+                    area: ['80%','80%'],
+                    content: '<div style="padding: 16px;"><img src="' + imageUrl + '" alt="My Image" /></div>'
+                  });
+              },
+              error: function(error) {
+                  // 请求失败的处理逻辑
+                  console.error(error);
+              }
+            });
+
+          } else if(menudata.id === 'reject'){                   // 驳回任务悬赏
             layer.confirm('驳回 [id: '+ data.pictureid +'] 么？', {icon: 3,title:'提示'},function(){
               layer.msg('已驳回', {icon: 1});
               var requestData = { pictureid: data.pictureid };

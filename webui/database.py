@@ -296,8 +296,8 @@ def delete_video():
 @app.route('/modify_video',methods=['GET','POST'])
 def modify_video():
     pass
-
-# 通过悬赏   --- 审核悬赏过程
+ 
+# 通过悬赏   --- 审核悬赏过程 用户上传
 @app.route('/permit_task',methods=['GET','POST'])
 def permit_task():
     pictureid = None
@@ -322,7 +322,7 @@ def permit_task():
     return response
     
 
-# 拒绝悬赏   ----审核悬赏过程
+# 拒绝悬赏   ----审核悬赏过程 用户上传
 @app.route('/deny_task',methods=['GET','POST'])
 def deny_task():
     pictureid = None
@@ -346,6 +346,29 @@ def deny_task():
     response.status_code = 200
     return response
 
+# 获取图片   ----审核/管理悬赏过程
+@app.route('/get_image',methods=['GET','POST'])
+def get_image():
+    pictureid = None
+    if request.method == 'POST':
+        pictureid = request.form["pictureid"]
+
+    elif request.method == 'GET':
+        pictureid = request.args.get("pictureid")
+
+    if pictureid is None:
+        print("no pictureid!!!!")
+    else:
+        print(pictureid)
+        print("收到消息！！！")
+
+    response_data = {
+        'status': 'success',
+        'imageUrl': '/static/images/'+ pictureid + '.jpg'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
 
 
 # 删除悬赏   --- 管理悬赏过程
@@ -368,6 +391,9 @@ def blockade_user():
 @app.route('/change_user_passwd',methods=['GET','POST'])
 def change_user_passwd():
     pass
+
+
+
 
 if __name__ == '__main__':
     app.run()
