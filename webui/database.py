@@ -1,3 +1,4 @@
+from hmac import new
 from flask import Flask, jsonify
 import flask
 import pymysql
@@ -382,15 +383,58 @@ def modify_reward():
     pass
 
 # 封禁   --- 管理用户
-@app.route('/blockade_user',methods=['GET','POST'])
-def blockade_user():
-    pass
+@app.route('/manager_delete_user', methods=['GET','POST'])
+def manager_delete_user():
+    userid = None
+    if request.method == 'POST':
+        userid = request.form["userid"]
+
+    elif request.method == 'GET':
+        userid = request.args.get("userid")
+
+    if userid is None:
+        print("no userid!!!!")
+    else:
+        print("userid: ", userid)
+        print("删除用户 收到消息！！！")
+
+    response_data = {
+        'status': 'success',
+        'message': '已封禁'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
 
 
 # 修改用户密码   --- 管理用户
-@app.route('/change_user_passwd',methods=['GET','POST'])
-def change_user_passwd():
-    pass
+@app.route('/change_password', methods=['GET','POST'])
+def change_password():
+    userid = None
+    new_password = None
+    if request.method == 'POST':
+        userid = request.form["userid"]
+        new_password = request.form["newpassword"]
+
+    elif request.method == 'GET':
+        userid = request.args.get("userid")
+        new_password = request.args.get("newpassword")
+
+    if userid is None:
+        print("no userid!!!!")
+        print("no new_password!!!!")
+    else:
+        print("userid: ", userid)
+        print("newpassword:  ", new_password)
+        print("修改密码！！！")
+
+    response_data = {
+        'status': 'success',
+        'message': '密码已修改'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
 
 
 

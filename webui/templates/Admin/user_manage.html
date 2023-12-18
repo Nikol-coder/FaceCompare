@@ -107,14 +107,13 @@
 </script>
 <script type="text/html" id="barDemo">
   <div class="layui-clear-space">
-    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
-    <a class="layui-btn layui-btn-xs" lay-event="more">
-      更多 
-      <i class="layui-icon layui-icon-down"></i>
-    </a>
+    <a class="layui-btn layui-btn-xs" lay-event="change_password">修改密码</a>
+    <a class="layui-btn layui-btn-xs" lay-event="delete_user">删除用户</a>
   </div>
 </script>  
 <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 layui.use(['table', 'dropdown'], function(){
   var table = layui.table;
@@ -144,7 +143,7 @@ layui.use(['table', 'dropdown'], function(){
       { field: 'username', width: 80, title: '姓名' },
       { field: 'province', width: 80, title: '地点' },
       { field: 'tel', title: '电话' },
-      { fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#barDemo' }
+      { fixed: 'right', title: '操作', width: 160, minWidth: 140, toolbar: '#barDemo' }
     ]],
     done: function(){
       var id = this.id;
@@ -209,39 +208,55 @@ layui.use(['table', 'dropdown'], function(){
   table.on('tool(test)', function(obj){ // 双击 toolDouble
     var data = obj.data; // 获得当前行数据
     // console.log(obj)
-    if(obj.event === 'edit'){
-      layer.open({
-        title: '编辑 - id:'+ data.id,
-        type: 1,
-        area: ['80%','80%'],
-        content: '<div style="padding: 16px;">自定义表单元素</div>'
+    if(obj.event === 'change_password'){
+      layer.prompt({
+        formType: 1, // 输入类型，1代表密码框
+        title: '请输入新的密码',
+        area: ['200px', '50px'] // 宽高
+      }, function(value, index, elem){
+        var newPassword = value; // 获取输入的新密码
+        layer.close(index); // 关闭输入框
+
+        // 你可以在这里添加修改密码的逻辑，例如发送一个Ajax请求到后端
+        var requestData = { userid: data.userid, newpassword: newPassword };
+        $.ajax({
+          url: '/change_password',
+          method: 'POST',
+          data: requestData,
+          success: function(response) {
+            // 请求成功的处理逻辑
+            console.log(response);
+            layer.msg('密码修改成功', {icon: 1});
+          },
+          error: function(error) {
+            // 请求失败的处理逻辑
+            console.error(error);
+          }
+        });
       });
-    } else if(obj.event === 'more'){
-      // 更多 - 下拉菜单
-      dropdown.render({
-        elem: this, // 触发事件的 DOM 对象
-        show: true, // 外部事件触发即显示
-        data: [{
-          title: '查看',
-          id: 'detail'
-        },{
-          title: '删除',
-          id: 'del'
-        }],
-        click: function(menudata){
-          if(menudata.id === 'detail'){
-            layer.msg('查看操作，当前行 ID:'+ data.id);
-          } else if(menudata.id === 'del'){
-            layer.confirm('真的删除行 [id: '+ data.id +'] 么', function(index){
-              obj.del(); // 删除对应行（tr）的DOM结构
-              layer.close(index);
-              // 向服务端发送删除指令
-            });
-          } 
-        },
-        align: 'right', // 右对齐弹出
-        style: 'box-shadow: 1px 1px 10px rgb(0 0 0 / 12%);' // 设置额外样式
-      })
+    } else if(obj.event === 'delete_user'){
+      layer.confirm('删除用户 [id: '+ data.userid +'] 么？', {icon: 3,title:'提示'},function(){
+        layer.msg('已删除', {icon: 1});
+        var requestData = { userid: data.userid };
+        $.ajax({
+          url: '/manager_delete_user',
+          method: 'POST',
+          data: requestData,
+          success: function(response) {
+            // 请求成功的处理逻辑
+            console.log(response);
+            obj.del(); // 删除对应行（tr）的DOM结构
+          },
+          error: function(error) {
+            // 请求失败的处理逻辑
+            console.error(error);
+
+          }
+        });
+
+      }, function(){
+        layer.msg('取消确认');
+      });
     }
   });
  
