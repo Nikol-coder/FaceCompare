@@ -270,7 +270,7 @@ def task_manage():
     tasks = []
     for row in result:
         task = {
-            'picture': row[0],
+            'pictureid': row[0],
             'name': row[2],
             'age': row[3],
             'province': row[4],
@@ -312,7 +312,7 @@ def permit_task():
         print("no pictureid!!!!")
     else:
         print(pictureid)
-        print("收到消息！！！")
+        print("通过悬赏！！！")
     
     response_data = {
         'status': 'success',
@@ -337,7 +337,7 @@ def deny_task():
         print("no pictureid!!!!")
     else:
         print(pictureid)
-        print("收到消息！！！")
+        print("拒绝悬赏！！！")
 
     response_data = {
         'status': 'success',
@@ -359,9 +359,10 @@ def get_image():
 
     if pictureid is None:
         print("no pictureid!!!!")
+        print("获取图片！！！")
     else:
-        print(pictureid)
-        print("收到消息！！！")
+        print("picture id: ", pictureid)
+        print("获取图片！！！")
 
     response_data = {
         'status': 'success',
@@ -375,12 +376,49 @@ def get_image():
 # 删除悬赏   --- 管理悬赏过程
 @app.route('/delete_reward',methods=['GET','POST'])
 def delete_reward():
-    pass
+    pictureid = None
+    if request.method == 'POST':
+        pictureid = request.form["pictureid"]
+
+    elif request.method == 'GET':
+        pictureid = request.args.get("pictureid")
+
+    if pictureid is None:
+        print("no pictureid!!!!")
+        print("删除悬赏！！！")
+    else:
+        print("picture id: ", pictureid)
+        print("删除悬赏！！！")
+
+    response_data = {
+        'status': 'success',
+        'message': '已删除'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
 
 # 修改悬赏   --- 管理悬赏过程
 @app.route('/modify_reward',methods=['GET','POST'])
 def modify_reward():
     pass
+
+# 修改悬赏图片   --- 管理悬赏过程
+@app.route('/modify_reward_picture',methods=['GET','POST'])
+def modify_reward_picture():
+    if 'file' not in request.files:
+        return 'No file part in the request', 400
+    file = request.files['file']
+    if file.filename == '':
+        return 'No selected file', 400
+    if file and allowed_file(file.filename):
+        filename = file.filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return 'File uploaded successfully', 200
+
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 # 封禁   --- 管理用户
 @app.route('/manager_delete_user', methods=['GET','POST'])

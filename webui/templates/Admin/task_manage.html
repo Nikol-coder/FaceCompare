@@ -141,6 +141,7 @@ layui.use(['table', 'dropdown'], function(){
     page: true,
     cols: [[
       { type: 'checkbox', fixed: 'left' },
+      { field: 'pictureid', width: 80, title: '任务ID' },
       { field: 'name', width: 80, title: '姓名' },
       { field: 'age', width: 80, title: '年龄' },
       { field: 'province', width: 80, title: '地点' },
@@ -203,20 +204,94 @@ layui.use(['table', 'dropdown'], function(){
   
   // 工具栏事件
   
-  // 表头自定义元素工具事件 --- 2.8.8+
-
-  
   // 触发单元格工具事件
   table.on('tool(test)', function(obj){ // 双击 toolDouble
     var data = obj.data; // 获得当前行数据
-    // console.log(obj)
     if(obj.event === 'edit'){
       layer.open({
         title: '编辑 - id:'+ data.id,
         type: 1,
         area: ['80%','80%'],
-        content: '<div style="padding: 16px;">自定义表单元素</div>'
-      });
+        content: '<div class="layui-form">' +
+                    '<div class="layui-form-item">' +
+                        '<div class="layui-input-group">' +
+                            '<div class="layui-input-split layui-input-prefix">用户名</div>' +
+                            '<input type="text" placeholder="' + data.name + '" class="layui-input"></input>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="layui-form-item">' +
+                        '<div class="layui-input-group">' +
+                            '<div class="layui-input-split layui-input-prefix">年龄</div>' +
+                            '<input type="text" placeholder="' + data.age + '" class="layui-input"></input>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="layui-form-item">' +
+                        '<div class="layui-input-group">' +
+                            '<div class="layui-input-split layui-input-prefix">省份</div>' +
+                            '<input type="text" placeholder="' + data.province + '" class="layui-input"></input>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="layui-form-item">' +
+                        '<div class="layui-input-group">' +
+                            '<div class="layui-input-split layui-input-prefix">悬赏金额</div>' +
+                            '<input type="text" placeholder="' + data.price + '" class="layui-input"></input>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="layui-form-item">' +
+                        '<div class="layui-input-group">' +
+                            '<div class="layui-input-split layui-input-prefix">上传图片</div>' +
+                            '<input type="file" class="layui-input"></input>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<div class="layui-form-item">' +
+                      '<div class="layui-input-group">' +
+                        '<button type="button" class="layui-btn" id="submit-btn" style="display: inline-block;">提交</button>' +
+                        '<button type="button" class="layui-btn layui-btn-primary" id="cancel-btn" style="display: inline-block; margin-left: 10px;">取消</button>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>',
+          success: function(layero, index){
+            // 提交按钮点击事件
+            $('#submit-btn').on('click', function(){
+              // 这里可以添加提交表单的代码
+              // ...
+
+              var requestData = { pictureid: data.pictureid };
+              $.ajax({
+                url: '/get_image', // 后端接口地址
+                method: 'GET', // 请求方法
+                data: requestData,
+                success: function(response) {
+                    // 请求成功的处理逻辑
+                    // 假设response是一个包含图片URL的对象
+                    var imageUrl = response.imageUrl;
+                    console.log(response.imageUrl);
+
+                    layer.open({
+                      title: '添加',
+                      type: 1,
+                      area: ['80%','80%'],
+                      content: '<div style="padding: 16px;"><img src="' + imageUrl + '" alt="My Image" /></div>'
+                    });
+                },
+                error: function(error) {
+                    // 请求失败的处理逻辑
+                    console.error(error);
+                }
+              });
+              layer.msg('已提交', {icon: 1});
+              layer.close(index); // 关闭弹出层
+            });
+
+            // 取消按钮点击事件
+            $('#cancel-btn').on('click', function(){
+                layer.close(index); // 关闭弹出层
+            });
+          }
+
+        });
+
     } else if(obj.event === 'more'){
       // 更多 - 下拉菜单
       dropdown.render({
@@ -231,12 +306,53 @@ layui.use(['table', 'dropdown'], function(){
         }],
         click: function(menudata){
           if(menudata.id === 'detail'){
-            layer.msg('查看操作，当前行 ID:'+ data.id);
-          } else if(menudata.id === 'del'){
-            layer.confirm('真的删除行 [id: '+ data.id +'] 么', function(index){
+            layer.msg('查看操作，当前行 ID:'+ data.id);          // 查看图片
+            var requestData = { pictureid: data.pictureid };
+            $.ajax({
+              url: '/get_image', // 后端接口地址
+              method: 'GET', // 请求方法
+              data: requestData,
+              success: function(response) {
+                  // 请求成功的处理逻辑
+                  // 假设response是一个包含图片URL的对象
+                  var imageUrl = response.imageUrl;
+                  console.log(response.imageUrl);
+
+                  layer.open({
+                    title: '添加',
+                    type: 1,
+                    area: ['80%','80%'],
+                    content: '<div style="padding: 16px;"><img src="' + imageUrl + '" alt="My Image" /></div>'
+                  });
+              },
+              error: function(error) {
+                  // 请求失败的处理逻辑
+                  console.error(error);
+              }
+            });
+          } else if(menudata.id === 'del'){         // 删除图片
+            layer.confirm('删除 [id: '+ data.pictureid +'] 么？', {icon: 3,title:'提示'},function(){
+              layer.msg('已删除', {icon: 1});
+              var requestData = { pictureid: data.pictureid };
+              $.ajax({
+                url: '/delete_reward',
+                method: 'POST',
+                data: requestData,
+                success: function(response) {
+                  // 请求成功的处理逻辑
+                  console.log(response);
+                },
+                error: function(error) {
+                  // 请求失败的处理逻辑
+                  console.error(error);
+                }
+              });
+
               obj.del(); // 删除对应行（tr）的DOM结构
-              layer.close(index);
+              // layer.close(index);
               // 向服务端发送删除指令
+            }, function(){
+              layer.msg('取消确认');
             });
           } 
         },
@@ -289,5 +405,6 @@ layui.use(['table', 'dropdown'], function(){
   });
 });
 </script>
+
 </body>
 </html>
