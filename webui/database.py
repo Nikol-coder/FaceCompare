@@ -1,6 +1,8 @@
 from hmac import new
+import re
 from flask import Flask, jsonify
 import flask
+from numpy import place
 import pymysql
 from flask import request, render_template
 from flask_sqlalchemy import SQLAlchemy
@@ -297,7 +299,24 @@ def delete_video():
 # 修改视频信息  --- 视频管理
 @app.route('/modify_video',methods=['GET','POST'])
 def modify_video():
-    pass
+    videoid = request.args.get('videoid')
+    time = request.args.get('time')
+    place = request.args.get('place')
+
+
+    print("videoid: ", videoid)
+    print("time: ", time)
+    print("place: ", place)
+    print("修改视频！！！")
+
+    response_data = {
+        'status': 'success',
+        'message': '已修改悬赏'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
+
  
 # 通过悬赏   --- 审核悬赏过程 用户上传
 @app.route('/permit_task',methods=['GET','POST'])
