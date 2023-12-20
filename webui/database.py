@@ -7,6 +7,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Null
 from mimacode import jiami, jiemi, chuli
 import json
+import os
 
 # app = Flask(__name__)
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
@@ -401,24 +402,47 @@ def delete_reward():
 # 修改悬赏   --- 管理悬赏过程
 @app.route('/modify_reward',methods=['GET','POST'])
 def modify_reward():
-    pass
+    pictureid = request.args.get('pictureid')
+    name = request.args.get('name')
+    age = request.args.get('age')
+    province = request.args.get('province')
+    price = request.args.get('price')
+
+
+    print("pictureid: ", pictureid)
+    print("name: ", name)
+    print("age: ", age)
+    print("province: ", province)
+    print("price: ", price)
+    print("修改悬赏！！！")
+    response_data = {
+        'status': 'success',
+        'message': '已修改悬赏'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
 
 # 修改悬赏图片   --- 管理悬赏过程
 @app.route('/modify_reward_picture',methods=['GET','POST'])
 def modify_reward_picture():
-    if 'file' not in request.files:
-        return 'No file part in the request', 400
-    file = request.files['file']
-    if file.filename == '':
-        return 'No selected file', 400
-    if file and allowed_file(file.filename):
-        filename = file.filename
-        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-        return 'File uploaded successfully', 200
 
-def allowed_file(filename):
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    file = request.files['file']
+    print("file: ", file)
+    filename = file.filename
+    print("filename: ", filename)
+    file.save(os.path.join('static/images', filename))  # 保存文件
+    print("修改悬赏图片！！！")
+    response_data = {
+        'status': 'success',
+        'message': '已修改悬赏图片'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
+
+
 
 # 封禁   --- 管理用户
 @app.route('/manager_delete_user', methods=['GET','POST'])
