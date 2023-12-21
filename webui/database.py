@@ -222,7 +222,7 @@ def manage_video():
             'time': row[1].strftime('%Y-%m-%d'),
         }
         videos.append(video)
-
+    print(videos)
     data_json = {"code": 0, "msg": "响应失败？", "count": len(videos), "data": videos}
 
     with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
@@ -317,6 +317,30 @@ def modify_video():
     response.status_code = 200
     return response
 
+# 获取视频   ---- 视频管理
+@app.route('/get_video',methods=['GET','POST'])
+def get_video():
+    videoid = None
+    if request.method == 'POST':
+        videoid = request.form["videoid"]
+
+    elif request.method == 'GET':
+        videoid = request.args.get("videoid")
+
+    if videoid is None:
+        print("no videoid!!!!")
+        print("获取图片！！！")
+    else:
+        print("videoid id: ", videoid)
+        print("获取图片！！！")
+
+    response_data = {
+        'status': 'success',
+        'videoUrl': '/static/video/'+ videoid + '.mp4'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
  
 # 通过悬赏   --- 审核悬赏过程 用户上传
 @app.route('/permit_task',methods=['GET','POST'])

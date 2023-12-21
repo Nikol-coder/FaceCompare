@@ -280,7 +280,36 @@ layui.use(['table', 'dropdown'], function(){
         }],
         click: function(menudata){
           if(menudata.id === 'detail'){
-            layer.msg('查看操作，当前行 ID:'+ data.id);
+            layer.msg('查看操作，当前行 ID:'+ data.videoid);
+            var requestData = { videoid: data.videoid };
+            $.ajax({
+              url: '/get_video', // 后端接口地址
+              method: 'GET', // 请求方法
+              data: requestData,
+              success: function(response) {
+                  // 请求成功的处理逻辑
+                  // 假设response是一个包含图片URL的对象
+                  var videoUrl = response.videoUrl;
+                  console.log(response.videoUrl);
+
+                  layer.open({
+                    title: '查看',
+                    type: 1,
+                    area: ['80%','80%'],
+                    content: '<div style="display: flex; justify-content: center; align-items: center; height: 100%;">' + 
+                                '<video width="320" height="240" controls>'+
+                                  '<source src="' + videoUrl + '" type="video/mp4">'+
+                                '</video>'+
+                              '</div>'
+                  });
+              },
+              error: function(error) {
+                  // 请求失败的处理逻辑
+                  console.error(error);
+              }
+            });
+
+
           } else if(menudata.id === 'del'){
             layer.confirm('真的删除行 [id: '+ data.id +'] 么', function(index){
               obj.del(); // 删除对应行（tr）的DOM结构
