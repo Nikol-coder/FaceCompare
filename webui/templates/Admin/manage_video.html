@@ -172,8 +172,78 @@ layui.use(['table', 'dropdown'], function(){
                 title: '添加',
                 type: 1,
                 area: ['80%','80%'],
-                content: '<div style="padding: 16px;">自定义表单元素</div>'
-              });
+                content: '<div class="layui-form">' +
+                    '<div class="layui-form-item">' +
+                        '<div class="layui-input-group">' +
+                            '<div class="layui-input-split layui-input-prefix">地点</div>' +
+                            '<input type="text" id="place-name" class="layui-input"></input>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="layui-form-item">' +
+                        '<div class="layui-input-group">' +
+                            '<div class="layui-input-split layui-input-prefix">时间</div>' +
+                            '<input type="data" id="time-lost" class="layui-input"></input>' +
+                        '</div>' +
+                    '</div>' +
+
+                    '<div class="layui-form-item">' +
+                      '<div class="layui-input-group">' +
+                          '<div class="layui-input-split layui-input-prefix">视频</div>' +
+                          '<input type="file" name="FileUpload" id="FileUpload" accept="video/*" class="layui-input"></input>' +
+                      '</div>' +
+                    '</div>' +
+
+                    '<div class="layui-form-item">' +
+                      '<div class="layui-input-group">' +
+                        '<button type="button" class="layui-btn" id="submit-btn-video-upload" style="display: inline-block;">提交</button>' +
+                        '<button type="button" class="layui-btn layui-btn-primary" id="cancel-btn-video-upload" style="display: inline-block; margin-left: 10px;">取消</button>' +
+                      '</div>' +
+                    '</div>' +
+                  '</div>',
+
+                  success: function(layero, index){
+                    // 提交按钮点击事件
+                    $('#submit-btn-video-upload').on('click', function(){
+
+                      var inputs = $('.layui-input');
+                      if (inputs.length < 3) {
+                          console.error('Expected at least 3 inputs, but found ' + inputs.length);
+                          return;
+                      }
+                      var location = document.getElementById("place-name").value;
+                      var time = document.getElementById("time-lost").value;
+                      var file = document.getElementById("FileUpload").files[0];
+
+                      var formData = new FormData();
+                      formData.append('place', location);
+                      formData.append('time', time);
+                      formData.append('video', file);
+
+                      $.ajax({
+                          url: '/upload_video',  // 你的后端接口
+                          type: 'POST',
+                          data: formData,
+                          processData: false,  // 告诉 jQuery 不要处理数据
+                          contentType: false,  // 告诉 jQuery 不要设置 contentType
+                        success: function(response) {
+                            // 请求成功的处理逻辑
+                            console.log(response);
+                        },
+                        error: function(error) {
+                            // 请求失败的处理逻辑
+                            console.error(error);
+                        }
+                      });
+                      layer.msg('已提交', {icon: 1});
+                      layer.close(index); // 关闭弹出层
+                    });
+
+                  // 取消按钮点击事件
+                  $('#cancel-btn-video-upload').on('click', function(){
+                      layer.close(index); // 关闭弹出层
+                  });
+                }
+            });
             break;
             case 'update':
               if(data.length !== 1) return layer.msg('请选择一行');
@@ -219,13 +289,13 @@ layui.use(['table', 'dropdown'], function(){
                     '<div class="layui-form-item">' +
                         '<div class="layui-input-group">' +
                             '<div class="layui-input-split layui-input-prefix">地点</div>' +
-                            '<input type="text" placeholder="' + data.place + '" class="layui-input"></input>' +
+                            '<input type="text" placeholder="' + data.place + '" id="place-name" class="layui-input"></input>' +
                         '</div>' +
                     '</div>' +
                     '<div class="layui-form-item">' +
                         '<div class="layui-input-group">' +
                             '<div class="layui-input-split layui-input-prefix">时间</div>' +
-                            '<input type="data" placeholder="' + data.time + '" class="layui-input"></input>' +
+                            '<input type="data" placeholder="' + data.time + '" id="time-lost" class="layui-input"></input>' +
                         '</div>' +
                     '</div>' +
 
@@ -242,7 +312,7 @@ layui.use(['table', 'dropdown'], function(){
             $('#submit-btn').on('click', function(){
               // 这里可以添加提交表单的代码
               // ...
-              var requestData = { videoid: data.videoid , place: $('.layui-input')[0].value , time: $('.layui-input')[1].value }
+              var requestData = { videoid: data.videoid , place: document.getElementById("place-name").value , time: document.getElementById("time-lost").value }
               $.ajax({
                 url: '/modify_video', // 后端接口地址
                 method: 'GET', // 请求方法
@@ -312,9 +382,24 @@ layui.use(['table', 'dropdown'], function(){
 
           } else if(menudata.id === 'del'){
             layer.confirm('真的删除行 [id: '+ data.id +'] 么', function(index){
-              obj.del(); // 删除对应行（tr）的DOM结构
               layer.close(index);
               // 向服务端发送删除指令
+              var requestData = { videoid: data.videoid };
+              $.ajax({
+                url: '/delete_video',
+                method: 'POST',
+                data: requestData,
+                success: function(response) {
+                  // 请求成功的处理逻辑
+                  console.log(response);
+                  obj.del(); // 删除对应行（tr）的DOM结构
+                },
+                error: function(error) {
+                  // 请求失败的处理逻辑
+                  console.error(error);
+                }
+              });
+
             });
           } 
         },

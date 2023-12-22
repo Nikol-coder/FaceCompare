@@ -294,7 +294,27 @@ def task_manage():
 # 删除视频      --- 视频管理
 @app.route('/delete_video',methods=['GET','POST'])
 def delete_video():
-    pass
+    videoid = None
+    if request.method == 'POST':
+        videoid = request.form["videoid"]
+
+    elif request.method == 'GET':
+        videoid = request.args.get("videoid")
+
+    if videoid is None:
+        print("no videoid!!!!")
+        print("删除悬赏！！！")
+    else:
+        print("video id: ", videoid)
+        print("删除悬赏！！！")
+
+    response_data = {
+        'status': 'success',
+        'message': '已删除视频'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
 
 # 修改视频信息  --- 视频管理
 @app.route('/modify_video',methods=['GET','POST'])
@@ -341,6 +361,33 @@ def get_video():
     response = flask.make_response(jsonify(response_data))
     response.status_code = 200
     return response
+
+# 上传视频   ---- 视频管理
+@app.route('/upload_video', methods=['POST'])
+def upload_video():
+    place = request.form['place']
+    time = request.form['time']
+    video = request.files['video']
+
+    print("place: ", place)
+    print("time: ", time)   
+    
+
+
+    #filename = secure_filename(file.filename)
+    #file.save(os.path.join('/static/video/', filename))
+
+    # 保存地点和时间到数据库
+    # ...
+
+    response_data = {
+        'status': 'success',
+        'message': '视频已上传'
+    }
+    response = flask.make_response(jsonify(response_data))
+    response.status_code = 200
+    return response
+
  
 # 通过悬赏   --- 审核悬赏过程 用户上传
 @app.route('/permit_task',methods=['GET','POST'])
