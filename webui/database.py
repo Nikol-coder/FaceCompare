@@ -177,7 +177,12 @@ def delete_user():
 
 
 # -------manager--------
-
+#    jxl
+# -------manager--------
+#   管理员管理任务部分
+# -------manager--------
+    
+    
 # 返回未处理的任务
 @app.route('/show_user_Task')
 def show_user_Task():
@@ -263,7 +268,6 @@ def user_manage():
     # 返回结果
     return render_template('/Admin/user_manage.html')
 
-
 # 悬赏管理
 @app.route('/task_manage')
 def task_manage():
@@ -307,6 +311,8 @@ def delete_video():
     else:
         print("video id: ", videoid)
         print("删除悬赏！！！")
+    
+    db_delete_video(videoid)
 
     response_data = {
         'status': 'success',
@@ -328,6 +334,8 @@ def modify_video():
     print("time: ", time)
     print("place: ", place)
     print("修改视频！！！")
+
+    db_modify_video(videoid, time, place)
 
     response_data = {
         'status': 'success',
@@ -372,10 +380,11 @@ def upload_video():
     print("place: ", place)
     print("time: ", time)   
     
-
-
-    #filename = secure_filename(file.filename)
-    #file.save(os.path.join('/static/video/', filename))
+    videoid = db_upload_video(place, time, video)
+    if videoid is not None:
+        print("videoid: ", videoid)
+        filename = videoid + '.mp4'
+        file.save(os.path.join('/static/video/', filename))
 
     # 保存地点和时间到数据库
     # ...
@@ -404,6 +413,8 @@ def permit_task():
     else:
         print(pictureid)
         print("通过悬赏！！！")
+
+    db_permit_task(pictureid)
     
     response_data = {
         'status': 'success',
@@ -429,6 +440,8 @@ def deny_task():
     else:
         print(pictureid)
         print("拒绝悬赏！！！")
+
+    db_deny_task(pictureid)
 
     response_data = {
         'status': 'success',
@@ -481,6 +494,8 @@ def delete_reward():
         print("picture id: ", pictureid)
         print("删除悬赏！！！")
 
+    db_delete_reward(pictureid)
+
     response_data = {
         'status': 'success',
         'message': '已删除'
@@ -505,6 +520,9 @@ def modify_reward():
     print("province: ", province)
     print("price: ", price)
     print("修改悬赏！！！")
+
+    db_modify_reward(pictureid, name, age, province, price)
+
     response_data = {
         'status': 'success',
         'message': '已修改悬赏'
@@ -531,6 +549,8 @@ def manager_delete_user():
     else:
         print("userid: ", userid)
         print("删除用户 收到消息！！！")
+    
+    db_manager_delete_user(userid)
 
     response_data = {
         'status': 'success',
@@ -562,6 +582,8 @@ def change_password():
         print("newpassword:  ", new_password)
         print("修改密码！！！")
 
+    db_change_passwor(userid, new_password)
+
     response_data = {
         'status': 'success',
         'message': '密码已修改'
@@ -571,6 +593,66 @@ def change_password():
     return response
 
 
+# --------- manager db----------
+#    jxl
+# --------- manager db----------
+#   管理员管理任务的数据库部分
+# --------- manager db----------
+
+# 删除数据库视频
+def db_delete_video(videoid):
+    print("delete video: ", videoid)
+    return True
+
+# 修改数据库视频
+def db_modify_video(videoid, time, place):
+    print("modify video: ", videoid)
+    print("time: ", time)
+    print("place: ", place)
+    return True
+
+# 上传悬赏
+def db_upload_video(place, time, video):
+    print("place: ", place)
+    print("time: ", time)
+    print("video: ", video)
+    videoid = None
+    return videoid     # 返回视频id
+
+# 通过悬赏    #  flag = 1
+def db_permit_task(pictureid):
+    print("pictureid:", pictureid)
+    return True
+
+# 拒绝悬赏    # flag = 2
+def db_deny_task(pictureid):
+    print("pictureid:", pictureid)
+    return True
+
+# 删除悬赏
+def db_delete_reward(pictureid):
+    print("pictureid:", pictureid)
+    return True
+
+# 修改悬赏
+def db_modify_reward(pictureid, name, age, province, price):
+    print("pictureid: ", pictureid)
+    print("name: ", name)
+    print("age: ", age)
+    print("province: ", province)
+    print("price: ", price)
+    return True
+
+# 封禁用户
+def db_manager_delete_user(userid):
+    print("userid: ", userid)
+    return True
+
+# 修改用户密码
+def db_change_passwor(userid, newpassword):
+    print("userid: ", userid)
+    print("newpassword:  ", newpassword)
+    return True
 
 
 if __name__ == '__main__':
