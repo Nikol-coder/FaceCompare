@@ -216,25 +216,25 @@ layui.use(['table', 'dropdown'], function(){
                     '<div class="layui-form-item">' +
                         '<div class="layui-input-group">' +
                             '<div class="layui-input-split layui-input-prefix">用户名</div>' +
-                            '<input type="text" placeholder="' + data.name + '" class="layui-input"></input>' +
+                            '<input type="text" id="name-input" placeholder="' + data.name + '" class="layui-input"></input>' +
                         '</div>' +
                     '</div>' +
                     '<div class="layui-form-item">' +
                         '<div class="layui-input-group">' +
                             '<div class="layui-input-split layui-input-prefix">年龄</div>' +
-                            '<input type="text" placeholder="' + data.age + '" class="layui-input"></input>' +
+                            '<input type="text" id="age-input" placeholder="' + data.age + '" class="layui-input"></input>' +
                         '</div>' +
                     '</div>' +
                     '<div class="layui-form-item">' +
                         '<div class="layui-input-group">' +
                             '<div class="layui-input-split layui-input-prefix">省份</div>' +
-                            '<input type="text" placeholder="' + data.province + '" class="layui-input"></input>' +
+                            '<input type="text" id="province-input" placeholder="' + data.province + '" class="layui-input"></input>' +
                         '</div>' +
                     '</div>' +
                     '<div class="layui-form-item">' +
                         '<div class="layui-input-group">' +
                             '<div class="layui-input-split layui-input-prefix">悬赏金额</div>' +
-                            '<input type="text" placeholder="' + data.price + '" class="layui-input"></input>' +
+                            '<input type="text" id="price-input" placeholder="' + data.price + '" class="layui-input"></input>' +
                         '</div>' +
                     '</div>' +
                     '<div class="layui-form-item">' +
@@ -247,75 +247,57 @@ layui.use(['table', 'dropdown'], function(){
                     '<div class="layui-form-item">' +
                       '<div class="layui-input-group">' +
                         '<button type="button" class="layui-btn" id="submit-btn" style="display: inline-block;">提交</button>' +
-                        '<button type="button" class="layui-btn layui-btn-primary" id="upload-picture-btn" style="display: inline-block; margin-left: 10px;">上传照片</button>' +
                         '<button type="button" class="layui-btn layui-btn-primary" id="cancel-btn" style="display: inline-block; margin-left: 10px;">取消</button>' +
                       '</div>' +
                     '</div>' +
                   '</div>',
-          success: function(layero, index){
-            // 提交按钮点击事件
-            $('#submit-btn').on('click', function(){
-              // 这里可以添加提交表单的代码
-              // ...
-              var requestData = { pictureid: data.pictureid , name: $('.layui-input')[0].value , age: $('.layui-input')[1].value , province: $('.layui-input')[2].value , price: $('.layui-input')[3].value}
-              $.ajax({
-                url: '/modify_reward', // 后端接口地址
-                method: 'GET', // 请求方法
-                data: requestData,
-                success: function(response) {
-                    // 请求成功的处理逻辑
-                    console.log(response);
-                },
-                error: function(error) {
-                    // 请求失败的处理逻辑
-                    console.error(error);
-                }
-              });
-              layer.msg('已提交', {icon: 1});
-              layer.close(index); // 关闭弹出层
-            });
+        success: function(layero, index){
+          // 提交按钮点击事件
+          $('#submit-btn').on('click', function(){
+            var inputs = $('.layui-input');
+            if (inputs.length < 5) {
+                console.error('Expected at least 5 inputs, but found ' + inputs.length);
+                return;
+            }
+            var name = document.getElementById("name-input").value;
+            var age = document.getElementById("age-input").value;
+            var province = document.getElementById("province-input").value;
+            var price = document.getElementById("price-input").value;
+            var file = document.getElementById("FileUpload").files[0];
 
-            $('#upload-picture-btn').on('click', function(){
-              // 这里可以添加提交表单的代码
-              var fileObj = document.getElementById("FileUpload").files[0]; // js 获取文件对象
-              if (typeof (fileObj) == "undefined" || fileObj.size <= 0) {
-                  alert("请选择图片");
-                  return;
+            var formData = new FormData();
+            formData.append('pictureid', data.pictureid);
+            formData.append('name', name);
+            formData.append('age', age);
+            formData.append('province', province);
+            formData.append('price', price);
+            formData.append('picture', file);
+
+            $.ajax({
+                url: '/modify_reward',  // 你的后端接口
+                type: 'POST',
+                data: formData,
+                processData: false,  // 告诉 jQuery 不要处理数据
+                contentType: false,  // 告诉 jQuery 不要设置 contentType
+              success: function(response) {
+                  // 请求成功的处理逻辑
+                  console.log(response);
+              },
+              error: function(error) {
+                  // 请求失败的处理逻辑
+                  console.error(error);
               }
-              var formFile = new FormData(); 
-              formFile.append("file", fileObj); //加入文件对象
+            });
+            layer.msg('已提交', {icon: 1});
+            layer.close(index); // 关闭弹出层
+          });
 
-              var form_data = formFile;
-              // ...
-
-              $.ajax({
-                url: '/modify_reward_picture', // 后端接口地址
-                data: form_data,
-                type: "post",
-                dataType: "json",
-                cache: false,			//上传文件无需缓存
-                processData: false,		//用于对data参数进行序列化处理 这里必须false
-                contentType: false,
-                success: function(response) {
-                    // 请求成功的处理逻辑
-                    console.log(response);
-                },
-                error: function(error) {
-                    // 请求失败的处理逻辑
-                    console.error(error);
-                }
-              });
-              layer.msg('已提交', {icon: 1});
+          // 取消按钮点击事件
+          $('#cancel-btn').on('click', function(){
               layer.close(index); // 关闭弹出层
-            });
-
-            // 取消按钮点击事件
-            $('#cancel-btn').on('click', function(){
-                layer.close(index); // 关闭弹出层
-            });
-          }
-
-        });
+          });
+        }
+      });
 
     } else if(obj.event === 'more'){
       // 更多 - 下拉菜单

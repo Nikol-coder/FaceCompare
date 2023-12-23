@@ -492,12 +492,12 @@ def delete_reward():
 # 修改悬赏   --- 管理悬赏过程
 @app.route('/modify_reward',methods=['GET','POST'])
 def modify_reward():
-    pictureid = request.args.get('pictureid')
-    name = request.args.get('name')
-    age = request.args.get('age')
-    province = request.args.get('province')
-    price = request.args.get('price')
-
+    pictureid = request.form['pictureid']
+    name = request.form['name']
+    age = request.form['age']
+    province = request.form['province']
+    price = request.form['price']
+    picture = request.files['picture']
 
     print("pictureid: ", pictureid)
     print("name: ", name)
@@ -513,24 +513,6 @@ def modify_reward():
     response.status_code = 200
     return response
 
-# 修改悬赏图片   --- 管理悬赏过程
-@app.route('/modify_reward_picture',methods=['GET','POST'])
-def modify_reward_picture():
-
-
-    file = request.files['file']
-    print("file: ", file)
-    filename = file.filename
-    print("filename: ", filename)
-    file.save(os.path.join('static/images', filename))  # 保存文件
-    print("修改悬赏图片！！！")
-    response_data = {
-        'status': 'success',
-        'message': '已修改悬赏图片'
-    }
-    response = flask.make_response(jsonify(response_data))
-    response.status_code = 200
-    return response
 
 
 
