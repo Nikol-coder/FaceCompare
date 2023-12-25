@@ -619,11 +619,11 @@ def db_modify_video(videoid, time, place):
     print("place: ", place)
     return True
 
-# 上传悬赏
+# 上传数据库视频
 def db_upload_video(place, time, video):
     print("place: ", place)
     print("time: ", time)
-    print("video: ", video)
+    # print("video: ", video)
     videoid = None
     return videoid     # 返回视频id
 

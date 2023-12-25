@@ -211,11 +211,27 @@ layui.use(['table', 'dropdown'], function(){
     if(obj.event === 'change_password'){
       layer.prompt({
         formType: 1, // 输入类型，1代表密码框
-        title: '请输入新的密码',
+        title: '请输入新的密码(不少于6位)：',
         area: ['200px', '50px'] // 宽高
       }, function(value, index, elem){
         var newPassword = value; // 获取输入的新密码
         layer.close(index); // 关闭输入框
+
+        if (!newPassword) {
+          layer.msg('密码不能为空', {icon: 2});
+          return;
+        }
+
+        if (newPassword.length < 6) {
+          layer.msg('密码长度不低于6位', {icon: 2});
+          return;
+        }
+
+        if (newPassword.length > 200) {
+          layer.msg('密码长度太长了！！！', {icon: 2});
+          return;
+        }
+
 
         // 你可以在这里添加修改密码的逻辑，例如发送一个Ajax请求到后端
         var requestData = { userid: data.userid, newpassword: newPassword };

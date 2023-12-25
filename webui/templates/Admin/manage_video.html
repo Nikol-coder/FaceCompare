@@ -315,7 +315,13 @@ layui.use(['table', 'dropdown'], function(){
             $('#submit-btn').on('click', function(){
               // 这里可以添加提交表单的代码
               // ...
-              var requestData = { videoid: data.videoid , place: document.getElementById("place-name").value , time: document.getElementById("time-lost").value }
+              var placeInput = document.getElementById("place-name");
+              var place = placeInput.value || placeInput.placeholder;
+
+              var timeInput = document.getElementById("time-lost");
+              var time = timeInput.value || timeInput.placeholder;
+
+              var requestData = { videoid: data.videoid , place: place , time: time }
               $.ajax({
                 url: '/modify_video', // 后端接口地址
                 method: 'GET', // 请求方法
