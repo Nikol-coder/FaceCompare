@@ -384,7 +384,7 @@ def upload_video():
     if videoid is not None:
         print("videoid: ", videoid)
         filename = videoid + '.mp4'
-        file.save(os.path.join('/static/video/', filename))
+        video.save(os.path.join('/static/video/', filename))
 
     # 保存地点和时间到数据库
     # ...
@@ -507,13 +507,13 @@ def delete_reward():
 # 修改悬赏   --- 管理悬赏过程
 @app.route('/modify_reward',methods=['GET','POST'])
 def modify_reward():
+
     pictureid = request.form['pictureid']
     name = request.form['name']
     age = request.form['age']
     province = request.form['province']
     price = request.form['price']
-    picture = request.files['picture']
-
+    
     print("pictureid: ", pictureid)
     print("name: ", name)
     print("age: ", age)
@@ -521,7 +521,15 @@ def modify_reward():
     print("price: ", price)
     print("修改悬赏！！！")
 
+
     db_modify_reward(pictureid, name, age, province, price)
+
+    # 检查是否上传了图片
+    if 'picture' in request.files:
+        picture = request.files['picture']
+        print("picture: ", picture)
+        filename = pictureid + '.jpg'
+        picture.save(os.path.join('/static/images/', filename))
 
     response_data = {
         'status': 'success',

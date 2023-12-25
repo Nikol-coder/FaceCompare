@@ -205,14 +205,16 @@ layui.use(['table', 'dropdown'], function(){
                     // 提交按钮点击事件
                     $('#submit-btn-video-upload').on('click', function(){
 
-                      var inputs = $('.layui-input');
-                      if (inputs.length < 3) {
-                          console.error('Expected at least 3 inputs, but found ' + inputs.length);
-                          return;
-                      }
+
                       var location = document.getElementById("place-name").value;
                       var time = document.getElementById("time-lost").value;
                       var file = document.getElementById("FileUpload").files[0];
+
+                      // 检查输入参数是否存在
+                      if (!location || !time || !file) {
+                          layer.msg('请输入所有参数', {icon: 2});
+                          return;
+                      }
 
                       var formData = new FormData();
                       formData.append('place', location);
@@ -231,6 +233,7 @@ layui.use(['table', 'dropdown'], function(){
                         },
                         error: function(error) {
                             // 请求失败的处理逻辑
+                  
                             console.error(error);
                         }
                       });
