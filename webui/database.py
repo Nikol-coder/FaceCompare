@@ -1,4 +1,5 @@
 from hmac import new
+from operator import ne
 import re
 from flask import Flask, jsonify
 import flask
@@ -314,6 +315,12 @@ def delete_video():
     
     db_delete_video(videoid)
 
+    video_path = '/static/video/' + videoid + '.mp4'
+    if os.path.exists(video_path):
+        os.remove(video_path)
+    else:
+        print("The file does not exist: ", video_path)
+
     response_data = {
         'status': 'success',
         'message': '已删除视频'
@@ -381,6 +388,7 @@ def upload_video():
     print("time: ", time)   
     
     videoid = db_upload_video(place, time, video)
+
     if videoid is not None:
         print("videoid: ", videoid)
         filename = videoid + '.mp4'
@@ -496,6 +504,12 @@ def delete_reward():
 
     db_delete_reward(pictureid)
 
+    picture_path = '/static/images/' + pictureid + '.jpg'
+    if os.path.exists(picture_path):
+        os.remove(picture_path)
+    else:
+        print("The file does not exist: ", picture_path)
+
     response_data = {
         'status': 'success',
         'message': '已删除'
@@ -609,32 +623,44 @@ def change_password():
 
 # 删除数据库视频
 def db_delete_video(videoid):
-    print("delete video: ", videoid)
+    print("db delete video: ", videoid)
+    cursor.execute("DELETE FROM videotable WHERE videoid = %s", (videoid))
+    db.commit()
     return True
 
 # 修改数据库视频
 def db_modify_video(videoid, time, place):
-    print("modify video: ", videoid)
-    print("time: ", time)
-    print("place: ", place)
+    print("db modify video: ", videoid)
+    print("db time: ", time)
+    print("db place: ", place)
+    cursor.execute("UPDATE videotable SET time = %s, place = %s WHERE videoid = %s", (time, place, videoid))
+    db.commit()
     return True
 
 # 上传数据库视频
 def db_upload_video(place, time, video):
-    print("place: ", place)
-    print("time: ", time)
+    print("db place: ", place)
+    print("db time: ", time)
     # print("video: ", video)
-    videoid = None
+    cursor.execute("INSERT INTO videotable (place, time) VALUES (%s, %s)", (place, time))
+    db.commit()
+    videoid = str(cursor.lastrowid)
+    print("new instert video id : ", videoid)
+
     return videoid     # 返回视频id
 
 # 通过悬赏    #  flag = 1
 def db_permit_task(pictureid):
     print("pictureid:", pictureid)
+    cursor.execute("UPDATE pictable SET flag = 1 WHERE pictureid = %s", (pictureid))
+    db.commit()
     return True
 
 # 拒绝悬赏    # flag = 2
 def db_deny_task(pictureid):
     print("pictureid:", pictureid)
+    cursor.execute("UPDATE pictable SET flag = 2 WHERE pictureid = %s", (pictureid))
+    db.commit()
     return True
 
 # 删除悬赏
@@ -660,6 +686,8 @@ def db_manager_delete_user(userid):
 def db_change_passwor(userid, newpassword):
     print("userid: ", userid)
     print("newpassword:  ", newpassword)
+    newpassword = jiami(newpassword)
+
     return True
 
 
