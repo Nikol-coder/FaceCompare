@@ -666,6 +666,8 @@ def db_deny_task(pictureid):
 # 删除悬赏
 def db_delete_reward(pictureid):
     print("pictureid:", pictureid)
+    cursor.execute("DELETE FROM pictable WHERE pictureid = %s", (pictureid))
+    db.commit()
     return True
 
 # 修改悬赏
@@ -675,11 +677,15 @@ def db_modify_reward(pictureid, name, age, province, price):
     print("age: ", age)
     print("province: ", province)
     print("price: ", price)
+    cursor.execute("UPDATE pictable SET name = %s, age = %s, province = %s, price = %s WHERE pictureid = %s", (name, age, province, price, pictureid))
+    db.commit()
     return True
 
 # 封禁用户
 def db_manager_delete_user(userid):
     print("userid: ", userid)
+    cursor.execute("DELETE FROM usertable WHERE userid = %s", (userid))
+    db.commit()
     return True
 
 # 修改用户密码
@@ -687,6 +693,8 @@ def db_change_passwor(userid, newpassword):
     print("userid: ", userid)
     print("newpassword:  ", newpassword)
     newpassword = jiami(newpassword)
+    cursor.execute("UPDATE usertable SET password = %s WHERE userid = %s", (newpassword, userid))
+    db.commit()
 
     return True
 
