@@ -11,7 +11,7 @@
  Target Server Version : 80034
  File Encoding         : 65001
 
- Date: 13/12/2023 21:19:36
+ Date: 30/12/2023 00:43:52
 */
 
 SET NAMES utf8mb4;
@@ -26,7 +26,7 @@ CREATE TABLE `admintable`  (
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `adminname` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`adminid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 111 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 110 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of admintable
@@ -46,7 +46,7 @@ CREATE TABLE `pictable`  (
   `price` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `flag` double(1, 0) UNSIGNED NOT NULL,
   PRIMARY KEY (`picid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 1 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pictable
@@ -73,6 +73,8 @@ CREATE TABLE `usertable`  (
 INSERT INTO `usertable` VALUES (1, '小明', '123', '四川', '456');
 INSERT INTO `usertable` VALUES (2, '小红', '789', '北京', '7412');
 INSERT INTO `usertable` VALUES (3, 'John', '4563', '河北', 'john@example.com');
+INSERT INTO `usertable` VALUES (4, '乔治', '4 2 3 7 5', '天津', '74125');
+INSERT INTO `usertable` VALUES (5, '大龙', '48 54 54 50 53 54 55 56 57 58 ', '广东', '1417');
 
 -- ----------------------------
 -- Table structure for videotable
@@ -83,7 +85,7 @@ CREATE TABLE `videotable`  (
   `time` date NOT NULL COMMENT '失踪时间',
   `place` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '失踪地点',
   PRIMARY KEY (`videoid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of videotable
