@@ -1,22 +1,14 @@
 {
     "code": 0,
     "msg": "响应失败？",
-    "count": 3,
+    "count": 1,
     "data": [
         {
-            "videoid": 1.0,
-            "place": "北京市怀柔区",
-            "time": "2023-12-14"
-        },
-        {
-            "videoid": 2.0,
-            "place": "上海市",
-            "time": "2023-11-09"
-        },
-        {
-            "videoid": 3.0,
-            "place": "山东",
-            "time": "2023-12-21"
+            "pictureid": 2.0,
+            "name": "果果",
+            "age": "4",
+            "province": "天津",
+            "price": "4200"
         }
     ]
 }
