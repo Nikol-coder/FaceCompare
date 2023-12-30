@@ -92,6 +92,7 @@
             </div>
             <div class="layui-form-item" style="text-align:center; width:100%;height:100%;margin:0px;">
                 <button class="login-btn" lay-submit="" lay-filter="login" type="submit">立即登录</button>
+                <button class="login-manager-btn" lay-submit="" lay-filter="login_manager" type="submit">管理员登录</button>
             </div>
         </form>
     </div>
@@ -146,6 +147,36 @@
                 window.location = './index.html';
             });
             return false;
+        });
+
+        // 进行管理员登录操作
+        $(document).ready(function() {
+            $('.login-manager-btn').click(function(event) {
+                event.preventDefault();
+
+                var username = $("input[name='username']").val(); // 假设你的账号输入框的 id 是 'username'
+                var password = $("input[name='password']").val(); // 假设你的密码输入框的 id 是 'password'
+
+                $.ajax({
+                    url: '/login_manager', // 你的登录接口 URL
+                    type: 'POST',
+                    data: {
+                        username: username,
+                        password: password
+                    },
+                    success: function(data) {
+                        // 处理服务器返回的数据
+                        if (data.success) {
+                            window.location = data.redirectUrl;     
+                        } else {
+                            alert('登录失败：' + data.message);
+                        }
+                    },
+                    error: function() {
+                        alert('登录请求失败');
+                    }
+                });
+            });
         });
     });
 </script>

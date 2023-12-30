@@ -1,7 +1,7 @@
 from hmac import new
 from operator import ne
 import re
-from flask import Flask, jsonify    
+from flask import Flask, jsonify, url_for
 import flask
 from numpy import place
 import pymysql
@@ -43,8 +43,8 @@ cursor = db.cursor()
 def index():
     # 返回结果
     # return render_template('selectuser.html')
-    return render_template('manager_login.html')
-    # return render_template('.html')
+    # return render_template('manager_login.html')
+    return render_template('login.html')
 
 #查询用户
 @app.route('/search')
@@ -182,6 +182,49 @@ def delete_user():
 # -------manager--------
 #   管理员管理任务部分
 # -------manager--------
+    
+# 管理员登陆
+@app.route('/login_manager', methods=['GET','POST'])
+def login_manager():
+    
+    userid = request.form["username"]
+    password = request.form["password"]
+    cursor.execute("SELECT * FROM admintable where adminid = %s", (userid))
+    result = cursor.fetchall()
+    mima = result[0][1]
+    print("userid: ", userid)
+    print("password: ", password)
+    print("mima: ", mima)
+    # print("url", render_template("manager_login.html"))
+    # 提交事务
+    if password == mima:
+        response_data = {
+            'status': 'success',
+            'success':True,
+            'message': 'manager登录成功',
+            'redirectUrl': url_for('manager_login')
+            # 'content': render_template("manager_login.html")
+        }
+        response = flask.make_response(jsonify(response_data))
+        response.status_code = 200
+        return response
+
+    else:
+        response_data = {
+            'status': 'success',
+            'success':False,
+            'message': 'manager登录失败',
+            'redirectUrl': url_for('login.html')
+            # 'content': render_template("login.html")
+        }
+        response = flask.make_response(jsonify(response_data))
+        response.status_code = 200
+        return response
+
+# 管理员登陆成功后跳转到管理员界面
+@app.route('/manager_login')
+def manager_login():
+    return render_template('manager_login.html')
     
     
 # 返回未处理的任务
