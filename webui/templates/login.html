@@ -31,7 +31,7 @@
         .login-main .login-top {height:117px;background-color:#148be4;border-radius:12px 12px 0 0;font-family:SourceHanSansCN-Regular;font-size:30px;font-weight:400;font-stretch:normal;letter-spacing:0;color:#fff;line-height:117px;text-align:center;overflow:hidden;-webkit-transform:rotate(0);-moz-transform:rotate(0);-ms-transform:rotate(0);-o-transform:rotate(0);transform:rotate(0);}
         .login-main .login-top .bg1 {display:inline-block;width:74px;height:74px;background:#fff;opacity:.1;border-radius:0 74px 0 0;position:absolute;left:0;top:43px;}
         .login-main .login-top .bg2 {display:inline-block;width:94px;height:94px;background:#fff;opacity:.1;border-radius:50%;position:absolute;right:-16px;top:-16px;}
-        .login-main .login-bottom {width:428px;background:#fff;border-radius:0 0 12px 12px;padding-bottom:53px;}
+        .login-main .login-bottom {width:428px;background:#fff;border-radius:0 0 12px 12px;padding-bottom:20px;}
         .login-main .login-bottom .center {width:288px;margin:0 auto;padding-top:40px;padding-bottom:15px;position:relative;}
         .login-main .login-bottom .tip {clear:both;height:16px;line-height:16px;width:288px;margin:0 auto;}
         body {background:url(../static/images/loginbg.png) 0% 0% / cover no-repeat;position:static;font-size:12px;}
@@ -52,6 +52,16 @@
         @media screen and (max-width:428px) {.login-main {width:360px !important;}
             .login-main .login-top {width:360px !important;}
             .login-main .login-bottom {width:360px !important;}
+        }
+        .login-btn, .login-manager-btn {
+            display: block;
+            margin: 10px auto;  /* 上下间距为 10px，左右居中 */
+        }
+        .login-manager-btn {
+            background: transparent;  /* 设置背景为透明 */
+            border: none;  /* 去掉边框 */
+            text-decoration: underline;  /* 添加下划线 */
+            cursor: pointer;  /* 设置鼠标光标为手型 */
         }
     </style>
 </head>
