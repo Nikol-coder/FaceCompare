@@ -20,10 +20,12 @@ app = Flask(__name__, instance_relative_config=True, template_folder='templates'
 # app.config['MYSQL_USER'] = 'username'
 # app.config['MYSQL_PASSWORD'] = 'password'
 # app.config['MYSQL_DB'] = 'database_name'
+# app.config['MYSQL_HOST'] = '192.168.230.129'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 app.config['MYSQL_DB'] = 'face'
+# app.config['MYSQL_DB'] = 'facecp'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -175,6 +177,25 @@ def delete_user():
             return render_template('deleteuser.html')
     else:
         return render_template('deleteuser.html')
+
+
+# -------user behavior------------------------
+#             cqh
+
+# 用户进行悬赏
+@app.route('/user_add_reward')
+def user_add_reward():
+    return render_template('user_add_reward.html')
+
+# 用户查看悬赏
+@app.route('/user_show_reward')
+def user_show_reward():
+    return render_template('user_show_reward.html')
+
+# 用户删除悬赏
+@app.route('/user_delete_reward')
+def user_delete_reward():
+    return render_template('user_delete_reward.html')
 
 
 # -------manager--------
