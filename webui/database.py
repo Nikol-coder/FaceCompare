@@ -20,10 +20,11 @@ app = Flask(__name__, instance_relative_config=True, template_folder='templates'
 # app.config['MYSQL_USER'] = 'username'
 # app.config['MYSQL_PASSWORD'] = 'password'
 # app.config['MYSQL_DB'] = 'database_name'
+# app.config['MYSQL_HOST'] = '192.168.230.129'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
-app.config['MYSQL_DB'] = 'face'
+app.config['MYSQL_DB'] = 'facecp'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -45,6 +46,25 @@ def index():
     # return render_template('selectuser.html')
     # return render_template('manager_login.html')
     return render_template('login.html')
+
+#查看图片
+@app.route('/api/images', methods=['GET'])
+def get_images():
+    cursor.execute("SELECT picid, name FROM pictable")
+    data = cursor.fetchall()
+    images = [{'url': "./static/images/"+str(int(url))+".jpg", 'alt': str(name)} for url, name in data]
+    return jsonify(images)
+
+
+#查看视频
+@app.route('/api/videos', methods=['GET'])
+def get_videos():
+    cursor.execute("SELECT videoid FROM videotable")
+    data = cursor.fetchall()
+    videos = [{'url': "./static/video/"+str(int(url[0]))+".mp4"} for url in data]
+    return jsonify(videos)
+
+
 
 #查询用户
 @app.route('/search')
@@ -122,7 +142,7 @@ def login():
         password = chuli(password)
         if password == jiemicode:
             print('User login successfully')
-            return render_template('selectuser.html')
+            return render_template('index.html')
         else:
             print('User login unsuccessfully')
             return render_template('login.html')
@@ -175,6 +195,35 @@ def delete_user():
             return render_template('deleteuser.html')
     else:
         return render_template('deleteuser.html')
+
+
+# -------user behavior------------------------
+#             cqh
+
+# 用户登陆后界面
+@app.route('/user_login')
+def user_login():
+    return render_template('index.html')
+
+# 用户悬赏管理界面
+@app.route('/user_reward_manage/')
+def user_reward_manage():
+    return render_template('user_reward_manage')
+
+# 用户进行悬赏
+@app.route('/user_add_reward')
+def user_add_reward():
+    return render_template('user_add_reward.html')
+
+# 用户查看悬赏
+@app.route('/user_show_reward')
+def user_show_reward():
+    return render_template('user_show_reward.html')
+
+# 用户删除悬赏
+@app.route('/user_delete_reward')
+def user_delete_reward():
+    return render_template('user_delete_reward.html')
 
 
 # -------manager--------

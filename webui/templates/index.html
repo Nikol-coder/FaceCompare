@@ -44,6 +44,23 @@
       margin-bottom: 20px;
       /* 你可以根据需要调整这个值 */
     }
+
+    .video3 {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .video3 iframe {
+      flex: 1 0 30%;
+      /* 一排显示三个视频 */
+      max-width: 30%;
+      /* 一排显示三个视频 */
+      height: auto;
+      margin-bottom: 20px;
+      /* 你可以根据需要调整这个值 */
+    }
+
   </style>
 </head>
 
@@ -59,7 +76,7 @@
         </li>
         <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">查看失踪人口</a></li>
         <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">娃丢了</a></li>
-        <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">发布悬赏</a></li>
+        <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">悬赏管理</a></li>
         <li class="layui-nav-item">
           <a href="javascript:;">个人中心</a>
           <dl class="layui-nav-child">
@@ -108,16 +125,16 @@
             <div class="container">
               <h2>失踪人口图片</h2>
               <div class="gallery">
-                <img src="/static/images/1.jpg" alt="图片1">
+                <!-- <img src="/static/images/1.jpg" alt="图片1">
                 <img src="/static/images/2.jpg" alt="图片2">
-                <img src="/static/images/3.jpg" alt="图片3">
-                <img src="/static/images/1.jpg" alt="图片4">
+                <img src="/static/images/3.jpg" alt="图片3"> -->
+                <!-- <img src="/static/images/1.jpg" alt="图片4">
                 <img src="/static/images/2.jpg" alt="图片5">
                 <img src="/static/images/3.jpg" alt="图片6">
                 <img src="/static/images/1.jpg" alt="图片7">
                 <img src="/static/images/2.jpg" alt="图片8">
                 <img src="/static/images/3.jpg" alt="图片9">
-                <img src="/static/images/3.jpg" alt="图片9">
+                <img src="/static/images/3.jpg" alt="图片9"> -->
               </div>
 
             </div>
@@ -134,9 +151,10 @@
             <div class="container">
               <h2>监控视频</h2>
               <div class="video-container">
+
+                <!-- <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
                 <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
+                <iframe src="/static/video/video.mp4" allowfullscreen></iframe> -->
               </div>
             </div>
 
@@ -151,10 +169,10 @@
 
             <div class="container">
               <h2>监控视频</h2>
-              <div class="video-container">
-                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
+              <div class="video3">
+                  <iframe src="/static/video/7.mp4" allowfullscreen></iframe>
+                  <iframe src="/static/video/8.mp4" allowfullscreen></iframe>
+                  <iframe src="/static/video/9.mp4" allowfullscreen></iframe>
               </div>
             </div>
 
@@ -171,6 +189,37 @@
   </div>
 
   <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+  <script>
+    fetch('/api/images')
+      .then(response => response.json())
+      .then(images => {
+        const gallery = document.querySelector('.gallery');
+        images.forEach(image => {
+          const img = document.createElement('img');
+          img.src = image.url;
+          img.alt = image.alt;
+          gallery.appendChild(img);
+        });
+      })
+      .catch(error => console.error('Error:', error));
+  </script>
+  
+  <script>
+    fetch('/api/videos')
+      .then(response => response.json())
+      .then(videos => {
+        const videoContainer = document.querySelector('.video-container');
+        videos.forEach(video => {
+          const iframe = document.createElement('iframe');
+          iframe.src = video.url;
+          iframe.allowFullscreen = true;
+          videoContainer.appendChild(iframe);
+        });
+      })
+      .catch(error => console.error('Error:', error));
+  </script>
+
+
   <script>
     //JS 
     layui.use(['element', 'layer', 'util'], function () {
