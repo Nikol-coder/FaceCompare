@@ -1,6 +1,8 @@
+from email.mime import image
 from hmac import new
 from operator import ne
 import re
+from tkinter import image_names
 from flask import Flask, jsonify, url_for
 import flask
 from numpy import place
@@ -11,6 +13,8 @@ from sqlalchemy import Null
 from mimacode import jiami, jiemi, chuli
 import json
 import os
+import subprocess
+from flask import send_file
 
 # app = Flask(__name__)
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
@@ -47,10 +51,48 @@ def index():
     # return render_template('manager_login.html')
     return render_template('login.html')
 
+
+#上传图片
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'image' in request.files:
+        image = request.files['image']
+        # 在这里处理图片
+        # 指定保存位置
+        save_path = "C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face"
+        file_path = os.path.join(save_path, "uploaded_image.jpg")
+
+        # 保存图片
+        image.save(file_path)
+        return jsonify({'message': '图片上传成功', 'image_url': 'C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face/uploaded_image.jpg'})
+    else:
+        return "No image in request", 400
+    
+
+#比较图片
+@app.route('/compare', methods=['GET'])
+def compare():
+    subprocess.run(['python', 'demo.py'], cwd='C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face/InsightFace_Pytorch-master')
+    image_names = os.listdir('C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/webui/static/manzu/')
+    # print(image_names)
+    return jsonify(image_names=image_names)
+
+
+
 #跳转到修改密码网页 /modify_mima
 @app.route('/modify_mima')
 def modify_mima():
     return render_template('modify_mima.html')
+
+#跳转到主页 /index
+@app.route('/index')
+def index1():
+    return render_template('index.html')
+
+#跳转到网页 /lookup
+@app.route('/lookup')
+def lookup():
+    return render_template('lookup.html')
 
 #查看图片
 @app.route('/api/images', methods=['GET'])
