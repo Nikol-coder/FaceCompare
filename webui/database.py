@@ -47,6 +47,11 @@ def index():
     # return render_template('manager_login.html')
     return render_template('login.html')
 
+#跳转到修改密码网页 /modify_mima
+@app.route('/modify_mima')
+def modify_mima():
+    return render_template('modify_mima.html')
+
 #查看图片
 @app.route('/api/images', methods=['GET'])
 def get_images():
@@ -63,6 +68,34 @@ def get_videos():
     data = cursor.fetchall()
     videos = [{'url': "./static/video/"+str(int(url[0]))+".mp4"} for url in data]
     return jsonify(videos)
+
+#修改用户密码
+@app.route('/user_change_password', methods=['POST'])
+def user_change_password():
+    user_id = request.form.get('USERID')
+    old_password = request.form.get('oldpwd')
+    new_password = request.form.get('pwd1')
+    request.form
+    # 首先，检查用户是否存在
+    cursor.execute("SELECT password FROM usertable WHERE userid = %s", (user_id,))
+    result = cursor.fetchone()
+
+    # 验证旧密码是否正确
+    mima = result[0]
+    print(mima)
+    jiamicode = jiami(old_password)
+
+    print("\n加密代码: ",jiamicode)
+    if mima == jiamicode:
+        # 更新密码
+        password = jiami(new_password)
+        cursor.execute("UPDATE usertable SET password = %s WHERE userid = %s", (password, user_id))
+        db.commit()
+        # 返回登录页
+        return render_template('login.html', message='密码修改成功')
+    else:
+        print('User modify unsuccessfully')
+        return render_template('login.html', message='密码修改失败')
 
 
 
@@ -274,7 +307,7 @@ def login_manager():
 @app.route('/manager_login')
 def manager_login():
     return render_template('manager_login.html')
-    
+   
     
 # 返回未处理的任务
 @app.route('/show_user_Task')
@@ -687,14 +720,6 @@ def change_password():
     elif request.method == 'GET':
         userid = request.args.get("userid")
         new_password = request.args.get("newpassword")
-
-    if userid is None:
-        print("no userid!!!!")
-        print("no new_password!!!!")
-    else:
-        print("userid: ", userid)
-        print("newpassword:  ", new_password)
-        print("修改密码！！！")
 
     db_change_passwor(userid, new_password)
 
