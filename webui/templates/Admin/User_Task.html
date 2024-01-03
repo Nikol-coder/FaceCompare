@@ -204,6 +204,25 @@ layui.use(['table', 'dropdown'], function(){
   });
   
   // 工具栏事件
+  table.on('toolbar(test)', function(obj){
+    var id = obj.config.id;
+    var checkStatus = table.checkStatus(id);
+    var othis = lay(this);
+    switch(obj.event){
+      case 'getCheckData':
+        var data = checkStatus.data;
+        layer.alert(layui.util.escape(JSON.stringify(data)));
+      break;
+      case 'getData':
+        var getData = table.getData(id);
+        console.log(getData);
+        layer.alert(layui.util.escape(JSON.stringify(getData)));
+      break;
+      case 'LAYTABLE_TIPS':
+        layer.alert('自定义工具栏图标按钮');
+      break;
+    };
+  });
   
   // 表头自定义元素工具事件 --- 2.8.8+
 
