@@ -31,7 +31,8 @@ device = 'cuda'
 # print(img1.shape)
 
 # 指定保存位置
-save_path = "C:/Users/10698/Desktop/ff/FaceCompare/face"
+# os.path.join('../face/', "uploaded_image.jpg")
+save_path = '../'
 file_path = os.path.join(save_path, "uploaded_image.jpg")
 
 #被测试图片
@@ -47,11 +48,11 @@ emb1 = model(img1)[0]
 print(emb1.shape)
 
 #读取图片库
-folder_path = 'C:/Users/10698/Desktop/ff/FaceCompare/webui/static/test/'
+folder_path = '../../webui/static/test/'
 
 
 # 满足条件的图片库
-destination_folder = 'C:/Users/10698/Desktop/ff/FaceCompare/webui/static/manzu/'
+destination_folder = '../../webui/static/manzu/'
 
 # 检查文件夹是否存在
 if os.path.exists(destination_folder):

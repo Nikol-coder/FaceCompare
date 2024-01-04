@@ -2,6 +2,7 @@ from email.mime import image
 from hmac import new
 from operator import ne
 import re
+from sys import path
 from tkinter import image_names
 from flask import Flask, jsonify, url_for
 import flask
@@ -29,7 +30,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
-app.config['MYSQL_DB'] = 'facecp'
+app.config['MYSQL_DB'] = 'face'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -60,12 +61,12 @@ def upload():
         image = request.files['image']
         # 在这里处理图片
         # 指定保存位置
-        save_path = "C:/Users/10698/Desktop/ff/FaceCompare/face"
-        file_path = os.path.join(save_path, "uploaded_image.jpg")
-
+        # save_path = "C:/Users/10698/Desktop/ff/FaceCompare/face"
+        # file_path = os.path.join(save_path, "uploaded_image.jpg")
+        file_path = os.path.join('../face/', "uploaded_image.jpg")
         # 保存图片
         image.save(file_path)
-        return jsonify({'message': '图片上传成功', 'image_url': 'C:/Users/10698/Desktop/ff/FaceCompare/face/uploaded_image.jpg'})
+        return jsonify({'message': '图片上传成功', 'image_url': file_path})
     else:
         return "No image in request", 400
     
@@ -73,8 +74,9 @@ def upload():
 #比较图片
 @app.route('/compare', methods=['GET'])
 def compare():
-    subprocess.run(['python', 'demo.py'], cwd='C:/Users/10698/Desktop/ff/FaceCompare/face/InsightFace_Pytorch-master')
-    image_names = os.listdir('C:/Users/10698/Desktop/ff/FaceCompare/webui/static/manzu/')
+    subprocess.run(['python', 'demo.py'], cwd=os.path.join('../face/', "InsightFace_Pytorch-master"))
+    # image_names = os.listdir('C:/Users/10698/Desktop/ff/FaceCompare/webui/static/manzu/')
+    image_names = os.listdir('./static/manzu/')               
     # print(image_names)
     return jsonify(image_names=image_names)
 
@@ -202,13 +204,18 @@ def login():
     if request.method == 'POST':
         # 结合createuser.html页面，创建用户
         userid = request.form.get("username")
-        password = request.form.get("password") 
+        password = request.form.get("password")
+        print("userid :", userid)
         pwd = jiami(password)
-        print("加密代码：",pwd)
+        print("加密代码：", pwd)
         # 执行插入语句
-            # 执行查询语句
+        # 执行查询语句
         cursor.execute("SELECT * FROM usertable where userid = %s", (userid))
         result = cursor.fetchall()
+        print("result: ", result)
+        if result == ():
+            print("用户不存在")
+            return render_template('login.html')
         mima = result[0][2]
         jiemicode = jiemi(mima)
 
@@ -861,4 +868,3 @@ def db_change_passwor(userid, newpassword):
 
 if __name__ == '__main__':
     app.run()
-
