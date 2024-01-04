@@ -49,6 +49,14 @@ print(emb1.shape)
 #读取图片库
 folder_path = 'C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/webui/static/test/'
 
+#满足条件的图片库
+destination_folder = 'C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/webui/static/manzu/'
+# 删除文件夹及其内容
+shutil.rmtree(destination_folder)
+
+# 重新创建文件夹
+os.makedirs(destination_folder)
+
 # 遍历文件夹下的所有文件
 idx = 0
 for filename in os.listdir(folder_path):
@@ -82,7 +90,6 @@ for filename in os.listdir(folder_path):
         
         # 如果相似度大于0.5，将图片复制到指定目录
         if sim_12 > 0.5:
-            destination_folder = 'C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/webui/static/manzu/'
             shutil.copy(file_path, destination_folder)
 
 # emb1 = model(img1)[0]
