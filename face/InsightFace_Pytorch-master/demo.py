@@ -8,12 +8,13 @@ import matplotlib.pyplot as plt # plt 用于显示图片
 import matplotlib.image as mpimg # mpimg 用于读取图片
 
 from torchvision.transforms import Compose, ToTensor, Normalize
-
+import shutil
 mtcnn = MTCNN()
 
 
 def get_img(img_path, device):
     img = Image.open(img_path)
+    img = img.convert("RGB")  # 转换为RGB图像
     face = mtcnn.align(img)
     transfroms = Compose(
         [ToTensor(), Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
@@ -29,8 +30,12 @@ device = 'cuda'
 # img4 = get_img('./images/7.jpg', device)
 # print(img1.shape)
 
+# 指定保存位置
+save_path = "C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face"
+file_path = os.path.join(save_path, "uploaded_image.jpg")
+
 #被测试图片
-img1 = get_img('./images/1.jpg', device)
+img1 = get_img(file_path, device)
 print(img1.shape)
 
 model = Backbone(num_layers=50, drop_ratio=0.6, mode='ir_se')
@@ -42,7 +47,7 @@ emb1 = model(img1)[0]
 print(emb1.shape)
 
 #读取图片库
-folder_path = './images'
+folder_path = 'C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/webui/static/test/'
 
 # 遍历文件夹下的所有文件
 idx = 0
@@ -74,7 +79,11 @@ for filename in os.listdir(folder_path):
         print(emb2.shape)
         sim_12 = emb1.dot(emb2).item()
         print("与第%d张图片的相似度为:%f"%(idx,sim_12))
-
+        
+        # 如果相似度大于0.5，将图片复制到指定目录
+        if sim_12 > 0.5:
+            destination_folder = 'C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/webui/static/manzu/'
+            shutil.copy(file_path, destination_folder)
 
 # emb1 = model(img1)[0]
 # emb2 = model(img2)[0]

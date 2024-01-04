@@ -1,6 +1,8 @@
+from email.mime import image
 from hmac import new
 from operator import ne
 import re
+from tkinter import image_names
 from flask import Flask, jsonify, url_for
 import flask
 from numpy import place
@@ -11,6 +13,8 @@ from sqlalchemy import Null
 from mimacode import jiami, jiemi, chuli
 import json
 import os
+import subprocess
+from flask import send_file
 
 # app = Flask(__name__)
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
@@ -48,6 +52,49 @@ def index():
     # return render_template('manager_login.html')
     return render_template('login.html')
 
+
+#上传图片
+@app.route('/upload', methods=['POST'])
+def upload():
+    if 'image' in request.files:
+        image = request.files['image']
+        # 在这里处理图片
+        # 指定保存位置
+        save_path = "C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face"
+        file_path = os.path.join(save_path, "uploaded_image.jpg")
+
+        # 保存图片
+        image.save(file_path)
+        return jsonify({'message': '图片上传成功', 'image_url': 'C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face/uploaded_image.jpg'})
+    else:
+        return "No image in request", 400
+    
+
+#比较图片
+@app.route('/compare', methods=['GET'])
+def compare():
+    subprocess.run(['python', 'demo.py'], cwd='C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face/InsightFace_Pytorch-master')
+    image_names = os.listdir('C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/webui/static/manzu/')
+    # print(image_names)
+    return jsonify(image_names=image_names)
+
+
+
+#跳转到修改密码网页 /modify_mima
+@app.route('/modify_mima')
+def modify_mima():
+    return render_template('modify_mima.html')
+
+#跳转到主页 /index
+@app.route('/index')
+def index1():
+    return render_template('index.html')
+
+#跳转到网页 /lookup
+@app.route('/lookup')
+def lookup():
+    return render_template('lookup.html')
+
 #查看图片
 @app.route('/api/images', methods=['GET'])
 def get_images():
@@ -64,6 +111,34 @@ def get_videos():
     data = cursor.fetchall()
     videos = [{'url': "./static/video/"+str(int(url[0]))+".mp4"} for url in data]
     return jsonify(videos)
+
+#修改用户密码
+@app.route('/user_change_password', methods=['POST'])
+def user_change_password():
+    user_id = request.form.get('USERID')
+    old_password = request.form.get('oldpwd')
+    new_password = request.form.get('pwd1')
+    request.form
+    # 首先，检查用户是否存在
+    cursor.execute("SELECT password FROM usertable WHERE userid = %s", (user_id,))
+    result = cursor.fetchone()
+
+    # 验证旧密码是否正确
+    mima = result[0]
+    print(mima)
+    jiamicode = jiami(old_password)
+
+    print("\n加密代码: ",jiamicode)
+    if mima == jiamicode:
+        # 更新密码
+        password = jiami(new_password)
+        cursor.execute("UPDATE usertable SET password = %s WHERE userid = %s", (password, user_id))
+        db.commit()
+        # 返回登录页
+        return render_template('login.html', message='密码修改成功')
+    else:
+        print('User modify unsuccessfully')
+        return render_template('login.html', message='密码修改失败')
 
 
 
@@ -275,7 +350,7 @@ def login_manager():
 @app.route('/manager_login')
 def manager_login():
     return render_template('manager_login.html')
-    
+   
     
 # 返回未处理的任务
 @app.route('/show_user_Task')
@@ -688,14 +763,6 @@ def change_password():
     elif request.method == 'GET':
         userid = request.args.get("userid")
         new_password = request.args.get("newpassword")
-
-    if userid is None:
-        print("no userid!!!!")
-        print("no new_password!!!!")
-    else:
-        print("userid: ", userid)
-        print("newpassword:  ", new_password)
-        print("修改密码！！！")
 
     db_change_passwor(userid, new_password)
 

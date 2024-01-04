@@ -60,7 +60,6 @@
       margin-bottom: 20px;
       /* 你可以根据需要调整这个值 */
     }
-
   </style>
 </head>
 
@@ -74,8 +73,8 @@
         <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
           <i class="layui-icon layui-icon-spread-left"></i>
         </li>
-        <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">查看失踪人口</a></li>
-        <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">娃丢了</a></li>
+        <li class="layui-nav-item layui-hide-xs"><a href="/index">查看失踪人口</a></li>
+        <li class="layui-nav-item layui-hide-xs"><a href="#">娃丢了</a></li>
         <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">悬赏管理</a></li>
         <li class="layui-nav-item">
           <a href="javascript:;">个人中心</a>
@@ -109,6 +108,8 @@
       </ul>
     </div>
 
+
+
     <div class="layui-body">
       <!-- 内容主体区域 -->
       <div style="padding: 15px;">
@@ -124,101 +125,88 @@
 
             <div class="container">
               <h2>失踪人口图片</h2>
-              <div class="gallery">
-                <!-- <img src="/static/images/1.jpg" alt="图片1">
-                <img src="/static/images/2.jpg" alt="图片2">
-                <img src="/static/images/3.jpg" alt="图片3"> -->
-                <!-- <img src="/static/images/1.jpg" alt="图片4">
-                <img src="/static/images/2.jpg" alt="图片5">
-                <img src="/static/images/3.jpg" alt="图片6">
-                <img src="/static/images/1.jpg" alt="图片7">
-                <img src="/static/images/2.jpg" alt="图片8">
-                <img src="/static/images/3.jpg" alt="图片9">
-                <img src="/static/images/3.jpg" alt="图片9"> -->
+              <div class="gallery" id="gallery">
+                <!-- {% for image_name in image_names %}
+                alert("我回来了");
+                <img src="{{ url_for('static', filename='manzu/' + image_name) }}" >
+                {% endfor %} -->
               </div>
-
             </div>
           </div>
+
+
+          <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" id="upload-button" name="image" onchange="displayImage(event)">
+            <input type="submit" value="上传图片">
+            <img id="uploaded-image">
+
+            <script>
+            function displayImage(event) {
+              document.getElementById('uploaded-image').src = URL.createObjectURL(event.target.files[0]);
+            }
+            </script>
+          </form>
+          <img id="uploaded-image" src="">
+          <button onclick="compare()">比较</button>
 
         </div>
 
-        <div class="layui-card layui-panel">
-          <div class="layui-card-header">
-            近一个月失踪人口视频
-          </div>
-          <div class="layui-card-body">
 
-            <div class="container">
-              <h2>监控视频</h2>
-              <div class="video-container">
 
-                <!-- <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                <iframe src="/static/video/video.mp4" allowfullscreen></iframe> -->
-              </div>
-            </div>
-
-          </div>
+        <div class="layui-footer">
+          <!-- 底部固定区域 -->
+          FaceCompare提供技术支持
         </div>
-
-        <div class="layui-card layui-panel">
-          <div class="layui-card-header">
-            近三个月失踪人口视频
-          </div>
-          <div class="layui-card-body">
-
-            <div class="container">
-              <h2>监控视频</h2>
-              <div class="video3">
-                  <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                  <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                  <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-              </div>
-            </div>
-
-          </div>
-        </div>
-
-        <br><br>
       </div>
     </div>
-    <div class="layui-footer">
-      <!-- 底部固定区域 -->
-      FaceCompare提供技术支持
-    </div>
   </div>
-
   <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+
+  <!-- 上传 -->
   <script>
-    fetch('/api/images')
-      .then(response => response.json())
-      .then(images => {
-        const gallery = document.querySelector('.gallery');
-        images.forEach(image => {
-          const img = document.createElement('img');
-          img.src = image.url;
-          img.alt = image.alt;
-          gallery.appendChild(img);
+    document.getElementById('upload-form').addEventListener('submit', function (event) {
+      event.preventDefault();
+      var formData = new FormData(event.target);
+      fetch('/upload', { method: 'POST', body: formData })
+        .then(response => response.json())
+        .then(data => {
+          document.getElementById('uploaded-image').src = data.image_url;
+          // document.getElementById('uploaded-image').style.display = 'inline';
         });
-      })
-      .catch(error => console.error('Error:', error));
-  </script>
-  
-  <script>
-    fetch('/api/videos')
-      .then(response => response.json())
-      .then(videos => {
-        const videoContainer = document.querySelector('.video-container');
-        videos.forEach(video => {
-          const iframe = document.createElement('iframe');
-          iframe.src = video.url;
-          iframe.allowFullscreen = true;
-          videoContainer.appendChild(iframe);
-        });
-      })
-      .catch(error => console.error('Error:', error));
+    });
   </script>
 
+  <!-- 比较 -->
+  <script>
+    function compare() {
+      fetch('/compare').then(response => response.json()).then(data => {
+        // 获取 gallery 元素
+        var gallery = document.getElementById('gallery');
+        // 清空 gallery
+        gallery.innerHTML = '';
+
+        // 使用返回的图片列表来更新 gallery
+        for (var i = 0; i < data.image_names.length; i++) {
+          var img = document.createElement('img');
+          img.src = "{{ url_for('static', filename='manzu/') }}" + data.image_names[i];
+          gallery.appendChild(img);
+        }
+      });
+    }
+    // function compare() {
+    //   fetch('/compare').then(response => response.blob()).then(image => {
+    //     // 显示返回的图片
+    //     var imgURL = URL.createObjectURL(image);
+    //     var img = document.createElement('img');
+    //     console.log(imgURL);
+    //     console.log(img);
+    //     img.src = imgURL;
+    //     // 获取 gallery 元素并将图片添加到它的内部
+    //     var gallery = document.getElementById('gallery');
+    //     gallery.appendChild(img);
+    //   });
+    // }
+  </script>
 
   <script>
     //JS 

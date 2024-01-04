@@ -66,6 +66,11 @@
     </style>
 </head>
 <body>
+    {% if message %}
+        <script>
+            alert('{{ message }}');
+        </script>
+    {% endif %}
 <div class="main-body">
     <div class="login-main">
         <div class="login-top">
@@ -138,9 +143,15 @@
             }
         });
 
+
         // 进行登录操作
         form.on('submit(login)', function (data) {
             data = data.field;
+
+            // 将username存储在localStorage中
+            localStorage.setItem('USERID', data.username);
+            // alert(data.username);
+
             if (data.username == '') {
                 layer.msg('用户名不能为空');
                 return false;
