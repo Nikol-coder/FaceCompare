@@ -24,7 +24,8 @@ app = Flask(__name__, instance_relative_config=True, template_folder='templates'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
-app.config['MYSQL_DB'] = 'facecp'
+# app.config['MYSQL_DB'] = 'facecp'
+app.config['MYSQL_DB'] = 'face'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -570,7 +571,7 @@ def get_image():
 
     response_data = {
         'status': 'success',
-        'imageUrl': '/static/images/'+ pictureid + '.jpg'
+        'imageUrl': '/static/test/'+ pictureid + '.jpg'
     }
     response = flask.make_response(jsonify(response_data))
     response.status_code = 200
@@ -596,7 +597,7 @@ def delete_reward():
 
     db_delete_reward(pictureid)
 
-    picture_path = '/static/images/' + pictureid + '.jpg'
+    picture_path = '/static/test/' + pictureid + '.jpg'
     if os.path.exists(picture_path):
         os.remove(picture_path)
     else:
@@ -635,7 +636,7 @@ def modify_reward():
         picture = request.files['picture']
         print("picture: ", picture)
         filename = pictureid + '.jpg'
-        picture.save(os.path.join('/static/images/', filename))
+        picture.save(os.path.join('/static/test/', filename))
 
     response_data = {
         'status': 'success',
