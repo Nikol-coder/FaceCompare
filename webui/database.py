@@ -66,6 +66,7 @@ def upload():
         file_path = os.path.join('../face/', "uploaded_image.jpg")
         # 保存图片
         image.save(file_path)
+        print(file_path)
         return jsonify({'message': '图片上传成功', 'image_url': file_path})
     else:
         return "No image in request", 400

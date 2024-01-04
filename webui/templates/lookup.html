@@ -170,7 +170,7 @@
       fetch('/upload', { method: 'POST', body: formData })
         .then(response => response.json())
         .then(data => {
-          document.getElementById('uploaded-image').src = data.image_url;
+          // document.getElementById('uploaded-image').src = data.image_url;
           // document.getElementById('uploaded-image').style.display = 'inline';
         });
     });
