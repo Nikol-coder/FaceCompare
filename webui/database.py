@@ -304,10 +304,18 @@ def delete_user():
 def user_login():
     return render_template('index.html')
 
+@app.route('/reward_test')
+def reward_test():
+    return render_template('user_reward_manage.html')
+
+
 # 用户悬赏管理界面
-@app.route('/user_reward_manage/')
-def user_reward_manage():
-    return render_template('user_reward_manage')
+@app.route('/user_reward_manage/<int:user_id>')
+def user_reward_manage(user_id):
+    cursor.execute('SELECT * FROM pictable WHERE userid = %d' % user_id)
+    results = cursor.fetchall()
+    print(results)
+    return render_template('user_reward_manage.html')
 
 # 用户进行悬赏
 @app.route('/user_add_reward')
