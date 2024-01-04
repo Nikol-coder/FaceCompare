@@ -32,8 +32,9 @@ device = 'cuda'
 
 # 指定保存位置
 # os.path.join('../face/', "uploaded_image.jpg")
-save_path = '../'
-file_path = os.path.join(save_path, "uploaded_image.jpg")
+this_path = os.path.dirname(os.path.abspath(__file__))
+
+file_path = os.path.join(this_path, "../uploaded_image.jpg")
 
 #被测试图片
 img1 = get_img(file_path, device)
@@ -48,11 +49,12 @@ emb1 = model(img1)[0]
 print(emb1.shape)
 
 #读取图片库
-folder_path = '../../webui/static/test/'
+folder_path = os.path.normpath(os.path.join(this_path, '../../webui/static/test/'))
 
 
 # 满足条件的图片库
-destination_folder = '../../webui/static/manzu/'
+destination_folder = os.path.normpath(os.path.join(this_path,  '../../webui/static/manzu/'))
+print("destination_folder: ", destination_folder)
 
 # 检查文件夹是否存在
 if os.path.exists(destination_folder):

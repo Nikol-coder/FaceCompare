@@ -63,7 +63,10 @@ def upload():
         # 指定保存位置
         # save_path = "C:/Users/10698/Desktop/ff/FaceCompare/face"
         # file_path = os.path.join(save_path, "uploaded_image.jpg")
-        file_path = os.path.join('../face/', "uploaded_image.jpg")
+        this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+        print("this_path: ",this_path)
+        file_path = os.path.normpath(os.path.join(this_path, "../face/uploaded_image.jpg"))
+        print("upload file_path: ", file_path)
         # 保存图片
         image.save(file_path)
         print(file_path)
@@ -75,9 +78,16 @@ def upload():
 #比较图片
 @app.route('/compare', methods=['GET'])
 def compare():
-    subprocess.run(['python', 'demo.py'], cwd=os.path.join('../face/', "InsightFace_Pytorch-master"))
+    this_path = os.path.dirname(os.path.abspath(__file__))
+    print("this_path: ",this_path)
+    subprocess.run(['python', 'demo.py'], cwd=os.path.normpath(os.path.join(this_path, "../face/InsightFace_Pytorch-master")))
     # image_names = os.listdir('C:/Users/10698/Desktop/ff/FaceCompare/webui/static/manzu/')
-    image_names = os.listdir('./static/manzu/')               
+    print("this_path2: ",this_path)
+    print("this_path_image: : ",os.path.normpath(os.path.join(this_path, "static/manzu/")))
+
+    image_names = os.listdir(os.path.normpath(os.path.join(this_path, "static/manzu/")))
+
+    #image_names = os.listdir('./static/manzu/')               
     # print(image_names)
     return jsonify(image_names=image_names)
 
@@ -869,3 +879,4 @@ def db_change_passwor(userid, newpassword):
 
 if __name__ == '__main__':
     app.run()
+    # print(os.path.dirname(os.path.abspath(__file__)))
