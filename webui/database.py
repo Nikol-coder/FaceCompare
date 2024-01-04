@@ -108,6 +108,11 @@ def index1():
 def lookup():
     return render_template('lookup.html')
 
+# 跳转到网页 /createuser
+@app.route('/createuser')
+def createuser():
+    return render_template('createuser.html')
+
 #查看图片
 @app.route('/api/images', methods=['GET'])
 def get_images():
