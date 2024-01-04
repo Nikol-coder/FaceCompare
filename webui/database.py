@@ -60,12 +60,12 @@ def upload():
         image = request.files['image']
         # 在这里处理图片
         # 指定保存位置
-        save_path = "C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face"
+        save_path = "C:/Users/10698/Desktop/ff/FaceCompare/face"
         file_path = os.path.join(save_path, "uploaded_image.jpg")
 
         # 保存图片
         image.save(file_path)
-        return jsonify({'message': '图片上传成功', 'image_url': 'C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face/uploaded_image.jpg'})
+        return jsonify({'message': '图片上传成功', 'image_url': 'C:/Users/10698/Desktop/ff/FaceCompare/face/uploaded_image.jpg'})
     else:
         return "No image in request", 400
     
@@ -73,8 +73,8 @@ def upload():
 #比较图片
 @app.route('/compare', methods=['GET'])
 def compare():
-    subprocess.run(['python', 'demo.py'], cwd='C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/face/InsightFace_Pytorch-master')
-    image_names = os.listdir('C:/Users/10698/Desktop/FaceCompare-master/FaceCompare-master/webui/static/manzu/')
+    subprocess.run(['python', 'demo.py'], cwd='C:/Users/10698/Desktop/ff/FaceCompare/face/InsightFace_Pytorch-master')
+    image_names = os.listdir('C:/Users/10698/Desktop/ff/FaceCompare/webui/static/manzu/')
     # print(image_names)
     return jsonify(image_names=image_names)
 
