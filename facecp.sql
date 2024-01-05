@@ -11,7 +11,7 @@
  Target Server Version : 80034
  File Encoding         : 65001
 
- Date: 30/12/2023 00:43:52
+ Date: 05/01/2024 16:40:55
 */
 
 SET NAMES utf8mb4;
@@ -46,13 +46,16 @@ CREATE TABLE `pictable`  (
   `price` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `flag` double(1, 0) UNSIGNED NOT NULL,
   PRIMARY KEY (`picid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 6 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of pictable
 -- ----------------------------
 INSERT INTO `pictable` VALUES (1, 1, '彤彤', '5', '四川', '5000', 0);
 INSERT INTO `pictable` VALUES (2, 1, '果果', '4', '天津', '4200', 1);
+INSERT INTO `pictable` VALUES (3, 2, '红红', '9', '上海', '7642', 1);
+INSERT INTO `pictable` VALUES (4, 3, '绿绿', '6', '河北', '4563', 1);
+INSERT INTO `pictable` VALUES (5, 4, '泡泡', '7', '河南', '7961', 1);
 
 -- ----------------------------
 -- Table structure for usertable
@@ -65,7 +68,7 @@ CREATE TABLE `usertable`  (
   `province` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `tel` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`userid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 7 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of usertable
@@ -75,6 +78,7 @@ INSERT INTO `usertable` VALUES (2, '小红', '789', '北京', '7412');
 INSERT INTO `usertable` VALUES (3, 'John', '4563', '河北', 'john@example.com');
 INSERT INTO `usertable` VALUES (4, '乔治', '4 2 3 7 5', '天津', '74125');
 INSERT INTO `usertable` VALUES (5, '大龙', '48 54 54 50 53 54 55 56 57 58 ', '广东', '1417');
+INSERT INTO `usertable` VALUES (6, '985', '48 48 48 52 53 54 55 56 57 58 ', '西藏', '147852369');
 
 -- ----------------------------
 -- Table structure for videotable
@@ -85,7 +89,7 @@ CREATE TABLE `videotable`  (
   `time` date NOT NULL COMMENT '失踪时间',
   `place` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '失踪地点',
   PRIMARY KEY (`videoid`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Records of videotable
