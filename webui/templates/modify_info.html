@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>修改用户信息</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+  <style>
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .gallery img {
+      flex: 1 0 50%;
+      /* 一排显示三张图片 */
+      max-width: 20%;
+      /* 一排显示三张图片 */
+      height: auto;
+      margin-bottom: 20px;
+      /* 你可以根据需要调整这个值 */
+      margin-right: 10px;
+      /* 添加右边距 */
+      margin-left: 10px;
+      /* 添加左边距 */
+    }
+
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .video-container iframe {
+      flex: 1 0 30%;
+      /* 一排显示三个视频 */
+      max-width: 30%;
+      /* 一排显示三个视频 */
+      height: auto;
+      margin-bottom: 20px;
+      /* 你可以根据需要调整这个值 */
+    }
+
+    .video3 {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .video3 iframe {
+      flex: 1 0 30%;
+      /* 一排显示三个视频 */
+      max-width: 30%;
+      /* 一排显示三个视频 */
+      height: auto;
+      margin-bottom: 20px;
+      /* 你可以根据需要调整这个值 */
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+      <div class="layui-logo layui-hide-xs layui-bg-black">用户主页</div>
+      <!-- 头部区域（可配合layui 已有的水平导航） -->
+      <ul class="layui-nav layui-layout-left">
+        <!-- 移动端显示 -->
+        <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+          <i class="layui-icon layui-icon-spread-left"></i>
+        </li>
+        <li class="layui-nav-item layui-hide-xs"><a href="/index">查看失踪人口</a></li>
+        <li class="layui-nav-item layui-hide-xs"><a href="/lookup">娃丢了</a></li>
+        <!--  user_id需要登录后传入      -->
+        <li class="layui-nav-item layui-hide-xs"><a href="/user_reward_manage/{{ user_id }}">悬赏管理</a></li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">个人中心</a>
+          <dl class="layui-nav-child">
+            <dd><a href="/modify_mima">修改密码</a></dd>
+            <dd><a href="#">更改个人信息</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">关于我们</a></li>
+      </ul>
+      <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
+          <a href="javascript:;">
+            <button class="layui-btn">
+              <i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>
+            </button>
+            约翰
+          </a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">我的发布</a></dd>
+            <dd><a href="javascript:;">退出</a></dd>
+          </dl>
+        </li>
+
+        <link href="//cdn.staticfile.org/layui/2.9.1/css/layui.css" rel="stylesheet">
+        <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+          <a href="javascript:;">
+            <i class="layui-icon layui-icon-more-vertical"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+      <div style="padding: 15px;">
+
+
+        <form method="POST" action="/modify_info" class="layui-form">
+            <!-- 隐藏的输入字段，用于存储用户ID -->
+            <input type="hidden" name="USERID" id="USERID">
+            <label for="username">用户名:</label>
+            <input type="text" id="username" name="username" value="{{ Username }}">
+
+            <label for="province">省份:</label>
+            <input type="text" id="province" name="province" value="{{ Province }}">
+
+            <label for="tel">电话:</label>
+            <input type="text" id="tel" name="tel" value="{{ Tel }}">
+            <input type="submit" value="修改">
+        </form>
+
+
+
+        <br><br>
+      </div>
+    </div>
+    <div class="layui-footer">
+      <!-- 底部固定区域 -->
+      FaceCompare提供技术支持
+    </div>
+  </div>
+
+  <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+
+    <script>
+        // 在页面加载时，从localStorage中获取用户ID，并设置到隐藏字段的值
+        document.getElementById('USERID').value = localStorage.getItem('USERID');
+    </script>
+
+  <script>
+    //JS 
+    layui.use(['element', 'layer', 'util'], function () {
+      var element = layui.element;
+      var layer = layui.layer;
+      var util = layui.util;
+      var $ = layui.$;
+
+      //头部事件
+      util.event('lay-header-event', {
+        menuLeft: function (othis) { // 左侧菜单事件
+          layer.msg('展开左侧菜单的操作', { icon: 0 });
+        },
+        menuRight: function () {  // 右侧菜单事件
+          layer.open({
+            type: 1,
+            title: '更多',
+            content: '<div style="padding: 15px;">处理右侧面板的操作</div>',
+            area: ['260px', '100%'],
+            offset: 'rt', // 右上角
+            anim: 'slideLeft', // 从右侧抽屉滑出
+            shadeClose: true,
+            scrollbar: false
+          });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

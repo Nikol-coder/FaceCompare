@@ -60,7 +60,6 @@
       margin-bottom: 20px;
       /* 你可以根据需要调整这个值 */
     }
-
   </style>
 </head>
 
@@ -82,7 +81,7 @@
           <a href="javascript:;">个人中心</a>
           <dl class="layui-nav-child">
             <dd><a href="/modify_mima">修改密码</a></dd>
-            <dd><a href="javascript:;">更改个人信息</a></dd>
+            <dd><a href="/modify_info">更改个人信息</a></dd>
           </dl>
         </li>
         <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">关于我们</a></li>
@@ -171,9 +170,9 @@
             <div class="container">
               <h2>监控视频</h2>
               <div class="video3">
-                  <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                  <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-                  <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
+                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
+                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
+                <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
               </div>
             </div>
 
@@ -190,6 +189,15 @@
   </div>
 
   <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var link = document.querySelector('a[href="/modify_info"]');
+      var userId = localStorage.getItem('USERID');
+      link.href = "/modify_info?userid=" + userId;
+    });
+  </script>
+
   <script>
     fetch('/api/images')
       .then(response => response.json())
@@ -204,7 +212,7 @@
       })
       .catch(error => console.error('Error:', error));
   </script>
-  
+
   <script>
     fetch('/api/videos')
       .then(response => response.json())

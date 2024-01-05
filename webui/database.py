@@ -30,7 +30,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
-app.config['MYSQL_DB'] = 'face'
+app.config['MYSQL_DB'] = 'facecp'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -52,6 +52,46 @@ def index():
     # return render_template('selectuser.html')
     # return render_template('manager_login.html')
     return render_template('login.html')
+
+
+@app.route('/modify_info', methods=['GET', 'POST'])
+def modify_info():
+    if request.method == 'POST':
+        user_id = request.form.get('USERID')
+        username = request.form.get('username')
+        province = request.form.get('province')
+        tel = request.form.get('tel')
+        # 在这里更新数据库
+        # 执行更新语句
+        if not db.open:
+            db.ping(reconnect=True)
+        if tel and tel.strip() and username and username.strip() and province and province.strip():
+            cursor.execute("UPDATE usertable SET tel = %s, username = %s, province = %s WHERE userid = %s", (tel, username, province, user_id))
+
+            # 提交事务
+            db.commit()
+            print('User updated successfully')
+            return render_template('index.html')
+        else:
+            print('User updated unsuccessfully')
+            return render_template('modify_info.html')
+        
+    else:
+        # 从数据库中获取原有的信息
+        user_id = request.args.get('userid')
+        # 首先，检查用户是否存在
+        print(user_id)
+        if not db.open:
+            db.ping(reconnect=True)
+        cursor.execute("SELECT username, province, tel FROM usertable WHERE userid = %s", (user_id,))
+        result = cursor.fetchall()
+        for row in result:
+            username = row[0]
+            province = row[1]
+            tel = row[2]
+        # 提交事务
+        db.commit()
+        return render_template('modify_info.html', Username=username, Province=province, Tel=tel)
 
 
 #上传图片
