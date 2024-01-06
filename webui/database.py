@@ -30,7 +30,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
-app.config['MYSQL_DB'] = 'facecp'
+app.config['MYSQL_DB'] = 'face'
 
 # 创建数据库连接
 db = pymysql.connect(

@@ -114,43 +114,77 @@
       <!-- 内容主体区域 -->
       <div style="padding: 15px;">
         <blockquote class="layui-elem-quote layui-text">
-          最近失踪人口
+          寻找您的家人，让家人回家
         </blockquote>
 
         <div class="layui-card layui-panel">
           <div class="layui-card-header">
-            近一个月失踪人口图片
+            上传他的图片
           </div>
           <div class="layui-card-body">
 
             <div class="container">
-              <h2>失踪人口图片</h2>
-              <div class="gallery" id="gallery">
-                <!-- {% for image_name in image_names %}
-                alert("我回来了");
-                <img src="{{ url_for('static', filename='manzu/' + image_name) }}" >
-                {% endfor %} -->
-              </div>
+              <h2>家人寻找家人</h2>
             </div>
           </div>
 
 
-          <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" id="upload-button" name="image" onchange="displayImage(event)">
-            <input type="submit" value="上传图片">
-            <img id="uploaded-image">
+          <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data" style="display: flex;  gap: 30px;">
+            <!--<input type="file" id="upload-button" name="image" onchange="displayImage(event)" style="background-color: #4CAF50; color: white; padding: 12px 20px;"> -->
+            <!-- 隐藏原始的文件输入元素 -->
+            <input type="file" id="upload-button" name="image" onchange="displayImage(event)" style="display: none;">
+            <!-- 创建一个自定义的按钮 -->
+            <button id="custom-button" style="background-color: #4CAF50; color: white; padding: 12px 20px; cursor: pointer;border: none; border-radius: 4px;">上传文件</button>
+            <input type="submit" value="上传图片" style="background-color: #4CAF50; color: white; padding: 12px 20px; cursor: pointer;border: none; border-radius: 4px;">
+            <button onclick="compare()" style="background-color: #4CAF50; color: white; padding: 12px 20px; cursor: pointer;border: none; border-radius: 4px;">比较</button>
 
             <script>
-            function displayImage(event) {
-              document.getElementById('uploaded-image').src = URL.createObjectURL(event.target.files[0]);
-            }
-            </script>
+              // 当用户点击自定义按钮时，触发原始的文件输入元素
+              document.getElementById('custom-button').addEventListener('click', function() {
+                  document.getElementById('upload-button').click();
+              });
+              </script>
+              
           </form>
-          <img id="uploaded-image" src="">
-          <button onclick="compare()">比较</button>
-
         </div>
 
+
+        <div class="layui-card layui-panel">
+          <div class="layui-card-header">
+            家人照片
+          </div>
+
+          <div class="gallery" id="family" style="position: relative;">
+
+          </div>
+
+          <script>
+          function displayImage(event) {
+            var img = document.createElement('img');
+            img.style.width = '250px';
+            img.style.height = '250px';
+
+            img.style.left = '30%';
+            img.src = URL.createObjectURL(event.target.files[0]);
+            document.getElementById('family').appendChild(img);
+          }
+          </script>
+        </div>
+
+
+        <div class="layui-card layui-panel">
+          <div class="layui-card-header">
+            匹配照片
+          </div>
+          <div class="gallery" id="gallery">
+            <!-- {% for image_name in image_names %}
+            alert("我回来了");
+            <img src="{{ url_for('static', filename='manzu/' + image_name) }}" >
+            {% endfor %} -->
+          </div>
+          
+          
+        </div>
 
 
         <div class="layui-footer">
@@ -188,6 +222,8 @@
         // 使用返回的图片列表来更新 gallery
         for (var i = 0; i < data.image_names.length; i++) {
           var img = document.createElement('img');
+          img.style.width = '250px';
+          img.style.height = '250px';
           img.src = "{{ url_for('static', filename='manzu/') }}" + data.image_names[i];
           gallery.appendChild(img);
         }
