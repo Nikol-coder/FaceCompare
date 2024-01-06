@@ -130,10 +130,35 @@ def compare():
     print("this_path_image: : ",os.path.normpath(os.path.join(this_path, "static/manzu/")))
 
     image_names = os.listdir(os.path.normpath(os.path.join(this_path, "static/manzu/")))
+                 
+    print(image_names)
 
-    #image_names = os.listdir('./static/manzu/')               
-    # print(image_names)
-    return jsonify(image_names=image_names)
+    image_numbers = [name.split('.')[0] for name in image_names]
+
+    print(image_numbers)
+
+    # 创建一个字典来存储结果
+    results = {}
+
+    for tmp_img in image_numbers:
+        if not db.open:
+            db.ping(reconnect=True)
+        query = """
+        SELECT pictable.province, usertable.tel
+        FROM pictable
+        INNER JOIN usertable ON pictable.userid = usertable.userid
+        WHERE pictable.picid = %s
+        """
+        cursor.execute(query, (tmp_img,))
+        result = cursor.fetchall()
+
+        # 将结果存储到字典中
+        results[tmp_img] = result
+
+    print(results)
+
+    # 将结果转换为JSON格式并返回
+    return jsonify(image_names=image_names, results=results)
 
 
 
