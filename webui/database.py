@@ -11,7 +11,7 @@ import pymysql
 from flask import request, render_template
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Null
-from mimacode import jiami, jiemi, chuli
+from mimacode import hash_password
 import json
 import os
 import subprocess
@@ -217,12 +217,12 @@ def user_change_password():
     # 验证旧密码是否正确
     mima = result[0]
     print(mima)
-    jiamicode = jiami(old_password)
+    jiamicode = hash_password(old_password)
 
     print("\n加密代码: ",jiamicode)
     if mima == jiamicode:
         # 更新密码
-        password = jiami(new_password)
+        password = hash_password(new_password)
         cursor.execute("UPDATE usertable SET password = %s WHERE userid = %s", (password, user_id))
         db.commit()
         # 返回登录页
@@ -268,14 +268,12 @@ def create_user():
         password = request.form.get("pwd1") 
         province = request.form.get("pro") 
         tel = request.form.get("tel")
-        password = jiami(password)
+        password = hash_password(password)
         print("加密代码：",password)
         password = str(password)
         # 执行插入语句
         cursor.execute("INSERT INTO usertable (userid,username, password, province, tel) VALUES (%s,%s, %s, %s, %s)", (userid,username, password, province, tel))
-        jiemicode = jiemi(password)
 
-        print("解密代码: ",jiemicode)
         # 提交事务
         db.commit()
         
@@ -295,7 +293,7 @@ def login():
         userid = request.form.get("username")
         password = request.form.get("password")
         print("userid :", userid)
-        pwd = jiami(password)
+        pwd = hash_password(password)
         print("加密代码：", pwd)
         # 执行插入语句
         # 执行查询语句
@@ -308,16 +306,15 @@ def login():
             print("用户不存在")
             return render_template('login.html')
         mima = result[0][2]
-        jiemicode = jiemi(mima)
+        print("mima: ", mima)
 
-        print("\n解密代码: ",jiemicode)
         # 提交事务
         Username = result[0][1]
         global tmp_name
         tmp_name = Username
         db.commit()
-        password = chuli(password)
-        if password == jiemicode:
+        password = hash_password(password)
+        if password == mima:
             print('User login successfully')
             return render_template('index.html', Username=tmp_name)
         else:
@@ -356,7 +353,7 @@ def delete_user():
         pwd = request.form.get('pwd')
         print(id)
         print(pwd)
-        pwd = jiami(pwd)
+        pwd = hash_password(pwd)
         # 执行删除语句
         if pwd and pwd.strip():
             cursor.execute("DELETE FROM usertable WHERE userid = %s and password = %s", (id,pwd))
@@ -873,7 +870,7 @@ def change_password():
         userid = request.args.get("userid")
         new_password = request.args.get("newpassword")
 
-    db_change_passwor(userid, new_password)
+    db_change_passwor(userid, hash_password(new_password))
 
     response_data = {
         'status': 'success',
@@ -961,7 +958,6 @@ def db_manager_delete_user(userid):
 def db_change_passwor(userid, newpassword):
     print("userid: ", userid)
     print("newpassword:  ", newpassword)
-    newpassword = jiami(newpassword)
     cursor.execute("UPDATE usertable SET password = %s WHERE userid = %s", (newpassword, userid))
     db.commit()
 

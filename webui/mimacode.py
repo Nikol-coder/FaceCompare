@@ -1,4 +1,15 @@
 # 它使用 XOR 运算符对原始数据进行加密，然后再次使用 XOR 运算符对加密的数据进行解密。
+# hash
+import hashlib
+
+def hash_password(password):
+    hash_object = hashlib.sha256()
+    # 提供需要哈希的数据
+    hash_object.update(password.encode('utf-8'))
+    # 获取哈希值
+    hashed_password = hash_object.hexdigest()
+    return hashed_password
+
 
 def chuli(mima):
     #设置密码最大长度 多了截断，少了补齐
