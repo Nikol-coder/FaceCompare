@@ -62,7 +62,7 @@
                 <input type="text" name="captcha" placeholder="请输入验证码" autocomplete="off" class="layui-input admin-input admin-input-verify" >
                 <img class="admin-captcha" width="90" height="30" src="../static/images/captcha.jpg">
             </div>
-            <button class="layui-btn admin-button" lay-submit="" lay-filter="login" type="submit" onclick="submitChangePasswordForm()">修改密码</button>
+            <button class="layui-btn admin-button" lay-submit="" lay-filter="login" type="button" onclick="submitChangePasswordForm(event)">修改密码</button>
             <button class="layui-btn admin-button"  type="button" onclick="window.location.href='/index';" >取消</button>
         </form>
     </div>
@@ -72,9 +72,9 @@
 <script>
     // 在页面加载时，从localStorage中获取用户ID，并设置到隐藏字段的值
     document.getElementById('USERID').value = localStorage.getItem('USERID');
-    function submitChangePasswordForm() {
+    function submitChangePasswordForm(event) {
         // 获取两个 text 的值
-        const id = document.querySelector('input[name="id"]').value;
+        const id = document.querySelector('input[name="USERID"]').value;
         const oldpwd = document.querySelector('input[name="oldpwd"]').value;
         const pwd1 = document.querySelector('input[name="pwd1"]').value;
         const pwd2 = document.querySelector('input[name="pwd2"]').value;
@@ -88,6 +88,7 @@
             event.preventDefault(); // 阻止默认行为
         } else {
             // 提交表单
+            // alert('修改密码');
             document.querySelector('form').submit();
         }
     }
