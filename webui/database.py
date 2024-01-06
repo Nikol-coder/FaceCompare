@@ -44,6 +44,9 @@ db = pymysql.connect(
 # 创建数据库游标
 cursor = db.cursor()
 
+tmp_name = None
+
+# -------user behavior------------------------
 
 # 查询数据
 @app.route('/')
@@ -67,14 +70,15 @@ def modify_info():
             db.ping(reconnect=True)
         if tel and tel.strip() and username and username.strip() and province and province.strip():
             cursor.execute("UPDATE usertable SET tel = %s, username = %s, province = %s WHERE userid = %s", (tel, username, province, user_id))
-
+            global tmp_name
+            tmp_name = username
             # 提交事务
             db.commit()
             print('User updated successfully')
-            return render_template('index.html')
+            return render_template('index.html',Username=tmp_name)
         else:
             print('User updated unsuccessfully')
-            return render_template('modify_info.html')
+            return render_template('modify_info.html',Username=tmp_name)
         
     else:
         # 从数据库中获取原有的信息
@@ -141,12 +145,12 @@ def modify_mima():
 #跳转到主页 /index
 @app.route('/index')
 def index1():
-    return render_template('index.html')
+    return render_template('index.html',Username=tmp_name)
 
 #跳转到网页 /lookup
 @app.route('/lookup')
 def lookup():
-    return render_template('lookup.html')
+    return render_template('lookup.html',Username=tmp_name)
 
 # 跳转到网页 /createuser
 @app.route('/createuser')
@@ -156,6 +160,8 @@ def createuser():
 #查看图片
 @app.route('/api/images', methods=['GET'])
 def get_images():
+    if not db.open:
+        db.ping(reconnect=True)
     cursor.execute("SELECT picid, name FROM pictable")
     data = cursor.fetchall()
     images = [{'url': "./static/images/"+str(int(url))+".jpg", 'alt': str(name)} for url, name in data]
@@ -165,6 +171,8 @@ def get_images():
 #查看视频
 @app.route('/api/videos', methods=['GET'])
 def get_videos():
+    if not db.open:
+        db.ping(reconnect=True)
     cursor.execute("SELECT videoid FROM videotable")
     data = cursor.fetchall()
     videos = [{'url': "./static/video/"+str(int(url[0]))+".mp4"} for url in data]
@@ -266,6 +274,8 @@ def login():
         print("加密代码：", pwd)
         # 执行插入语句
         # 执行查询语句
+        if not db.open:
+            db.ping(reconnect=True)
         cursor.execute("SELECT * FROM usertable where userid = %s", (userid))
         result = cursor.fetchall()
         print("result: ", result)
@@ -277,11 +287,14 @@ def login():
 
         print("\n解密代码: ",jiemicode)
         # 提交事务
+        Username = result[0][1]
+        global tmp_name
+        tmp_name = Username
         db.commit()
         password = chuli(password)
         if password == jiemicode:
             print('User login successfully')
-            return render_template('index.html')
+            return render_template('index.html', Username=tmp_name)
         else:
             print('User login unsuccessfully')
             return render_template('login.html')
@@ -342,7 +355,7 @@ def delete_user():
 # 用户登陆后界面
 @app.route('/user_login')
 def user_login():
-    return render_template('index.html')
+    return render_template('index.html',Username=tmp_name)
 
 @app.route('/reward_test')
 def reward_test():

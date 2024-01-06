@@ -92,7 +92,7 @@
             <button class="layui-btn">
               <i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>
             </button>
-            约翰
+            {{Username}} <!-- 用户名 -->
           </a>
           <dl class="layui-nav-child">
             <dd><a href="javascript:;">我的发布</a></dd>
@@ -111,6 +111,7 @@
 
     <div class="layui-body">
       <!-- 内容主体区域 -->
+
       <div style="padding: 15px;">
         <blockquote class="layui-elem-quote layui-text">
           最近失踪人口
@@ -190,8 +191,9 @@
 
   <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
 
+
   <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
       var link = document.querySelector('a[href="/modify_info"]');
       var userId = localStorage.getItem('USERID');
       link.href = "/modify_info?userid=" + userId;
