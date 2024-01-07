@@ -7,8 +7,75 @@
   <meta name="renderer" content="webkit">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
-  
+  <link rel="stylesheet" href="/static/lib/layui-v2.5.5/css/layui.css" media="all">
+
+  <style>
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .gallery img {
+      flex: 1 0 50%;
+      /* 一排显示三张图片 */
+      max-width: 20%;
+      /* 一排显示三张图片 */
+      height: auto;
+
+    }
+
+    .gallery1 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      justify-content: space-between;
+      /* 可选：设置网格项之间的间距 */
+    }
+
+    .gallery1 img {
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+    }
+
+    .gallery1 p {
+      margin-bottom: 50px;
+    }
+
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .video-container iframe {
+      flex: 1 0 30%;
+      /* 一排显示三个视频 */
+      max-width: 30%;
+      /* 一排显示三个视频 */
+      height: auto;
+      margin-bottom: 20px;
+      /* 你可以根据需要调整这个值 */
+    }
+
+    .video3 {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+    }
+
+    .video3 iframe {
+      flex: 1 0 30%;
+      /* 一排显示三个视频 */
+      max-width: 30%;
+      /* 一排显示三个视频 */
+      height: auto;
+      margin-bottom: 20px;
+      /* 你可以根据需要调整这个值 */
+    }
+  </style>
+
 </head>
 
 <body>
@@ -28,7 +95,7 @@
           <a href="javascript:;">个人中心</a>
           <dl class="layui-nav-child">
             <dd><a href="/modify_mima">修改密码</a></dd>
-            <dd><a href="javascript:;">更改个人信息</a></dd>
+            <dd><a href="/modify_info">更改个人信息</a></dd>
           </dl>
         </li>
         <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">关于我们</a></li>
@@ -58,85 +125,222 @@
 
 
     <div class="layui-side layui-bg-black">
-        <div class="layui-side-scroll">
-          <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-          <ul class="layui-nav layui-nav-tree" lay-filter="test">
-    
-            <li class="layui-nav-item"><a href="/missing_one2one">one2one</a></li>
-            <li class="layui-nav-item"><a href="/missing_one2many_reward">one2many_reward</a></li>
-            <li class="layui-nav-item"><a href="/missing_one2many_video">one2many_video</a></li>
-    
-          </ul>
-        </div>
+      <div class="layui-side-scroll">
+        <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+        <ul class="layui-nav layui-nav-tree" lay-filter="test">
+
+          <li class="layui-nav-item"><a href="/missing_one2one">one2one</a></li>
+          <li class="layui-nav-item"><a href="/missing_one2many_reward">one2many_reward</a></li>
+          <li class="layui-nav-item"><a href="/missing_one2many_video">one2many_video</a></li>
+
+        </ul>
       </div>
+    </div>
 
 
     <div class="layui-body">
       <!-- 内容主体区域 -->
-        
-      
+      <div style="padding: 15px;">
+        <blockquote class="layui-elem-quote layui-text">
+          寻找您的家人，让家人回家
+        </blockquote>
+
+        <div class="layui-card layui-panel">
+          <div class="layui-card-header">
+            上传他的图片跟图片库对比
+          </div>
+          <div class="layui-card-body">
+
+            <div class="container">
+              <h2>家人寻找家人</h2>
+            </div>
+          </div>
+
+
+          <form id="upload-form" action="/upload" method="post" enctype="multipart/form-data"
+            style="display: flex;  gap: 30px;">
+            <!--<input type="file" id="upload-button" name="image" onchange="displayImage(event)" style="background-color: #4CAF50; color: white; padding: 12px 20px;"> -->
+            <!-- 隐藏原始的文件输入元素 -->
+            <input type="file" id="upload-button" name="image" onchange="displayImage(event)" style="display: none;">
+            <!-- 创建一个自定义的按钮 -->
+            <button id="custom-button"
+              style="background-color: #4CAF50; color: white; padding: 12px 20px; cursor: pointer;border: none; border-radius: 4px;">选择图片</button>
+            <input type="submit" value="确认上传"
+              style="background-color: #4CAF50; color: white; padding: 12px 20px; cursor: pointer;border: none; border-radius: 4px;">
+            <button onclick="compare()"
+              style="background-color: #4CAF50; color: white; padding: 12px 20px; cursor: pointer;border: none; border-radius: 4px;">比较</button>
+
+            <script>
+              // 当用户点击自定义按钮时，触发原始的文件输入元素
+              document.getElementById('custom-button').addEventListener('click', function () {
+                document.getElementById('upload-button').click();
+              });
+            </script>
+
+          </form>
+        </div>
+
+
+        <div class="layui-card layui-panel">
+          <div class="layui-card-header">
+            家人照片
+          </div>
+
+          <div class="gallery" id="family" style="position: relative;">
+
+          </div>
+
+          <script>
+            function displayImage(event) {
+              // 清空 gallery 的内容
+              var gallery = document.getElementById('family');
+              while (gallery.firstChild) {
+                gallery.removeChild(gallery.firstChild);
+              }
+              var img = document.createElement('img');
+              img.style.width = '250px';
+              img.style.height = '250px';
+
+              img.style.left = '30%';
+              img.src = URL.createObjectURL(event.target.files[0]);
+              document.getElementById('family').appendChild(img);
+            }
+          </script>
+        </div>
+
+
+        <div class="layui-card layui-panel">
+          <div class="layui-card-header">
+            匹配照片
+          </div>
+          <div class="gallery1" id="gallery">
+            <!-- {% for image_name in image_names %}
+            alert("我回来了");
+            <img src="{{ url_for('static', filename='manzu/' + image_name) }}" >
+            {% endfor %} -->
+          </div>
+
+
+        </div>
+
+
+
 
 
         <div class="layui-footer">
           <!-- 底部固定区域 -->
           FaceCompare提供技术支持
         </div>
-      
+
+      </div>
     </div>
-  </div>
-  <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+    <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+    <script src="/static/lib/jquery-3.4.1/jquery-3.4.1.min.js" charset="utf-8"></script>
+    <script src="/static/lib/jq-module/jquery.particleground.min.js" charset="utf-8"></script>
+    <script>
+      // 获取 Username
+      var username = "{{Username}}".trim();
 
-  <script>
-    // 获取 Username
-    var username = "{{Username}}".trim();
-
-    // 如果 Username 不为 "none"，则存储它
-    if (username !== "none") {
-      localStorage.setItem("Username", username);
-    } else {
-      // 如果 Username 为 "none"，则获取存储的值
-      var storedUsername = localStorage.getItem("Username");
-      if (storedUsername) {
-        username = storedUsername;
-      }
-    }
-
-    // 获取 id 为 "user" 的元素
-    var userElement = document.getElementById('user');
-
-    // 设置元素的文本内容为 username
-    userElement.innerText = username;
-  </script>
-
-
-  <script>
-    //JS 
-    layui.use(['element', 'layer', 'util'], function () {
-      var element = layui.element;
-      var layer = layui.layer;
-      var util = layui.util;
-      var $ = layui.$;
-
-      //头部事件
-      util.event('lay-header-event', {
-        menuLeft: function (othis) { // 左侧菜单事件
-          layer.msg('展开左侧菜单的操作', { icon: 0 });
-        },
-        menuRight: function () {  // 右侧菜单事件
-          layer.open({
-            type: 1,
-            title: '更多',
-            content: '<div style="padding: 15px;">处理右侧面板的操作</div>',
-            area: ['260px', '100%'],
-            offset: 'rt', // 右上角
-            anim: 'slideLeft', // 从右侧抽屉滑出
-            shadeClose: true,
-            scrollbar: false
-          });
+      // 如果 Username 不为 "none"，则存储它
+      if (username !== "none") {
+        localStorage.setItem("Username", username);
+      } else {
+        // 如果 Username 为 "none"，则获取存储的值
+        var storedUsername = localStorage.getItem("Username");
+        if (storedUsername) {
+          username = storedUsername;
         }
+      }
+
+      // 获取 id 为 "user" 的元素
+      var userElement = document.getElementById('user');
+
+      // 设置元素的文本内容为 username
+      userElement.innerText = username;
+    </script>
+
+
+    <!-- 上传 -->
+    <script>
+      document.getElementById('upload-form').addEventListener('submit', function (event) {
+        event.preventDefault();
+        var formData = new FormData(event.target);
+        fetch('/upload', { method: 'POST', body: formData })
+          .then(response => response.json())
+          .then(data => {
+            // document.getElementById('uploaded-image').src = data.image_url;
+            // document.getElementById('uploaded-image').style.display = 'inline';
+          });
       });
-    });
-  </script>
+    </script>
+
+    <!-- 比较 -->
+    <script>
+      function compare() {
+        fetch('/compare').then(response => response.json()).then(data => {
+          // 获取 gallery 元素
+          var gallery = document.getElementById('gallery');
+          // 清空 gallery
+          gallery.innerHTML = '';
+
+
+          // 使用返回的图片列表来更新 gallery
+          for (var i = 0; i < data.image_names.length; i++) {
+            var div = document.createElement('div');
+            div.style.width = '250px';
+            div.style.margin = '10px';  // 添加边距
+
+            var img = document.createElement('img');
+            img.style.width = '100%';
+            img.style.height = '250px';
+            img.style.objectFit = 'cover';
+            img.src = "{{ url_for('static', filename='manzu/') }}" + data.image_names[i];
+            div.appendChild(img);  // 将图片添加到 div 中
+
+            // 创建一个文本元素来显示结果
+            var result = document.createElement('p');
+            var image_number = data.image_names[i].split('.')[0];
+            var result_text = data.results[image_number];
+            result.innerHTML = "地点: " + result_text[0][0] + "<br>联系电话: " + result_text[0][1];
+            div.appendChild(result);  // 将结果添加到 div 中
+
+            gallery.appendChild(div);  // 将 div 添加到 gallery 中
+          }
+
+        });
+      }
+
+    </script>
+
+
+    <script>
+      //JS 
+      layui.use(['element', 'layer', 'util'], function () {
+        var element = layui.element;
+        var layer = layui.layer;
+        var util = layui.util;
+        var $ = layui.$;
+
+        //头部事件
+        util.event('lay-header-event', {
+          menuLeft: function (othis) { // 左侧菜单事件
+            layer.msg('展开左侧菜单的操作', { icon: 0 });
+          },
+          menuRight: function () {  // 右侧菜单事件
+            layer.open({
+              type: 1,
+              title: '更多',
+              content: '<div style="padding: 15px;">处理右侧面板的操作</div>',
+              area: ['260px', '100%'],
+              offset: 'rt', // 右上角
+              anim: 'slideLeft', // 从右侧抽屉滑出
+              shadeClose: true,
+              scrollbar: false
+            });
+          }
+        });
+      });
+    </script>
 </body>
 
 </html>

@@ -32,7 +32,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
-app.config['MYSQL_DB'] = 'face'
+app.config['MYSQL_DB'] = 'facecp'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -56,9 +56,9 @@ def index():
     # 返回结果
     # return render_template('selectuser.html')
     # return render_template('manager_login.html')
-    #return render_template('login.html')
+    # return render_template('login.html')
     # return render_template('test.html')
-    return missing_one2one()
+    return missing_one2many_video()
 
 
 @app.route('/slipvideo', methods=['POST'])
@@ -150,7 +150,84 @@ def upload():
         return jsonify({'message': '图片上传成功', 'image_url': file_path})
     else:
         return "No image in request", 400
-    
+
+#查找视频
+@app.route('/search_video', methods=['POST'])
+def search_video():
+    data = request.get_json()
+    time = data['time']
+    place = data['place']
+    if not db.open:
+        db.ping(reconnect=True)
+
+    cursor.execute("""
+        SELECT videoid, time, place
+        FROM videotable
+        WHERE time > %s AND place LIKE %s
+    """, (time, '%' + place + '%'))
+    result = cursor.fetchall()
+    # for row in result:
+    #     print(row[0])
+    # print(jsonify([row[0] for row in result]))
+    # exit()
+
+    # 将结果转换为JSON格式并返回
+    # return jsonify([row[0] for row in result])
+    # 将结果转换为字典列表并返回
+    return [dict(videoid=row[0], time=row[1], place=row[2]) for row in result]
+
+
+# 比较视频
+@app.route('/compare_video', methods=['GET'])
+def compare_video():
+    this_path = os.path.dirname(os.path.abspath(__file__))
+    print("this_path: ",this_path)
+    subprocess.run(['python', 'demo_video.py'], cwd=os.path.normpath(os.path.join(this_path, "../face/InsightFace_Pytorch-master")))
+    # image_names = os.listdir('C:/Users/10698/Desktop/ff/FaceCompare/webui/static/manzu/')
+    this_path = os.path.dirname(os.path.abspath(__file__))
+    print("this_path: ",this_path)
+    # 从 valid_son_folders.json 文件中读取 videoid
+    # exit()
+    # 从 valid_son_folders.json 文件中读取 videoid
+    with open(os.path.join(this_path, 'static/json/valid_son_folders.json'), 'r') as f:
+        video_ids = json.load(f)
+
+
+    # 创建一个字典来存储结果
+
+    results = []
+    for video_id in video_ids:
+        # 构造图片的路径
+        img_folder_path = os.path.join(this_path, "static/manzu_video/", str(video_id))
+        image_names = os.listdir(img_folder_path)
+        # 使用 videoid 查询 videotable
+        query = """
+        SELECT time, place
+        FROM videotable
+        WHERE videoid = %s
+        """
+        cursor.execute(query, (video_id,))
+        query_result = cursor.fetchone()
+
+        # 将结果存储到字典中
+        result = {
+            'videoid': video_id,
+            'time': query_result[0],
+            'place': query_result[1],
+            'img_folder_path': img_folder_path,
+            'image_names': image_names,
+        }
+        results.append(result)
+
+        # # 将结果存储到字典中
+        # results.append(dict(videoid=video_id, time=result[0], place=result[1]))
+
+    print(results)
+    # 将结果转换为 JSON 格式并返回
+    exit()
+    return jsonify(results=results)
+
+
 
 # 比较图片
 @app.route('/compare', methods=['GET'])
