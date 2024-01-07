@@ -60,7 +60,6 @@
     .video3 p {
       margin-bottom: 50px;
     }
-
   </style>
 
 </head>
@@ -365,8 +364,12 @@
           console.log(result);
 
           console.log(result.length);
-
-          for (var j = 0; j < result.length; j++ ){
+          // 检查 result 是否为空
+          if (result.length === 0) {
+            // 如果 result 为空，显示 "未找到您的家人"
+            gallery.innerHTML = '未找到您的家人';
+          } else {
+            for (var j = 0; j < result.length; j++) {
               // 使用返回的图片列表来更新 gallery
               for (var i = 0; i < result[j].image_names.length; i++) {
                 var div = document.createElement('div');
@@ -392,8 +395,8 @@
                 gallery.appendChild(div);  // 将 div 添加到 gallery 中
               }
 
+            }
           }
-
         });
       }
 

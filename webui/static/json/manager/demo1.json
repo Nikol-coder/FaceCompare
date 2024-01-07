@@ -8,10 +8,6 @@
             "image": "/static/test/2.jpg",
             "name": "果果",
             "age": "4",
-<<<<<<< HEAD
-            "province": "天津",
-            "price": "4200"
-=======
             "province": "天津市武清区\r\n杨村街道  ",
             "price": "4200"
         },
@@ -54,7 +50,6 @@
             "age": "7",
             "province": "山东省德州市电锯街区",
             "price": "6532"
->>>>>>> d0190cd922a056f31ca67244f3d9be7939208972
         }
     ]
 }
