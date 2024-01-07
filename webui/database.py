@@ -6,6 +6,7 @@ from sys import path
 from tkinter import image_names
 from flask import Flask, jsonify, url_for
 import flask
+from matplotlib.pylab import f
 from numpy import place
 import pymysql
 from flask import request, render_template
@@ -31,7 +32,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
-app.config['MYSQL_DB'] = 'facecp'
+app.config['MYSQL_DB'] = 'face'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -55,8 +56,9 @@ def index():
     # 返回结果
     # return render_template('selectuser.html')
     # return render_template('manager_login.html')
-    return render_template('login.html')
+    #return render_template('login.html')
     # return render_template('test.html')
+    return missing_one2one()
 
 
 @app.route('/slipvideo', methods=['POST'])
@@ -150,7 +152,7 @@ def upload():
         return "No image in request", 400
     
 
-#比较图片
+# 比较图片
 @app.route('/compare', methods=['GET'])
 def compare():
     this_path = os.path.dirname(os.path.abspath(__file__))
@@ -190,6 +192,30 @@ def compare():
 
     # 将结果转换为JSON格式并返回
     return jsonify(image_names=image_names, results=results)
+
+# compare2 一对一
+@app.route('/compare_one2one', methods=['GET', 'POST'])
+def compare_one2one():
+    pictureid = request.json.get('pictureid')
+    print("pictureid: ", pictureid)
+    filename = str(pictureid) + '.jpg'
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_pic = os.path.join(this_path, "static/test/",filename)
+    print("path_pic: ", path_pic)
+    path_pic2 = os.path.join(this_path, "../face/uploaded_image.jpg")
+    print("path_pic2: ", path_pic2)
+
+    # 调用
+    #
+    # 调用
+    #
+    # 调用
+    #
+    #result = subprocess.run(['python', 'demo_one2one.py', filename], cwd=os.path.normpath(os.path.join(this_path, "../face/InsightFace_Pytorch-master")), stdout=subprocess.PIPE)
+    result = 5.099
+    return jsonify({"result": result})
+
+
 
 # 跳转到网页 /createuser
 @app.route('/createuser')

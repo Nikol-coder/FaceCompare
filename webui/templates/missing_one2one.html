@@ -12,6 +12,21 @@
 </head>
 
 <body>
+  <script type="text/html" id="barDemo1">
+    <div class="layui-clear-space">
+      <a class="layui-btn layui-btn-xs" lay-event="upload">上传图片</a>
+    </div>
+  </script>
+  
+  <script type="text/html" id="barDemo2">
+    <div class="layui-clear-space">
+      <a class="layui-btn layui-btn-xs" lay-event="compare">对比图片</a>
+    </div>
+  </script>
+  <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
   <div class="layui-layout layui-layout-admin">
     <div class="layui-header">
       <div class="layui-logo layui-hide-xs layui-bg-black">用户主页</div>
@@ -142,46 +157,135 @@
 
   <script>
     layui.use('table', function(){
-    var table = layui.table;
-    table.render({
-        elem: '#screen-table'
-        ,url:'./static/json/manager/demo1.json'
-        ,toolbar: '#toolbarDemo'
-        ,title: '用户数据表'
-        , defaultToolbar: ['filter', 'print']//数据表格工具栏右侧关闭导出按钮
-        ,cols: [[
-            { type: 'checkbox', fixed: 'left' },
-            { field: 'pictureid', title: '任务ID' },
-            { field:'image', title:'区域图片', templet: function(d) { return '<div onclick="show_img(this)" ><img src="'+d.image+'" ' + 'alt="" width="60px" height="60px"></a></div>' + 'style="max-width:100%;max-height:100%;"'; }},
-            { field: 'name', title: '姓名' },
-            { field: 'age', title: '年龄' },
-            { field: 'province', title: '地点' },
-            { field: 'price', title: '悬赏' },
-            { fixed: 'right', title: '操作', width: 134, minWidth: 125, toolbar: '#barDemo' }
-        ]]
-        ,page: true //开启分页
-        ,limits: [10,30,50]  //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
-        ,limit: 10 //每页默认显示的数量
+      var table = layui.table;
+      table.render({
+          elem: '#screen-table'
+          ,url:'./static/json/manager/demo1.json'
+          ,toolbar: '#toolbarDemo'
+          ,title: '用户数据表'
+          , defaultToolbar: ['filter', 'print']//数据表格工具栏右侧关闭导出按钮
+          ,height: 'full-125' // 最大高度减去其他容器已占有的高度差
+          ,cols: [[
+              { type: 'checkbox', fixed: 'left' },
+              { field: 'pictureid', width: 80,title: '任务ID' },
+              { field:'image', width: 200, title:'区域图片', templet: function(d) { return '<div onclick="show_img(this)" ><img src="'+d.image+'" ' + 'alt="" width="75px" height="75px"></a></div>'; }},
+              { field: 'name', width: 130, title: '姓名' },
+              { field: 'age', width: 130, title: '年龄' },
+              { field: 'price', width: 130, title: '悬赏' },
+              { field: 'province', width: 300, title: '地点' },
+              { field: 'event1', title: '操作',  width: 150, minWidth: 100, toolbar: '#barDemo1' },
+              { field: 'image_upload', width: 200, title:'上传图片',},
+              { field: 'event2', title: '操作',  width: 150, minWidth: 100, toolbar: '#barDemo2' },
+              { field: 'result', width: 130, title: '结果' },
+              { field: 'oo', fixed: 'right', title: '选项' }
+
+          ]]
+          ,page: true //开启分页
+          ,limits: [10,30,50]  //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
+          ,limit: 10 //每页默认显示的数量
+          
+      });
+
+      table.on('tool(screen-table)', function(obj){ // 双击 toolDouble
+        var data = obj.data; // 获得当前行数据
+        if(obj.event === 'upload'){
+          // alert("upload")
+          var input = document.createElement('input');
+          input.type = 'file';
+          input.accept = 'image/*';
+          input.onchange = function(event) {
+              var file = event.target.files[0];
+              var reader = new FileReader();
+              reader.onload = function(event) {
+                  var img = document.createElement('img');
+                  img.src = event.target.result;
+                  img.width = 75; // 设置图片的宽度
+                  img.height = 75; // 设置图片的高度
+                  img.onclick = function() { show_img(this); }; // 添加onclick事件处理器
+
+                  // 获取表格的单元格
+                  var cell = obj.tr.children('td[data-field="image_upload"]');
+                  cell.width(200); // 设置单元格的宽度
+                  cell.empty(); // 清空单元格的内容
+                  cell.append(img); // 将图片添加到单元格中
+
+                  // 创建一个FormData对象，并将文件添加到其中
+                  var formData = new FormData();
+                  formData.append('file', file);
+
+                  // 使用fetch API将文件发送到服务器
+                  fetch('/upload', { // 你的上传接口地址
+                      method: 'POST',
+                      body: formData
+                  })
+                  .then(response => response.json())
+                  .then(data => console.log(data))
+                  .catch(error => console.error(error));
+              };
+              reader.readAsDataURL(file);
+          };
+          input.click();
+
+        } else if(obj.event === 'compare'){
+          // alert("compare")
+
+          // 获取当前单元格的pictureid
+          var pictureid = obj.data.pictureid;
+
+          // 使用fetch API调用后端的compare_one2one函数
+          fetch('/compare_one2one', { // 你的接口地址
+              method: 'POST',
+              headers: {
+                  'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ pictureid: pictureid })
+          })
+          .then(response => response.json())
+          .then(data => {
+              // 将返回的结果放入{ fixed: 'right', title: '结果' }单元格中
+              var cell = obj.tr.children('td[data-field="result"]');
+              cell.css('100%');
+              cell.width(130);
+              cell.text(data.result);
+
+          })
+          .catch(error => console.error(error));
+
+        }
+          
+      });
+
     });
-    });
-    function show_img(t) {
-        var t = $(t).find("img");
-        //页面层
-        layer.open({
-            type: 1,
-            title: '区域图片',
-            skin: 'layui-layer-rim', //加上边框
-            area: ['80%', '80%'], //宽高 t.width() t.height()
-            shadeClose: true, //开启遮罩关闭
-            end: function (index, layero) {
-                return false;
-            },
-            content: '<div style="text-align:center"><img src="' + $(t).attr('src') + '" /></div>'
-        });
-    }
+
+
 
 
   </script>
+  <style>
+    .layui-table-cell{
+        height:auto;
+        line-height: 30px;
+    }
+</style>
+
+
+  <script>
+    function show_img(t) {
+      var t = $(t).find("img");
+      //页面层
+      layer.open({
+          type: 1,
+          title: '区域图片',
+          skin: 'layui-layer-rim', //加上边框
+          area: ['80%', '80%'], //宽高 t.width() t.height()
+          shadeClose: true, //开启遮罩关闭
+          end: function (index, layero) {
+              return false;
+          },
+          content: '<div style="text-align:center"><img src="' + $(t).attr('src') + '" /></div>'
+      });
+    }
+  </script>  
 </body>
 
 </html>
