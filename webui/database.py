@@ -187,14 +187,12 @@ def compare_video():
     this_path = os.path.dirname(os.path.abspath(__file__))
     print("this_path: ",this_path)
     # 从 valid_son_folders.json 文件中读取 videoid
-    # exit()
-    # 从 valid_son_folders.json 文件中读取 videoid
+
     with open(os.path.join(this_path, 'static/json/valid_son_folders.json'), 'r') as f:
         video_ids = json.load(f)
 
 
     # 创建一个字典来存储结果
-
     results = []
     for video_id in video_ids:
         # 构造图片的路径
@@ -214,7 +212,7 @@ def compare_video():
             'videoid': video_id,
             'time': query_result[0],
             'place': query_result[1],
-            'img_folder_path': img_folder_path,
+            'img_folder_path': img_folder_path.split('/')[-1] + '/',
             'image_names': image_names,
         }
         results.append(result)
@@ -224,7 +222,7 @@ def compare_video():
 
     print(results)
     # 将结果转换为 JSON 格式并返回
-    exit()
+
     return jsonify(results=results)
 
 
@@ -322,6 +320,7 @@ def missing_one2many_reward():
 #跳转到网页 /missing_one2many_video
 @app.route('/missing_one2many_video')
 def missing_one2many_video():
+
     return render_template('missing_one2many_video.html',Username=tmp_name)
 
 #跳转到网页 /missing_one2one

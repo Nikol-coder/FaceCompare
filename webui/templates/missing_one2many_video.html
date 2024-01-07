@@ -361,27 +361,37 @@
           gallery.innerHTML = '';
 
 
-          // 使用返回的图片列表来更新 gallery
-          for (var i = 0; i < data.image_names.length; i++) {
-            var div = document.createElement('div');
-            div.style.width = '250px';
-            div.style.margin = '10px';  // 添加边距
+          var result = data.results;
+          console.log(result);
 
-            var img = document.createElement('img');
-            img.style.width = '100%';
-            img.style.height = '250px';
-            img.style.objectFit = 'cover';
-            img.src = "{{ url_for('static', filename='manzu_video/') }}" + data.image_names[i];
-            div.appendChild(img);  // 将图片添加到 div 中
+          console.log(result.length);
 
-            // 创建一个文本元素来显示结果
-            var result = document.createElement('p');
-            var image_number = data.image_names[i].split('.')[0];
-            var result_text = data.results[image_number];
-            result.innerHTML = "地点: " + result_text[0][0] + "<br>联系电话: " + result_text[0][1];
-            div.appendChild(result);  // 将结果添加到 div 中
+          for (var j = 0; j < result.length; j++ ){
+              // 使用返回的图片列表来更新 gallery
+              for (var i = 0; i < result[j].image_names.length; i++) {
+                var div = document.createElement('div');
+                div.style.width = '250px';
+                div.style.margin = '10px';  // 添加边距
 
-            gallery.appendChild(div);  // 将 div 添加到 gallery 中
+                var img = document.createElement('img');
+                img.style.width = '100%';
+                img.style.height = '250px';
+                img.style.objectFit = 'cover';
+                img.src = "{{ url_for('static', filename='manzu_video/') }}" + result[j].img_folder_path + result[j].image_names[i];
+                console.log(result[j].img_folder_path + result[j].image_names[i]);
+                console.log(img.src);
+                div.appendChild(img);  // 将图片添加到 div 中
+
+                // 创建一个文本元素来显示结果
+                var resultElement = document.createElement('p');
+                // var image_number = data[j].image_names[i].split('.')[0];
+                // var result_text = data[j].results[image_number];
+                resultElement.innerHTML = "地点: " + result[j].place + "<br>时间: " + result[j].time;
+                div.appendChild(resultElement);  // 将结果添加到 div 中
+
+                gallery.appendChild(div);  // 将 div 添加到 gallery 中
+              }
+
           }
 
         });
