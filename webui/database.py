@@ -175,7 +175,23 @@ def index1():
 #跳转到网页 /lookup
 @app.route('/lookup')
 def lookup():
-    return render_template('lookup.html',Username=tmp_name)
+    return render_template('missing_main.html',Username=tmp_name)
+
+#跳转到网页 /missing_one2one
+@app.route('/missing_one2one')
+def missing_one2one():
+    return render_template('missing_one2one.html',Username=tmp_name)
+
+#跳转到网页 /missing_one2many_reward
+@app.route('/missing_one2many_reward')
+def missing_one2many_reward():
+    return render_template('missing_one2many_reward.html',Username=tmp_name)
+
+#跳转到网页 /missing_one2many_video
+@app.route('/missing_one2many_video')
+def missing_one2many_video():
+    return render_template('missing_one2many_video.html',Username=tmp_name)
+
 
 # 跳转到网页 /createuser
 @app.route('/createuser')
