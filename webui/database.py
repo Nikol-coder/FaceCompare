@@ -56,9 +56,9 @@ def index():
     # 返回结果
     # return render_template('selectuser.html')
     # return render_template('manager_login.html')
-    # return render_template('login.html')
+    return render_template('login.html')
     # return render_template('test.html')
-    return missing_one2many_video()
+    # return missing_one2many_video()
 
 
 @app.route('/slipvideo', methods=['POST'])
