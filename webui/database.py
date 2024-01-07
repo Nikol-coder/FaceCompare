@@ -30,7 +30,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
-app.config['MYSQL_DB'] = 'facecp'
+app.config['MYSQL_DB'] = 'face'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -478,8 +478,9 @@ def show_user_Task():
     print(tasks)
 
     data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
-
-    with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_json = os.path.join(this_path, "static/json/manager/demo1.json")
+    with open(path_json, "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
         f.close()
  
@@ -504,8 +505,9 @@ def manage_video():
         videos.append(video)
     print(videos)
     data_json = {"code": 0, "msg": "响应失败？", "count": len(videos), "data": videos}
-
-    with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_json = os.path.join(this_path, "static/json/manager/demo1.json")
+    with open(path_json, "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
         f.close()
 
@@ -533,8 +535,9 @@ def user_manage():
         users.append(user)
 
     data_json = {"code": 0, "msg": "响应失败？", "count": len(users), "data": users}
-
-    with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_json = os.path.join(this_path, "static/json/manager/demo1.json")
+    with open(path_json, "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
         f.close()
 
@@ -561,8 +564,9 @@ def task_manage():
         tasks.append(task)
 
     data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
-
-    with open("./static/json/manager/demo1.json", "w", encoding='utf-8') as f:
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_json = os.path.join(this_path, "static/json/manager/demo1.json")
+    with open(path_json, "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
         f.close()
     print(tasks)
@@ -588,8 +592,10 @@ def delete_video():
         print("删除悬赏！！！")
     
     db_delete_video(videoid)
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_json = os.path.join(this_path, "'static/video/'")
 
-    video_path = '/static/video/' + videoid + '.mp4'
+    video_path = path_json + videoid + '.mp4'
     if os.path.exists(video_path):
         os.remove(video_path)
     else:
@@ -666,7 +672,9 @@ def upload_video():
     if videoid is not None:
         print("videoid: ", videoid)
         filename = videoid + '.mp4'
-        video.save(os.path.join('/static/video/', filename))
+        this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+        path_video = os.path.join(this_path, "'static/video/'")
+        video.save(os.path.join(path_video, filename))
 
     # 保存地点和时间到数据库
     # ...
@@ -777,8 +785,10 @@ def delete_reward():
         print("删除悬赏！！！")
 
     db_delete_reward(pictureid)
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_pic = os.path.join(this_path, "'static/test/'")
 
-    picture_path = '/static/test/' + pictureid + '.jpg'
+    picture_path = path_pic + pictureid + '.jpg'
     if os.path.exists(picture_path):
         os.remove(picture_path)
     else:
@@ -817,7 +827,9 @@ def modify_reward():
         picture = request.files['picture']
         print("picture: ", picture)
         filename = pictureid + '.jpg'
-        picture.save(os.path.join('/static/test/', filename))
+        this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+        path_pic = os.path.join(this_path, "'static/test/'")
+        picture.save(os.path.join(path_pic, filename))
 
     response_data = {
         'status': 'success',
