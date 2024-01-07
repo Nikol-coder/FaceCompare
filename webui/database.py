@@ -16,6 +16,7 @@ import json
 import os
 import subprocess
 from flask import send_file
+from werkzeug.utils import secure_filename
 
 # app = Flask(__name__)
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
@@ -30,7 +31,7 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
-app.config['MYSQL_DB'] = 'face'
+app.config['MYSQL_DB'] = 'facecp'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -55,7 +56,37 @@ def index():
     # return render_template('selectuser.html')
     # return render_template('manager_login.html')
     return render_template('login.html')
+    # return render_template('test.html')
 
+
+@app.route('/slipvideo', methods=['POST'])
+def slipvideo():
+    # 检查是否有文件被上传
+    if 'video' not in request.files:
+        return 'No file part'
+    file = request.files['video']
+
+    # 如果用户没有选择文件，浏览器也会提交一个空的文件部分，所以需要检查文件是否存在
+    if file.filename == '':
+        return 'No selected file'
+
+    # 保存文件
+    filename = secure_filename(file.filename)
+    print(filename)
+    #显示当前目录
+    print(os.getcwd())
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    print("this_path: ",this_path)
+    file_path = os.path.normpath(os.path.join(this_path, "static/video/"))
+    print("upload file_path: ", file_path)
+    file.save(os.path.join(file_path, filename))
+
+
+    # 调用 slipface.py 并传入视频信息参数
+    subprocess.run(['python', 'slipface.py', filename],cwd=os.path.normpath(this_path))
+
+    # 返回结果
+    return render_template('test.html',info='视频处理成功')
 
 @app.route('/modify_info', methods=['GET', 'POST'])
 def modify_info():
@@ -709,15 +740,30 @@ def upload_video():
     
     videoid = db_upload_video(place, time, video)
 
-    if videoid is not None:
+    if videoid is not None: 
         print("videoid: ", videoid)
         filename = videoid + '.mp4'
         this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
         path_video = os.path.join(this_path, "static/video/")
+        # print(path_video)
+        # print(filename)
         video.save(os.path.join(path_video, filename))
 
     # 保存地点和时间到数据库
     # ...
+        # 保存文件
+        #显示当前目录
+        file_path = os.path.normpath(os.path.join(this_path, "static/video/"))
+        print("upload file_path: ", file_path)
+
+        # # 返回结果
+        # return render_template('test.html',info='视频处理成功')
+
+        # 调用 slipface.py 并传入视频信息参数
+        subprocess.run(['python', 'slipface.py', filename],cwd=os.path.normpath(this_path))
+
+        # 返回结果
+        # return render_template('test.html',info='视频处理成功')
 
     response_data = {
         'status': 'success',
