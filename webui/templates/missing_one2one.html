@@ -183,7 +183,18 @@
           ,page: true //开启分页
           ,limits: [10,30,50]  //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
           ,limit: 10 //每页默认显示的数量
-          
+          ,done: function(){
+            $(".layui-table-main tr").each(function (index, val) {
+              $(".layui-table-fixed").each(function () {
+                  $($(this).find(".layui-table-body tbody tr")[index]).height($(val).height());
+              });
+            });
+            $(".layui-table-header tr").each(function (index, val) {
+                $(".layui-table-fixed").each(function () {
+                    $($(this).find(".layui-table-header thead tr")[index]).height($(val).height());
+                });
+            });
+          }
       });
 
       table.on('tool(screen-table)', function(obj){ // 双击 toolDouble
