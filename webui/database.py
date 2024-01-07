@@ -160,7 +160,10 @@ def compare():
     # 将结果转换为JSON格式并返回
     return jsonify(image_names=image_names, results=results)
 
-
+# 跳转到网页 /createuser
+@app.route('/createuser')
+def createuser():
+    return render_template('createuser.html')
 
 #跳转到修改密码网页 /modify_mima
 @app.route('/modify_mima')
@@ -177,11 +180,6 @@ def index1():
 def lookup():
     return render_template('missing_main.html',Username=tmp_name)
 
-#跳转到网页 /missing_one2one
-@app.route('/missing_one2one')
-def missing_one2one():
-    return render_template('missing_one2one.html',Username=tmp_name)
-
 #跳转到网页 /missing_one2many_reward
 @app.route('/missing_one2many_reward')
 def missing_one2many_reward():
@@ -192,11 +190,37 @@ def missing_one2many_reward():
 def missing_one2many_video():
     return render_template('missing_one2many_video.html',Username=tmp_name)
 
+#跳转到网页 /missing_one2one
+@app.route('/missing_one2one')
+def missing_one2one():
+    if not db.open:
+        db.ping(reconnect=True)
+    cursor.execute("SELECT * FROM pictable WHERE flag = 1")    # 待修改 flag 应有三种状态
+    result = cursor.fetchall()
+    # 处理查询结果
+    tasks = []
+    for row in result:
+        task = {
+            'pictureid': row[0],
+            'image':'/static/test/'+ str(int(row[0])) + '.jpg',
+            'name': row[2],
+            'age': row[3],
+            'province': row[4],
+            'price': row[5]            
+        }
+        tasks.append(task)
 
-# 跳转到网页 /createuser
-@app.route('/createuser')
-def createuser():
-    return render_template('createuser.html')
+    data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_json = os.path.join(this_path, "static/json/manager/demo1.json")
+    with open(path_json, "w", encoding='utf-8') as f:
+        json.dump(data_json, f, indent=4, ensure_ascii=False)
+        f.close()
+    print(tasks)
+
+    # 返回结果
+    return render_template('missing_one2one.html',Username=tmp_name)
+
 
 #查看图片
 @app.route('/api/images', methods=['GET'])
@@ -609,7 +633,7 @@ def delete_video():
     
     db_delete_video(videoid)
     this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-    path_json = os.path.join(this_path, "'static/video/'")
+    path_json = os.path.join(this_path, "static/video/")
 
     video_path = path_json + videoid + '.mp4'
     if os.path.exists(video_path):
@@ -689,7 +713,7 @@ def upload_video():
         print("videoid: ", videoid)
         filename = videoid + '.mp4'
         this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-        path_video = os.path.join(this_path, "'static/video/'")
+        path_video = os.path.join(this_path, "static/video/")
         video.save(os.path.join(path_video, filename))
 
     # 保存地点和时间到数据库
@@ -802,13 +826,12 @@ def delete_reward():
 
     db_delete_reward(pictureid)
     this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-    path_pic = os.path.join(this_path, "'static/test/'")
+    path_pic = os.path.join(this_path, 'static/test/', pictureid + '.jpg')
 
-    picture_path = path_pic + pictureid + '.jpg'
-    if os.path.exists(picture_path):
-        os.remove(picture_path)
+    if os.path.exists(path_pic):
+        os.remove(path_pic)
     else:
-        print("The file does not exist: ", picture_path)
+        print("The file does not exist: ", path_pic)
 
     response_data = {
         'status': 'success',
@@ -844,7 +867,7 @@ def modify_reward():
         print("picture: ", picture)
         filename = pictureid + '.jpg'
         this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-        path_pic = os.path.join(this_path, "'static/test/'")
+        path_pic = os.path.join(this_path, "static/test/")
         picture.save(os.path.join(path_pic, filename))
 
     response_data = {
@@ -946,21 +969,21 @@ def db_upload_video(place, time, video):
 # 通过悬赏    #  flag = 1
 def db_permit_task(pictureid):
     print("pictureid:", pictureid)
-    cursor.execute("UPDATE pictable SET flag = 1 WHERE pictureid = %s", (pictureid))
+    cursor.execute("UPDATE pictable SET flag = 1 WHERE picid = %s", (pictureid))
     db.commit()
     return True
 
 # 拒绝悬赏    # flag = 2
 def db_deny_task(pictureid):
     print("pictureid:", pictureid)
-    cursor.execute("UPDATE pictable SET flag = 2 WHERE pictureid = %s", (pictureid))
+    cursor.execute("UPDATE pictable SET flag = 2 WHERE picid = %s", (pictureid))
     db.commit()
     return True
 
 # 删除悬赏
 def db_delete_reward(pictureid):
     print("pictureid:", pictureid)
-    cursor.execute("DELETE FROM pictable WHERE pictureid = %s", (pictureid))
+    cursor.execute("DELETE FROM pictable WHERE picid = %s", (pictureid))
     db.commit()
     return True
 
@@ -971,7 +994,7 @@ def db_modify_reward(pictureid, name, age, province, price):
     print("age: ", age)
     print("province: ", province)
     print("price: ", price)
-    cursor.execute("UPDATE pictable SET name = %s, age = %s, province = %s, price = %s WHERE pictureid = %s", (name, age, province, price, pictureid))
+    cursor.execute("UPDATE pictable SET name = %s, age = %s, province = %s, price = %s WHERE picid = %s", (name, age, province, price, pictureid))
     db.commit()
     return True
 
