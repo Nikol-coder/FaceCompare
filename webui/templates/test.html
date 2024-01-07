@@ -86,71 +86,18 @@
   <div class="layui-body">
     <!-- 内容主体区域 -->
     <div style="padding: 15px;">
+      {% if info is not none %}
       <blockquote class="layui-elem-quote layui-text">
-        最近失踪人口
+        {{info}}
       </blockquote>
+      {% endif %}
 
-      <div class="layui-card layui-panel">
-        <div class="layui-card-header">
-          近一个月失踪人口图片
-        </div>
-        <div class="layui-card-body">
+      <form action="/slipvideo" method="post" enctype="multipart/form-data">
+        <input type="file" name="video">
+        <input type="submit">
+      </form>
 
-      <div class="container">
-        <h2>失踪人口图片</h2>
-        <div class="gallery">
-          <img src="/static/images/1.jpg" alt="图片1">
-          <img src="/static/images/2.jpg" alt="图片2">
-          <img src="/static/images/3.jpg" alt="图片3">
-          <img src="/static/images/1.jpg" alt="图片4">
-          <img src="/static/images/2.jpg" alt="图片5">
-          <img src="/static/images/3.jpg" alt="图片6">
-          <img src="/static/images/1.jpg" alt="图片7">
-          <img src="/static/images/2.jpg" alt="图片8">
-          <img src="/static/images/3.jpg" alt="图片9">
-          <img src="/static/images/3.jpg" alt="图片9">
-        </div>
 
-      </div>
-        </div>
-
-      </div>
-
-      <div class="layui-card layui-panel">
-        <div class="layui-card-header">
-          近一个月失踪人口视频
-        </div>
-        <div class="layui-card-body">
-
-      <div class="container">
-        <h2>监控视频</h2>
-        <div class="video-container">
-          <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-          <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-          <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-        </div>
-      </div>
-
-       </div>
-      </div>
-
-            <div class="layui-card layui-panel">
-        <div class="layui-card-header">
-          近三个月失踪人口视频
-        </div>
-        <div class="layui-card-body">
-
-      <div class="container">
-        <h2>监控视频</h2>
-        <div class="video-container">
-          <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-          <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-          <iframe src="/static/video/video.mp4" allowfullscreen></iframe>
-        </div>
-      </div>
-
-       </div>
-      </div>
 
       <br><br>
     </div>
