@@ -720,28 +720,26 @@ def upload_video():
         print("videoid: ", videoid)
         filename = videoid + '.mp4'
         this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-        path_video = os.path.join(this_path, "'static/video/'")
+        path_video = os.path.join(this_path, "static/video/")
+        # print(path_video)
+        # print(filename)
         video.save(os.path.join(path_video, filename))
 
     # 保存地点和时间到数据库
     # ...
         # 保存文件
-        print(filename)
         #显示当前目录
-        print(os.getcwd())
-        this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-        print("this_path: ",this_path)
         file_path = os.path.normpath(os.path.join(this_path, "static/video/"))
         print("upload file_path: ", file_path)
 
-        # 返回结果
-        return render_template('test.html',info='视频处理成功')
+        # # 返回结果
+        # return render_template('test.html',info='视频处理成功')
 
         # 调用 slipface.py 并传入视频信息参数
         subprocess.run(['python', 'slipface.py', filename],cwd=os.path.normpath(this_path))
 
         # 返回结果
-        return render_template('test.html',info='视频处理成功')
+        # return render_template('test.html',info='视频处理成功')
 
     response_data = {
         'status': 'success',
