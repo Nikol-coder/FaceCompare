@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <title>用户主页</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
+  
+</head>
+
+<body>
+  <div class="layui-layout layui-layout-admin">
+    <div class="layui-header">
+      <div class="layui-logo layui-hide-xs layui-bg-black">用户主页</div>
+      <!-- 头部区域（可配合layui 已有的水平导航） -->
+      <ul class="layui-nav layui-layout-left">
+        <!-- 移动端显示 -->
+        <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+          <i class="layui-icon layui-icon-spread-left"></i>
+        </li>
+        <li class="layui-nav-item layui-hide-xs"><a href="/index">查看失踪人口</a></li>
+        <li class="layui-nav-item layui-hide-xs"><a href="#">娃丢了</a></li>
+        <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">悬赏管理</a></li>
+        <li class="layui-nav-item">
+          <a href="javascript:;">个人中心</a>
+          <dl class="layui-nav-child">
+            <dd><a href="/modify_mima">修改密码</a></dd>
+            <dd><a href="javascript:;">更改个人信息</a></dd>
+          </dl>
+        </li>
+        <li class="layui-nav-item layui-hide-xs"><a href="javascript:;">关于我们</a></li>
+      </ul>
+      <ul class="layui-nav layui-layout-right">
+        <li class="layui-nav-item layui-hide layui-show-sm-inline-block">
+          <a href="javascript:;">
+            <button class="layui-btn">
+              <i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop"></i>
+            </button>
+            <label id="user"></label>
+          </a>
+          <dl class="layui-nav-child">
+            <dd><a href="javascript:;">我的发布</a></dd>
+            <dd><a href="javascript:;">退出</a></dd>
+          </dl>
+        </li>
+
+        <link href="//cdn.staticfile.org/layui/2.9.1/css/layui.css" rel="stylesheet">
+        <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+          <a href="javascript:;">
+            <i class="layui-icon layui-icon-more-vertical"></i>
+          </a>
+        </li>
+      </ul>
+    </div>
+
+
+    <div class="layui-side layui-bg-black">
+        <div class="layui-side-scroll">
+          <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+          <ul class="layui-nav layui-nav-tree" lay-filter="test">
+    
+            <li class="layui-nav-item"><a href="/missing_one2one">one2one</a></li>
+            <li class="layui-nav-item"><a href="/missing_one2many_reward">one2many_reward</a></li>
+            <li class="layui-nav-item"><a href="/missing_one2many_video">one2many_video</a></li>
+    
+          </ul>
+        </div>
+      </div>
+
+
+    <div class="layui-body">
+      <!-- 内容主体区域 -->
+        <div style="padding: 15px;">
+            <blockquote class="layui-elem-quote layui-text">
+                one2one
+            </blockquote>
+            <blockquote class="layui-elem-quote layui-text">
+                one2many_reward
+            </blockquote>
+            <blockquote class="layui-elem-quote layui-text">
+                one2many_video
+            </blockquote>
+        </div>
+      
+
+
+        <div class="layui-footer">
+          <!-- 底部固定区域 -->
+          FaceCompare提供技术支持
+        </div>
+      
+    </div>
+  </div>
+  <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
+
+  <script>
+    // 获取 Username
+    var username = "{{Username}}".trim();
+
+    // 如果 Username 不为 "none"，则存储它
+    if (username !== "none") {
+      localStorage.setItem("Username", username);
+    } else {
+      // 如果 Username 为 "none"，则获取存储的值
+      var storedUsername = localStorage.getItem("Username");
+      if (storedUsername) {
+        username = storedUsername;
+      }
+    }
+
+    // 获取 id 为 "user" 的元素
+    var userElement = document.getElementById('user');
+
+    // 设置元素的文本内容为 username
+    userElement.innerText = username;
+  </script>
+
+
+  <script>
+    //JS 
+    layui.use(['element', 'layer', 'util'], function () {
+      var element = layui.element;
+      var layer = layui.layer;
+      var util = layui.util;
+      var $ = layui.$;
+
+      //头部事件
+      util.event('lay-header-event', {
+        menuLeft: function (othis) { // 左侧菜单事件
+          layer.msg('展开左侧菜单的操作', { icon: 0 });
+        },
+        menuRight: function () {  // 右侧菜单事件
+          layer.open({
+            type: 1,
+            title: '更多',
+            content: '<div style="padding: 15px;">处理右侧面板的操作</div>',
+            area: ['260px', '100%'],
+            offset: 'rt', // 右上角
+            anim: 'slideLeft', // 从右侧抽屉滑出
+            shadeClose: true,
+            scrollbar: false
+          });
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

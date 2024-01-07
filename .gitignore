@@ -1,5 +1,4 @@
 face/InsightFace_Pytorch-master/model_ir_se50.pth
-webui/static/json/manager/demo1.json
 face/uploaded_image.jpg
 face/InsightFace_Pytorch-master/__pycache__/model.cpython-311.pyc
 face/InsightFace_Pytorch-master/mtcnn_pytorch/src/__pycache__/__init__.cpython-311.pyc
