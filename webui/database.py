@@ -33,6 +33,7 @@ app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
 app.config['MYSQL_DB'] = 'facecp'
+app.secret_key='any random string'
 
 # 创建数据库连接
 db = pymysql.connect(
@@ -503,6 +504,8 @@ def login():
         db.commit()
         password = hash_password(password)
         if password == mima:
+            session['username'] = tmp_name
+            session['userid'] = userid
             print('User login successfully')
             return render_template('index.html', Username=tmp_name)
         else:
@@ -565,43 +568,52 @@ def delete_user():
 # 用户登陆后界面
 @app.route('/user_login')
 def user_login():
+    session['username'] = 'John'
+    session['userid'] = 3
     return render_template('index.html',Username='John')
 
 @app.route('/reward_test')
 def reward_test():
+    session['username'] = 'John'
+    session['userid'] = 3
     return render_template('user_reward_manage.html')
 
 
 # 用户悬赏管理界面
-@app.route('/user_reward_manage/<username>/')
-def user_reward_manage(username):
+@app.route('/user_reward_manage')
+def user_reward_manage():
     if not db.open:
         db.ping(reconnect=True)
-    cursor.execute("SELECT * FROM usertable WHERE username = %s", username)
+    cursor.execute("SELECT * FROM pictable WHERE flag = 1")
     results = cursor.fetchall()
     print(results)
-    # userid = 3
-    # cursor.execute('SELECT * FROM pictable WHERE userid = %d' % userid)
-    # results = cursor.fetchall()
-    # print(results)
-    # db.commit()
+    tasks = []
+    for row in results:
+        task = {
+            'pictureid': row[0],
+            'name': row[2],
+            'age': row[3],
+            'province': row[4],
+            'price': row[5]
+        }
+        tasks.append(task)
+
+    data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    path_json = os.path.join(this_path, "static/json/reward_data.json")
+    with open(path_json, "w", encoding='utf-8') as f:
+        json.dump(data_json, f, indent=4, ensure_ascii=False)
+        f.close()
+
     return render_template('user_reward_manage.html')
 
-# 用户进行悬赏
-@app.route('/user_add_reward')
-def user_add_reward():
-    return render_template('user_add_reward.html')
+@app.route('/user_reward_manage/my_reward')
+def user_my_reward():
+    return render_template('user_my_reward.html')
 
-# 用户查看悬赏
-@app.route('/user_show_reward')
-def user_show_reward():
-    return render_template('user_show_reward.html')
-
-# 用户删除悬赏
-@app.route('/user_delete_reward')
-def user_delete_reward():
-    return render_template('user_delete_reward.html')
-
+@app.route('/user_reward_manage/pending_review/')
+def user_reward_pending_review():
+    return render_template('user_reward_pending_review.html')
 
 # -------manager--------
 #    jxl
