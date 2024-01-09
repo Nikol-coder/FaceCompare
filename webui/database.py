@@ -286,9 +286,24 @@ def compare_one2one():
     #
     # 调用
     #
-    #result = subprocess.run(['python', 'demo_one2one.py', filename], cwd=os.path.normpath(os.path.join(this_path, "../face/InsightFace_Pytorch-master")), stdout=subprocess.PIPE)
-    result = 5.099
-    return jsonify({"result": result})
+    # 调用 demo_one2one.py 并传入视频信息参数
+    # subprocess.run(['python', 'demo_one2one.py', filename], cwd=os.path.normpath(os.path.join(this_path, "../face/InsightFace_Pytorch-master")))
+    # 调用 demo_one2one.py 并传递参数
+    subprocess.run(['python', 'demo_one2one.py', path_pic, path_pic2], cwd=os.path.normpath(os.path.join(this_path, "../face/InsightFace_Pytorch-master")))
+    # 解析结果
+    # 在 database.py 中
+    # with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../sim_12.txt'), 'r') as f:
+    #     sim_12 = float(f.read())
+    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+    # print(this_path)
+    sim_12_path = os.path.join(this_path, "sim_12.txt")
+    # exit()
+    with open(sim_12_path, 'r') as f:
+        sim_12 = float(f.read())
+        # result = json.loads(result.stdout)
+        print("result: ", sim_12)
+        # result = 5.099
+        return jsonify({"result": sim_12})
 
 
 

@@ -222,7 +222,7 @@
 
                   // 创建一个FormData对象，并将文件添加到其中
                   var formData = new FormData();
-                  formData.append('file', file);
+                  formData.append('image', file);
 
                   // 使用fetch API将文件发送到服务器
                   fetch('/upload', { // 你的上传接口地址
