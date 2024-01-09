@@ -4,7 +4,7 @@ from operator import ne
 import re
 from sys import path
 from tkinter import image_names
-from flask import Flask, jsonify, url_for
+from flask import Flask, jsonify, url_for, session
 import flask
 from matplotlib.pylab import f
 from numpy import place
@@ -27,8 +27,8 @@ app = Flask(__name__, instance_relative_config=True, template_folder='templates'
 # app.config['MYSQL_USER'] = 'username'
 # app.config['MYSQL_PASSWORD'] = 'password'
 # app.config['MYSQL_DB'] = 'database_name'
-# app.config['MYSQL_HOST'] = '192.168.230.129'
-app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_HOST'] = '192.168.230.129'
+# app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
@@ -565,7 +565,7 @@ def delete_user():
 # 用户登陆后界面
 @app.route('/user_login')
 def user_login():
-    return render_template('index.html',Username=tmp_name)
+    return render_template('index.html',Username='John')
 
 @app.route('/reward_test')
 def reward_test():
@@ -573,11 +573,18 @@ def reward_test():
 
 
 # 用户悬赏管理界面
-@app.route('/user_reward_manage/<int:user_id>')
-def user_reward_manage(user_id):
-    cursor.execute('SELECT * FROM pictable WHERE userid = %d' % user_id)
+@app.route('/user_reward_manage/<username>/')
+def user_reward_manage(username):
+    if not db.open:
+        db.ping(reconnect=True)
+    cursor.execute("SELECT * FROM usertable WHERE username = %s", username)
     results = cursor.fetchall()
     print(results)
+    # userid = 3
+    # cursor.execute('SELECT * FROM pictable WHERE userid = %d' % userid)
+    # results = cursor.fetchall()
+    # print(results)
+    # db.commit()
     return render_template('user_reward_manage.html')
 
 # 用户进行悬赏
