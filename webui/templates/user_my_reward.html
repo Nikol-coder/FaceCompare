@@ -85,9 +85,10 @@
 
     <!-- 加载模块 -->
     <script type="text/javascript">
-        layui.use(['table', 'dropdown'], function(){
+        layui.use(['table', 'layer', 'jquery'], function(){
             var table = layui.table;
-            var dropdown = layui.dropdown;
+            var layer = layui.layer;
+            var $ = layui.jquery;
 
             table.render({
                 elem: "#content",
@@ -104,6 +105,65 @@
                 page: true,
                 // 设置表格工具栏
                 toolbar: '#tableToolbar',
+            });
+
+            /*
+                表头工具栏监听事件
+             */
+            table.on('toolbar(test)', function(obj){
+                var checkStatus = table.checkStatus(obj.config.id);
+                var eventName = obj.event;
+                console.log(checkStatus);
+                if (eventName == "deleteReward") { // 删除悬赏
+                    layer.confirm("您确定要删除吗？", function(index){
+                        // $.ajax({
+                        //     type: "POST",
+                        //     url: "/user_delete_reward",
+                        //     contentType: "application/json;charset=UTF-8",
+                        //     data: JSON.stringify({
+                        //         selectedData: checkStatus.data
+                        //     }),
+                        //     success: function(data){
+                        //
+                        //     },
+                        //     error: function(){
+                        //
+                        //     }
+                        // });
+
+                        var selectedData = checkStatus.data;
+                        // 删除选中的行
+                        for (var i = 0; i < selectedData.length; i++) {
+                            table.reload('content', {
+                                url: '/user_delete_reward',  // 后端删除数据的接口
+                                method: 'POST',
+                                where: {
+                                    // 向后端传递删除操作所需的数据
+                                    pictureid: selectedData[i].pictureid  // 假设每行数据有一个id字段
+                                },
+                                done: function(res){
+                                    // 删除成功的回调
+                                    if (res.msg === 'success') {
+                                        layer.msg('删除成功');
+                                    } else {
+                                        window.location.href = '/user_reward_manage/my_reward';
+                                        layer.msg('删除失败');
+                                    }
+                                }
+                            });
+                        }
+                        layer.close(index)
+                    });
+                } else if (eventName == "addReward") { // 添加悬赏
+
+                }
+            });
+
+            /*
+                监听行工具栏事件
+             */
+            table.on('tool(test)', function(obj){
+
             });
         });
     </script>

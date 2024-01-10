@@ -586,7 +586,7 @@ def user_reward_manage():
         db.ping(reconnect=True)
     cursor.execute("SELECT * FROM pictable WHERE flag = 1")
     results = cursor.fetchall()
-    print(results)
+    # print(results)
     tasks = []
     for row in results:
         task = {
@@ -614,7 +614,7 @@ def user_my_reward():
     userid = session['userid']
     cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 1" % userid)
     results = cursor.fetchall()
-    print(results)
+    # print(results)
     tasks = []
     for row in results:
         task = {
@@ -641,7 +641,7 @@ def user_reward_pending_review():
     userid = session['userid']
     cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 0" % userid)
     results = cursor.fetchall()
-    print(results)
+    # print(results)
     tasks = []
     for row in results:
         task = {
@@ -660,6 +660,43 @@ def user_reward_pending_review():
         json.dump(data_json, f, indent=4, ensure_ascii=False)
         f.close()
     return render_template('user_reward_pending_review.html')
+
+@app.route('/user_delete_reward', methods=['POST'])
+def user_delete_reward():
+    try:
+        # data = request.get_json()  # 使用get_json()来解析JSON数据
+        # selected_data = data.get('selectedData')
+        # print(selected_data)
+        # for reward in selected_data:
+        #     pictureid = reward[0]
+        #     if not db.open:
+        #         db.ping(reconnect=True)
+        #     cursor.execute("DELETE FROM pictable WHERE picid = %d", (pictureid))
+        #     db.commit()
+        pictureid = request.form.get('pictureid')
+        cursor.execute("DELETE FROM pictable WHERE picid = %s", (pictureid))
+        db.commit()
+        # print(pictureid)
+        userid = session['userid']
+        cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 1" % userid)
+        results = cursor.fetchall()
+        # print(results)
+        tasks = []
+        for row in results:
+            task = {
+                'pictureid': row[0],
+                'name': row[2],
+                'age': row[3],
+                'province': row[4],
+                'price': row[5]
+            }
+            tasks.append(task)
+        response_data = {'code': 0, 'msg': 'success', 'data': tasks}
+    except Exception as e:
+        print(str(e))
+        response_data = {'code': 1, 'msg': 'error'}
+
+    return jsonify(response_data)
 
 @app.route('/user_sign_out/')
 def user_sign_out():
