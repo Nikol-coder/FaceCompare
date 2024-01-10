@@ -20,19 +20,19 @@
             <div class="layui-logo">悬赏管理</div>
             <ul class="layui-nav layui-layout-left">
                 <!-- 头部左侧菜单 -->
-                <li class="layui-nav-item"><a href="">回到主页</a></li>
+                <li class="layui-nav-item"><a href="{{ url_for('index1', Username=session['username'])}}">回到主页</a></li>
             </ul>
             <!-- 头部右侧菜单 -->
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
                     <a href="javascript:;">
                         <!-- 头部右侧菜单内容 -->
-                        User Name
+                        {{ session['username'] }}
                     </a>
                     <dl class="layui-nav-child">
                         <!-- 子菜单项 -->
-                        <dd><a href="">Change Password</a></dd>
-                        <dd><a href="javascript:;">Sign out</a></dd>
+                        <dd><a href="{{ url_for('modify_mima') }}">Change Password</a></dd>
+                        <dd><a href="{{ url_for('user_sign_out') }}">Sign out</a></dd>
                     </dl>
                 </li>
             </ul>

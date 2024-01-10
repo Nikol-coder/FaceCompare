@@ -4,7 +4,7 @@ from operator import ne
 import re
 from sys import path
 from tkinter import image_names
-from flask import Flask, jsonify, url_for, session
+from flask import Flask, jsonify, url_for, session, redirect
 import flask
 from matplotlib.pylab import f
 from numpy import place
@@ -660,6 +660,11 @@ def user_reward_pending_review():
         json.dump(data_json, f, indent=4, ensure_ascii=False)
         f.close()
     return render_template('user_reward_pending_review.html')
+
+@app.route('/user_sign_out/')
+def user_sign_out():
+    session.clear()
+    return redirect(url_for('index'))
 
 # -------manager--------
 #    jxl
