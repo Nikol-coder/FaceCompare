@@ -698,6 +698,38 @@ def user_delete_reward():
 
     return jsonify(response_data)
 
+
+@app.route('/user_add_reward', methods=['POST'])
+def user_add_reward():
+    # 获取表单数据
+    name = request.form.get('name')
+    age = request.form.get('age')
+    province = request.form.get('province')
+    price = request.form.get('price')
+
+    # 获取上传的文件
+    file = request.files['file']
+
+    # print('INSERT INTO pictable VALUES(0, %s, %s, %s, %s, %s, 0)' % (session['userid'], name, age, province, price))
+
+    # 上传数据库
+    if not db.open:
+        db.ping(reconnect=True)
+    userid = session['userid']
+    cursor.execute("INSERT INTO pictable VALUES(0, %s, %s, %s, %s, %s, 0)", (userid, name, age, province, price))
+    pictureid = cursor.lastrowid
+    db.commit()
+
+    # 保存文件
+    if pictureid is not None:
+        filename = str(pictureid) + '.jpg'
+        this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
+        path_image = os.path.join(this_path, "static/images/")
+        file.save(os.path.join(path_image, filename))
+
+    return {'code': 0, 'msg': 'Success'}
+
+
 @app.route('/user_sign_out/')
 def user_sign_out():
     session.clear()

@@ -8,6 +8,7 @@
     <link href="//cdn.staticfile.org/layui/2.9.3/css/layui.css" rel="stylesheet">
     <!-- 引入 layui.js -->
     <script src="//cdn.staticfile.org/layui/2.9.3/layui.js"></script>
+    <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
 </head>
 
 <body>
@@ -79,6 +80,53 @@
         <div class="layui-clear-space">
             <a class="layui-btn layui-btn-xs" lay-event="see">查看图片</a>
             <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        </div>
+    </script>
+
+    <!-- 添加悬赏的表单 -->
+    <script type="text/html" id="addRewardForm">
+        <div class="layui-form">
+            <div class="layui-form-item">
+                <div class="layui-input-group">
+                    <div class="layui-input-split layui-input-prefix">用户名</div>
+                    <input type="text" id="name-input" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-group">
+                    <div class="layui-input-split layui-input-prefix">年龄</div>
+                    <input type="text" id="age-input" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-group">
+                    <div class="layui-input-split layui-input-prefix">省份</div>
+                    <input type="text" id="province-input" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-group">
+                    <div class="layui-input-split layui-input-prefix">悬赏金额</div>
+                    <input type="text" id="price-input" class="layui-input">
+                </div>
+            </div>
+
+            <div class="layui-form-item">
+                <div class="layui-input-group">
+                    <div class="layui-input-split layui-input-prefix">上传图片</div>
+                    <input type="file" class="layui-input" name="FileUpload" id="FileUpload" accept="image/png, image/jpeg">
+                </div>
+            </div>
+
+            <!-- <div class="layui-form-item"> -->
+            <!--     <div class="layui-input-group"> -->
+            <!--         <button type="button" class="layui-btn" id="submit-btn" style="display: inline-block;">提交</button> -->
+            <!--         <button type="button" class="layui-btn layui-btn-primary" id="cancel-btn" style="display: inline-block; margin-left: 10px;">取消</button> -->
+            <!--     </div> -->
+            <!-- </div> -->
         </div>
     </script>
 
@@ -155,7 +203,61 @@
                         layer.close(index)
                     });
                 } else if (eventName == "addReward") { // 添加悬赏
+                    layer.open({
+                        type: 1,
+                        title: '添加悬赏',
+                        content: $('#addRewardForm').html(), // 使用 .html() 获取 HTML 内容
+                        area: ['500px', '700px'],
+                        btn: ['提交', '取消'],
+                        yes: function(index, layero) {
+                            // 用户点击提交按钮时的回调
+                            // 获取表单数据
+                            var formData = new FormData();
+                            formData.append('name', $(layero).find('#name-input').val());
+                            formData.append('age', $(layero).find('#age-input').val());
+                            formData.append('province', $(layero).find('#province-input').val());
+                            formData.append('price', $(layero).find('#price-input').val());
 
+                            // 将文件添加到 formData 中
+                            var fileInput = $(layero).find('#FileUpload')[0]; // 注意这里使用 [0] 来获取 DOM 元素
+                            formData.append('file', fileInput.files[0]);
+                            // console.log(formData);
+
+                            // 简单的验证
+                            if (!formData.get('name') || !formData.get('age') || !formData.get('province') || !formData.get('price') || !fileInput.files[0]) {
+                                layer.msg('请填写完整的表单信息');
+                                return;
+                            }
+
+                            // 发送数据到后端
+                            $.ajax({
+                                type: "POST",
+                                url: "/user_add_reward",
+                                data: formData,
+                                contentType: false,
+                                processData: false,
+                                success: function(res) {
+                                    // 处理后端返回的结果
+                                    if (res.code === 0) {
+                                        layer.msg('悬赏添加成功，请在待审核的悬赏中查看');
+                                        // 关闭弹出层
+                                        layer.close(index);
+                                        // 刷新表格，重新加载数据
+                                        table.reload('content');
+                                    } else {
+                                        layer.msg('悬赏添加失败：' + res.msg);
+                                    }
+                                },
+                                error: function() {
+                                    layer.msg('请求失败，请稍后重试');
+                                }
+                            });
+                        },
+                        btn2: function() {
+                            // 用户点击取消按钮时的回调
+                            layer.closeAll();
+                        }
+                    });
                 }
             });
 
