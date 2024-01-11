@@ -103,6 +103,25 @@
                 // 设置表格工具栏
                 toolbar: '#tableToolbar',
             });
+
+            /*
+                监听行工具栏事件
+             */
+            table.on('tool(test)', function(obj) {
+                var data = obj.data;
+                // console.log(data);
+                var eventName = obj.event;
+
+                if (eventName === 'see') {
+                    var image_url = "/static/images/" + data.pictureid + ".jpg";
+                    layer.open({
+                        title: data.name,
+                        type: 1,
+                        area: ['80%', '80%'],
+                        content: '<div style="padding: 16px;"><img src="' + image_url + '" alt="My Image" /></div>'
+                    });
+                }
+            });
         });
     </script>
 </body>

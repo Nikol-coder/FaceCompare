@@ -265,7 +265,131 @@
                 监听行工具栏事件
              */
             table.on('tool(test)', function(obj){
+                var data = obj.data;
+                // console.log(data);
+                var eventName = obj.event;
 
+                if (eventName === 'see') {
+                    var image_url = "/static/images/" + data.pictureid + ".jpg";
+                    layer.open({
+                        title: data.name,
+                        type: 1,
+                        area: ['80%', '80%'],
+                        content: '<div style="padding: 16px;"><img src="' + image_url + '" alt="My Image" /></div>'
+                    });
+                } else if (eventName === 'edit') {
+                    layer.open({
+                        title: '编辑 - id:'+ data.pictureid,
+                        type: 1,
+                        area: ['80%','80%'],
+                        content: '<div class="layui-form">' +
+                                    '<div class="layui-form-item">' +
+                                        '<div class="layui-input-group">' +
+                                            '<div class="layui-input-split layui-input-prefix">用户名</div>' +
+                                            '<input type="text" id="name-input" placeholder="' + data.name + '" class="layui-input"></input>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="layui-form-item">' +
+                                        '<div class="layui-input-group">' +
+                                            '<div class="layui-input-split layui-input-prefix">年龄</div>' +
+                                            '<input type="text" id="age-input" placeholder="' + data.age + '" class="layui-input"></input>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="layui-form-item">' +
+                                        '<div class="layui-input-group">' +
+                                            '<div class="layui-input-split layui-input-prefix">省份</div>' +
+                                            '<input type="text" id="province-input" placeholder="' + data.province + '" class="layui-input"></input>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="layui-form-item">' +
+                                        '<div class="layui-input-group">' +
+                                            '<div class="layui-input-split layui-input-prefix">悬赏金额</div>' +
+                                            '<input type="text" id="price-input" placeholder="' + data.price + '" class="layui-input"></input>' +
+                                        '</div>' +
+                                    '</div>' +
+                                    '<div class="layui-form-item">' +
+                                        '<div class="layui-input-group">' +
+                                            '<div class="layui-input-split layui-input-prefix">上传图片</div>' +
+                                            '<input type="file" class="layui-input" name="FileUpload" id="FileUpload" accept="image/png, image/jpeg" /></input>' +
+                                        '</div>' +
+                                    '</div>' +
+
+                                    '<div class="layui-form-item">' +
+                                      '<div class="layui-input-group">' +
+                                        '<button type="button" class="layui-btn" id="submit-btn" style="display: inline-block;">提交</button>' +
+                                        '<button type="button" class="layui-btn layui-btn-primary" id="cancel-btn" style="display: inline-block; margin-left: 10px;">取消</button>' +
+                                      '</div>' +
+                                    '</div>' +
+                                  '</div>',
+                        success: function(layero, index){
+
+                            // 创建一个集合来存储被修改的输入框的 id
+                            var changedInputs = new Set();
+
+                            // 为每个输入框添加一个 change 事件监听器
+                            $('.layui-input').on('change', function() {
+                              changedInputs.add(this.id);
+                            });
+
+                            // 提交按钮点击事件
+                            $('#submit-btn').on('click', function(){
+                                var inputs = $('.layui-input');
+                                if (inputs.length < 5) {
+                                  console.error('Expected at least 5 inputs, but found ' + inputs.length);
+                                  return;
+                                }
+                                var nameInput = document.getElementById("name-input");
+                                var name = nameInput.value || nameInput.placeholder;
+
+                                var ageInput = document.getElementById("age-input");
+                                var age = ageInput.value || ageInput.placeholder;
+
+                                var provinceInput = document.getElementById("province-input");
+                                var province = provinceInput.value || provinceInput.placeholder;
+
+                                var priceInput = document.getElementById("price-input");
+                                var price = priceInput.value || priceInput.placeholder;
+
+                                var formData = new FormData();
+                                formData.append('pictureid', data.pictureid);
+                                formData.append('name', name);
+                                formData.append('age', age);
+                                formData.append('province', province);
+                                formData.append('price', price);
+                                var fileInput = document.getElementById("FileUpload");
+                                if (fileInput.files.length != 0) {
+                                    var file = document.getElementById("FileUpload").files[0];
+                                    formData.append('picture', file);
+                                }
+
+
+                                $.ajax({
+                                    url: '/modify_reward',  // 你的后端接口
+                                    type: 'POST',
+                                    data: formData,
+                                    processData: false,  // 告诉 jQuery 不要处理数据
+                                    contentType: false,  // 告诉 jQuery 不要设置 contentType
+                                    success: function(response) {
+                                        // 请求成功的处理逻辑
+                                        console.log(response);
+                                    },
+                                    error: function(error) {
+                                        // 请求失败的处理逻辑
+                                        console.log("this is error");
+                                        console.error(error);
+                                    }
+                                });
+                                layer.msg('修改成功，请刷新页面', {icon: 1});
+                                layer.close(index); // 关闭弹出层
+                          });
+
+                          // 取消按钮点击事件
+                          $('#cancel-btn').on('click', function(){
+                              layer.close(index); // 关闭弹出层
+                          });
+                        }
+                    });
+                }
             });
         });
     </script>
