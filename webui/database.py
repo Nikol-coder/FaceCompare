@@ -27,8 +27,8 @@ app = Flask(__name__, instance_relative_config=True, template_folder='templates'
 # app.config['MYSQL_USER'] = 'username'
 # app.config['MYSQL_PASSWORD'] = 'password'
 # app.config['MYSQL_DB'] = 'database_name'
-app.config['MYSQL_HOST'] = '192.168.230.129'
-# app.config['MYSQL_HOST'] = 'localhost'
+# app.config['MYSQL_HOST'] = '192.168.230.129'
+app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
 # app.config['MYSQL_DB'] = 'facecp'
@@ -612,7 +612,9 @@ def user_my_reward():
     if not db.open:
         db.ping(reconnect=True)
     userid = session['userid']
-    cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 1" % userid)
+    cursor.execute("SELECT * FROM pictable WHERE userid = %s and flag = 1", (userid,))
+    # cursor.execute("SELECT * FROM pictable WHERE userid = '%s' and flag = 1" % userid)
+    # cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 1" % userid)
     results = cursor.fetchall()
     # print(results)
     tasks = []
@@ -639,7 +641,8 @@ def user_reward_pending_review():
     if not db.open:
         db.ping(reconnect=True)
     userid = session['userid']
-    cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 0" % userid)
+    cursor.execute("SELECT * FROM pictable WHERE userid = %s and flag = 0", (userid,))
+    # cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 0" % userid)
     results = cursor.fetchall()
     # print(results)
     tasks = []
@@ -678,7 +681,8 @@ def user_delete_reward():
         db.commit()
         # print(pictureid)
         userid = session['userid']
-        cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 1" % userid)
+        cursor.execute("SELECT * FROM pictable WHERE userid = %s and flag = 1", (userid,))
+        # cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 1" % userid)
         results = cursor.fetchall()
         # print(results)
         tasks = []

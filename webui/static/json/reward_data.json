@@ -1,21 +1,6 @@
 {
     "code": 0,
     "msg": "响应失败？",
-    "count": 2,
-    "data": [
-        {
-            "pictureid": 1.0,
-            "name": "彤彤",
-            "age": "5",
-            "province": "四川",
-            "price": "5000"
-        },
-        {
-            "pictureid": 8.0,
-            "name": "小白",
-            "age": "7",
-            "province": "广州",
-            "price": "4555"
-        }
-    ]
+    "count": 0,
+    "data": []
 }
