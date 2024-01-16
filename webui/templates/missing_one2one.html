@@ -8,7 +8,6 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="../lib/layui-v2.5.5/css/layui.css" media="all">
-  
 </head>
 
 <body>
@@ -17,12 +16,31 @@
       <a class="layui-btn layui-btn-xs" lay-event="upload">上传图片</a>
     </div>
   </script>
-  
+
   <script type="text/html" id="barDemo2">
     <div class="layui-clear-space">
       <a class="layui-btn layui-btn-xs" lay-event="compare">对比图片</a>
     </div>
   </script>
+
+  <script type="text/html" id="location-filter-toolbar">
+    <form class="layui-form layui-row layui-col-space16" action="">
+      <div class="layui-inline">
+        <div class="layui-input-inline layui-input-wrap">
+          <div class="layui-input-prefix">
+            <i class="layui-icon layui-icon-location"></i>
+          </div>
+          <input type="text" name="location" value="" placeholder="地点" class="layui-input" lay-affix="clear" style="width: 40vw; max-width: 50em;">
+        </div>
+        <div class="layui-input-inline layui-input-wrap">
+          <div class="layui-btn-container">
+            <button class="layui-btn" lay-submit lay-filter="location-filter">筛选</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </script>
+
   <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
@@ -76,11 +94,11 @@
         <div class="layui-side-scroll">
           <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
           <ul class="layui-nav layui-nav-tree" lay-filter="test">
-    
+
             <li class="layui-nav-item"><a href="/missing_one2one">one2one</a></li>
             <li class="layui-nav-item"><a href="/missing_one2many_reward">one2many_reward</a></li>
             <li class="layui-nav-item"><a href="/missing_one2many_video">one2many_video</a></li>
-    
+
           </ul>
         </div>
       </div>
@@ -89,16 +107,15 @@
     <div class="layui-body">
       <!-- 内容主体区域 -->
 
-      <div style="padding: 16px;"> 
+      <div style="padding: 16px;">
         <table class="layui-hide" id="screen-table" lay-filter="screen-table"></table>
       </div>
-        
-      
-        <div class="layui-footer">
-          <!-- 底部固定区域 -->
-          FaceCompare提供技术支持
-        </div>
-      
+
+      <div class="layui-footer">
+        <!-- 底部固定区域 -->
+        FaceCompare提供技术支持
+      </div>
+
     </div>
   </div>
   <script src="//cdn.staticfile.org/layui/2.9.1/layui.js"></script>
@@ -125,9 +142,8 @@
     userElement.innerText = username;
   </script>
 
-
   <script>
-    //JS 
+    //JS
     layui.use(['element', 'layer', 'util'], function () {
       var element = layui.element;
       var layer = layui.layer;
@@ -156,19 +172,23 @@
   </script>
 
   <script>
-    layui.use('table', function(){
+    layui.use(['table', 'form'], function(){
       var table = layui.table;
+      var form = layui.form;
+
       table.render({
-          elem: '#screen-table'
-          ,url:'./static/json/manager/demo1.json'
-          ,toolbar: '#toolbarDemo'
-          ,title: '用户数据表'
-          , defaultToolbar: ['filter', 'print']//数据表格工具栏右侧关闭导出按钮
-          ,height: 'full-125' // 最大高度减去其他容器已占有的高度差
-          ,cols: [[
+          elem: '#screen-table',
+          url:'./static/json/manager/demo1.json',
+          toolbar: '#location-filter-toolbar',
+          title: '用户数据表',
+          // 数据表格工具栏右侧关闭导出按钮
+          defaultToolbar: ['filter', 'print'],
+          // 最大高度减去其他容器已占有的高度差
+          height: 'full-125',
+          cols: [[
               { type: 'checkbox', fixed: 'left' },
               { field: 'pictureid', width: 80,title: '任务ID' },
-              { field:'image', width: 200, title:'区域图片', templet: function(d) { return '<div onclick="show_img(this)" ><img src="'+d.image+'" ' + 'alt="" width="75px" height="75px"></a></div>'; }},
+              { field: 'image', width: 200, title:'区域图片', templet: function(d) { return '<div onclick="show_img(this)" ><img src="'+d.image+'" ' + 'alt="" width="75px" height="75px"></a></div>'; }},
               { field: 'name', width: 130, title: '姓名' },
               { field: 'age', width: 130, title: '年龄' },
               { field: 'price', width: 130, title: '悬赏' },
@@ -177,13 +197,15 @@
               { field: 'image_upload', width: 200, title:'上传图片',},
               { field: 'event2', title: '操作',  width: 150, minWidth: 100, toolbar: '#barDemo2' },
               { field: 'result', width: 130, title: '结果' },
-              { field: 'oo', fixed: 'right', title: '选项' }
-
-          ]]
-          ,page: true //开启分页
-          ,limits: [10,30,50]  //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
-          ,limit: 10 //每页默认显示的数量
-          ,done: function(){
+              { field: 'oo', fixed: 'right', title: '选项' },
+          ]],
+          // 开启分页
+          page: true,
+          // 每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]
+          limits: [10,30,50],
+          // 每页默认显示的数量
+          limit: 10,
+          done: function() {
             $(".layui-table-main tr").each(function (index, val) {
               $(".layui-table-fixed").each(function () {
                   $($(this).find(".layui-table-body tbody tr")[index]).height($(val).height());
@@ -261,23 +283,22 @@
 
           })
           .catch(error => console.error(error));
-
         }
-          
       });
 
+      form.on('submit(location-filter)', function(data) {
+        var field = data.field;
+        return false;
+      });
     });
-
-
-
-
   </script>
+
   <style>
-    .layui-table-cell{
-        height:auto;
-        line-height: 30px;
+    .layui-table-cell {
+      height:auto;
+      line-height: 30px;
     }
-</style>
+  </style>
 
 
   <script>
@@ -296,7 +317,7 @@
           content: '<div style="text-align:center"><img src="' + $(t).attr('src') + '" /></div>'
       });
     }
-  </script>  
+  </script>
 </body>
 
 </html>
