@@ -750,13 +750,14 @@ def login_manager():
 
     userid = request.form["username"]
     password = request.form["password"]
-    cursor.execute("SELECT * FROM admintable where adminid = %s", (userid))
+    cursor.execute("SELECT * FROM admintable where adminid = {id:s}".format(id=userid))
     result = cursor.fetchall()
     mima = result[0][1]
-    print("userid: ", userid)
-    print("password: ", password)
-    print("mima: ", mima)
+    # print("userid: ", userid)
+    # print("password: ", password)
+    # print("mima: ", mima)
     # print("url", render_template("manager_login.html"))
+
     # 提交事务
     if password == mima:
         response_data = {
