@@ -324,7 +324,6 @@ def missing_one2many_reward():
 #跳转到网页 /missing_one2many_video
 @app.route('/missing_one2many_video')
 def missing_one2many_video():
-
     return render_template('missing_one2many_video.html',Username=tmp_name)
 
 #跳转到网页 /missing_one2one
