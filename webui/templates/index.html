@@ -16,17 +16,10 @@
     }
 
     .gallery img {
+      object-fit: cover;
       flex: 1 0 50%;
-      /* 一排显示三张图片 */
-      max-width: 20%;
-      /* 一排显示三张图片 */
-      height: auto;
-      margin-bottom: 20px;
-      /* 你可以根据需要调整这个值 */
-      margin-right: 10px;
-      /* 添加右边距 */
-      margin-left: 10px;
-      /* 添加左边距 */
+      max-width: 22%;
+      margin: 2em 1em;
     }
 
     .video-container {
@@ -232,7 +225,7 @@
 
 
   <script>
-    //JS 
+    //JS
     layui.use(['element', 'layer', 'util'], function () {
       var element = layui.element;
       var layer = layui.layer;
