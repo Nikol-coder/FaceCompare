@@ -8,6 +8,7 @@ import pymysql
 import json
 import os
 import subprocess
+import threading
 
 
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
@@ -28,12 +29,13 @@ db = pymysql.connect(
     host=app.config['MYSQL_HOST'],
     user=app.config['MYSQL_USER'],
     password=app.config['MYSQL_PASSWORD'],
-    db=app.config['MYSQL_DB']
+    db=app.config['MYSQL_DB'],
 )
 
 
 # 创建数据库游标
 cursor = db.cursor()
+mutex = threading.Lock()
 
 tmp_name = None
 
@@ -189,9 +191,9 @@ def compare_video():
         image_names = os.listdir(img_folder_path)
         # 使用 videoid 查询 videotable
         query = """
-        SELECT time, place
-        FROM videotable
-        WHERE videoid = %s
+            SELECT time, place
+            FROM videotable
+            WHERE videoid = %s
         """
         cursor.execute(query, (video_id,))
         query_result = cursor.fetchone()
@@ -337,9 +339,17 @@ def missing_one2one():
 def get_images():
     if not db.open:
         db.ping(reconnect=True)
+
+    mutex.acquire()
     cursor.execute("SELECT picid, name FROM pictable")
     data = cursor.fetchall()
-    images = [{'url': "./static/images/"+str(int(url))+".jpg", 'alt': str(name)} for url, name in data]
+    mutex.release()
+
+    images = [{
+        "url": "/static/images/{id:d}.jpg".format(id=int(pid)),
+        "alt": name,
+    } for pid, name in data]
+
     return jsonify(images)
 
 
@@ -348,9 +358,16 @@ def get_images():
 def get_videos():
     if not db.open:
         db.ping(reconnect=True)
+
+    mutex.acquire()
     cursor.execute("SELECT videoid FROM videotable")
     data = cursor.fetchall()
-    videos = [{'url': "./static/video/"+str(int(url[0]))+".mp4"} for url in data]
+    mutex.release()
+
+    videos = [{
+        "url": "/static/video/{id:d}.mp4".format(id=int(vid[0]))
+    } for vid in data]
+
     return jsonify(videos)
 
 
