@@ -41,7 +41,7 @@ tmp_name = None
 
 # 查询数据
 @app.route('/')
-def index():
+def root():
     # 返回结果
     # return render_template('selectuser.html')
     # return render_template('manager_login.html')
@@ -308,7 +308,7 @@ def modify_mima():
 
 #跳转到主页 /index
 @app.route('/index')
-def index1():
+def index():
     return render_template('index.html',Username=tmp_name)
 
 #跳转到网页 /lookup
