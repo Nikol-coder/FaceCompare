@@ -381,7 +381,6 @@ def get_missing_people():
     for row in result:
         lay_table_data["data"].append({
             'pictureid': row[0],
-            'image':'/static/test/{name:s}.jpg'.format(name=str(int(row[0]))),
             'name': row[2],
             'age': row[3],
             'province': row[4],

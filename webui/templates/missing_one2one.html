@@ -189,7 +189,7 @@
           cols: [[
               { type: 'checkbox', fixed: 'left' },
               { field: 'pictureid', width: 80,title: '任务ID' },
-              { field: 'image', width: 200, title:'区域图片', templet: function(d) { return '<div onclick="show_img(this)" ><img src="'+d.image+'" ' + 'alt="" width="75px" height="75px"></a></div>'; }},
+              { field: 'image', width: 200, title:'区域图片', templet: function(d) { return `<div onclick="show_img(this)" ><img src="/static/test/${d.pictureid}.jpg" alt="" width="75px" height="75px"></a></div>`; }},
               { field: 'name', width: 130, title: '姓名' },
               { field: 'age', width: 130, title: '年龄' },
               { field: 'price', width: 130, title: '悬赏' },
