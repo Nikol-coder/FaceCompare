@@ -1,25 +1,15 @@
-from email.mime import image
-from hmac import new
-from operator import ne
-import re
-from sys import path
-from tkinter import image_names
 from flask import Flask, jsonify, url_for, session, redirect
-import flask
-from matplotlib.pylab import f
-from numpy import place
-import pymysql
 from flask import request, render_template
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import Null
 from mimacode import hash_password
+from werkzeug.utils import secure_filename
+
+import flask
+import pymysql
 import json
 import os
 import subprocess
-from flask import send_file
-from werkzeug.utils import secure_filename
 
-# app = Flask(__name__)
+
 app = Flask(__name__, instance_relative_config=True, template_folder='templates')
 
 # 配置数据库连接信息
@@ -27,11 +17,9 @@ app = Flask(__name__, instance_relative_config=True, template_folder='templates'
 # app.config['MYSQL_USER'] = 'username'
 # app.config['MYSQL_PASSWORD'] = 'password'
 # app.config['MYSQL_DB'] = 'database_name'
-# app.config['MYSQL_HOST'] = '192.168.230.129'
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = '123456'
-# app.config['MYSQL_DB'] = 'facecp'
 app.config['MYSQL_DB'] = 'facecp'
 app.secret_key='any random string'
 
@@ -113,7 +101,7 @@ def modify_info():
         else:
             print('User updated unsuccessfully')
             return render_template('modify_info.html',Username=tmp_name)
-        
+
     else:
         # 从数据库中获取原有的信息
         user_id = request.args.get('userid')
@@ -239,7 +227,7 @@ def compare():
     print("this_path_image: : ",os.path.normpath(os.path.join(this_path, "static/manzu/")))
 
     image_names = os.listdir(os.path.normpath(os.path.join(this_path, "static/manzu/")))
-                 
+
     print(image_names)
 
     image_numbers = [name.split('.')[0] for name in image_names]
@@ -342,33 +330,7 @@ def missing_one2many_video():
 #跳转到网页 /missing_one2one
 @app.route('/missing_one2one')
 def missing_one2one():
-    if not db.open:
-        db.ping(reconnect=True)
-    cursor.execute("SELECT * FROM pictable WHERE flag = 1")    # 待修改 flag 应有三种状态
-    result = cursor.fetchall()
-    # 处理查询结果
-    tasks = []
-    for row in result:
-        task = {
-            'pictureid': row[0],
-            'image':'/static/test/'+ str(int(row[0])) + '.jpg',
-            'name': row[2],
-            'age': row[3],
-            'province': row[4],
-            'price': row[5]            
-        }
-        tasks.append(task)
-
-    data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
-    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-    path_json = os.path.join(this_path, "static/json/manager/demo1.json")
-    with open(path_json, "w", encoding='utf-8') as f:
-        json.dump(data_json, f, indent=4, ensure_ascii=False)
-        f.close()
-    print(tasks)
-
-    # 返回结果
-    return render_template('missing_one2one.html',Username=tmp_name)
+    return render_template('missing_one2one.html', Username=tmp_name)
 
 
 #查看图片
@@ -391,6 +353,43 @@ def get_videos():
     data = cursor.fetchall()
     videos = [{'url': "./static/video/"+str(int(url[0]))+".mp4"} for url in data]
     return jsonify(videos)
+
+
+#查询失踪人口
+@app.route('/api/missing', methods=['GET'])
+def get_missing_people():
+    location = request.args.get('location')
+
+    if not db.open:
+        db.ping(reconnect=True)
+
+    queries = ['flag = 1']
+    if location:
+        queries.append("province LIKE '%{loc:s}%'".format(loc=location))
+
+    cursor.execute("SELECT * FROM pictable WHERE {cond:s}".format(
+        cond=' AND '.join(map(lambda x: '(%s)' % x, queries))
+    ))
+    result = cursor.fetchall()
+
+    lay_table_data = {
+        "code": 0,
+        "msg": "",
+        "count": len(result),
+        "data": [],
+    }
+    for row in result:
+        lay_table_data["data"].append({
+            'pictureid': row[0],
+            'image':'/static/test/{name:s}.jpg'.format(name=str(int(row[0]))),
+            'name': row[2],
+            'age': row[3],
+            'province': row[4],
+            'price': row[5],
+        })
+
+    return jsonify(lay_table_data)
+
 
 #修改用户密码
 @app.route('/user_change_password', methods=['POST'])
@@ -428,7 +427,7 @@ def search():
     # 执行查询语句
     cursor.execute("SELECT * FROM usertable")
     result = cursor.fetchall()
-    
+
     # 处理查询结果
     users = []
     for row in result:
@@ -437,12 +436,12 @@ def search():
             'username': row[1],
             'password': row[2],
             'province': row[3],
-            'tel': row[4]            
+            'tel': row[4]
         }
         users.append(user)
 
     print(users)
- 
+
     # 返回结果
     return render_template('user.html', users=users)
 
@@ -453,9 +452,9 @@ def create_user():
     if request.method == 'POST':
         # 结合createuser.html页面，创建用户
         userid = request.form.get("id")
-        username = request.form.get("username") 
-        password = request.form.get("pwd1") 
-        province = request.form.get("pro") 
+        username = request.form.get("username")
+        password = request.form.get("pwd1")
+        province = request.form.get("pro")
         tel = request.form.get("tel")
         password = hash_password(password)
         print("加密代码：",password)
@@ -465,7 +464,7 @@ def create_user():
 
         # 提交事务
         db.commit()
-        
+
         print('User created successfully')
 
         return render_template('login.html')
@@ -540,7 +539,7 @@ def update_user():
 @app.route('/delete_user',methods=['GET','POST'])
 def delete_user():
     if request.method == 'POST':
-        id = request.form.get('id') 
+        id = request.form.get('id')
         pwd = request.form.get('pwd')
         print(id)
         print(pwd)
@@ -548,10 +547,10 @@ def delete_user():
         # 执行删除语句
         if pwd and pwd.strip():
             cursor.execute("DELETE FROM usertable WHERE userid = %s and password = %s", (id,pwd))
-        
+
             # 提交事务
             db.commit()
-            
+
             print('User deleted successfully')
 
             return render_template('login.html')
@@ -744,11 +743,11 @@ def user_sign_out():
 # -------manager--------
 #   管理员管理任务部分
 # -------manager--------
-    
+
 # 管理员登陆
 @app.route('/login_manager', methods=['GET','POST'])
 def login_manager():
-    
+
     userid = request.form["username"]
     password = request.form["password"]
     cursor.execute("SELECT * FROM admintable where adminid = %s", (userid))
@@ -787,8 +786,8 @@ def login_manager():
 @app.route('/manager_login')
 def manager_login():
     return render_template('manager_login.html')
-   
-    
+
+
 # 返回未处理的任务
 @app.route('/show_user_Task')
 def show_user_Task():
@@ -803,7 +802,7 @@ def show_user_Task():
             'name': row[2],
             'age': row[3],
             'province': row[4],
-            'price': row[5]            
+            'price': row[5]
         }
         tasks.append(task)
     print(tasks)
@@ -814,7 +813,7 @@ def show_user_Task():
     with open(path_json, "w", encoding='utf-8') as f:
         json.dump(data_json, f, indent=4, ensure_ascii=False)
         f.close()
- 
+
     # 返回结果
     return render_template('/Admin/user_Task.html')
 
@@ -822,7 +821,7 @@ def show_user_Task():
 # 视频管理页面
 @app.route('/manage_video')
 def manage_video():
-    cursor.execute("SELECT * FROM videotable") 
+    cursor.execute("SELECT * FROM videotable")
     result = cursor.fetchall()
     # 处理查询结果
     videos = []
@@ -852,7 +851,7 @@ def user_manage():
     # 执行查询语句
     cursor.execute("SELECT * FROM usertable")
     result = cursor.fetchall()
-    
+
     # 处理查询结果
     users = []
     for row in result:
@@ -861,7 +860,7 @@ def user_manage():
             'username': row[1],
             # 'password': row[2],
             'province': row[3],
-            'tel': row[4]            
+            'tel': row[4]
         }
         users.append(user)
 
@@ -873,7 +872,7 @@ def user_manage():
         f.close()
 
     print(users)
- 
+
     # 返回结果
     return render_template('/Admin/user_manage.html')
 
@@ -890,7 +889,7 @@ def task_manage():
             'name': row[2],
             'age': row[3],
             'province': row[4],
-            'price': row[5]            
+            'price': row[5]
         }
         tasks.append(task)
 
@@ -901,7 +900,7 @@ def task_manage():
         json.dump(data_json, f, indent=4, ensure_ascii=False)
         f.close()
     print(tasks)
- 
+
     # 返回结果
     return render_template('/Admin/task_manage.html')
 
@@ -921,7 +920,7 @@ def delete_video():
     else:
         print("video id: ", videoid)
         print("删除悬赏！！！")
-    
+
     db_delete_video(videoid)
     this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
     path_json = os.path.join(this_path, "static/video/")
@@ -996,11 +995,11 @@ def upload_video():
     video = request.files['video']
 
     print("place: ", place)
-    print("time: ", time)   
-    
+    print("time: ", time)
+
     videoid = db_upload_video(place, time, video)
 
-    if videoid is not None: 
+    if videoid is not None:
         print("videoid: ", videoid)
         filename = videoid + '.mp4'
         this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
@@ -1033,7 +1032,7 @@ def upload_video():
     response.status_code = 200
     return response
 
- 
+
 # 通过悬赏   --- 审核悬赏过程 用户上传
 @app.route('/permit_task',methods=['GET','POST'])
 def permit_task():
@@ -1051,7 +1050,7 @@ def permit_task():
         print("通过悬赏！！！")
 
     db_permit_task(pictureid)
-    
+
     response_data = {
         'status': 'success',
         'message': '审核已通过'
@@ -1059,7 +1058,7 @@ def permit_task():
     response = flask.make_response(jsonify(response_data))
     response.status_code = 200
     return response
-    
+
 
 # 拒绝悬赏   ----审核悬赏过程 用户上传
 @app.route('/deny_task',methods=['GET','POST'])
@@ -1156,7 +1155,7 @@ def modify_reward():
     age = request.form['age']
     province = request.form['province']
     price = request.form['price']
-    
+
     print("pictureid: ", pictureid)
     print("name: ", name)
     print("age: ", age)
@@ -1202,7 +1201,7 @@ def manager_delete_user():
     else:
         print("userid: ", userid)
         print("删除用户 收到消息！！！")
-    
+
     db_manager_delete_user(userid)
 
     response_data = {
@@ -1323,4 +1322,3 @@ def db_change_passwor(userid, newpassword):
 
 if __name__ == '__main__':
     app.run()
-    # print(os.path.dirname(os.path.abspath(__file__)))

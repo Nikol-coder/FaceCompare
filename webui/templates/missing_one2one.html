@@ -24,13 +24,14 @@
   </script>
 
   <script type="text/html" id="location-filter-toolbar">
-    <form class="layui-form layui-row layui-col-space16" action="">
+    <form class="layui-form layui-row layui-col-space16" lay-filter="location-val-refill">
       <div class="layui-inline">
         <div class="layui-input-inline layui-input-wrap">
           <div class="layui-input-prefix">
             <i class="layui-icon layui-icon-location"></i>
           </div>
-          <input type="text" name="location" value="" placeholder="地点" class="layui-input" lay-affix="clear" style="width: 40vw; max-width: 50em;">
+          <input type="text" name="location" value="" placeholder="地点" class="layui-input" lay-affix="clear"
+            lay-verify="location" style="width: 40vw; max-width: 50em;">
         </div>
         <div class="layui-input-inline layui-input-wrap">
           <div class="layui-btn-container">
@@ -178,7 +179,7 @@
 
       table.render({
           elem: '#screen-table',
-          url:'./static/json/manager/demo1.json',
+          url:'/api/missing',
           toolbar: '#location-filter-toolbar',
           title: '用户数据表',
           // 数据表格工具栏右侧关闭导出按钮
@@ -287,8 +288,26 @@
       });
 
       form.on('submit(location-filter)', function(data) {
-        var field = data.field;
-        return false;
+          var targetLocation = data.field['location'];
+
+          table.reload('screen-table', {
+              where: { location: targetLocation },
+          });
+          form.val('location-val-refill', {
+            'location': targetLocation
+          });
+
+          return false;
+      });
+
+      form.verify({
+          location: function(value, elem) {
+              // 验证输入的地址筛选规则仅包括 简体中文|英文字母|空格|数字
+              var pattern = /^[\u4e00-\u9fa5 a-zA-Z0-9]+$/;
+              if (value && !pattern.test(value)) {
+                  return '查询地址仅支持 简体中文|英文字母|空格|数字';
+              }
+          }
       });
     });
   </script>
