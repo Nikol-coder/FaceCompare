@@ -140,7 +140,8 @@
 
             table.render({
                 elem: "#content",
-                url: "/static/json/reward_data.json",
+                url: "/api/missing",
+                where: { withSession: "true" },
                 cols:[[
                     {field: 'aa', type: 'numbers'},
                     {field: 'aa', type: 'checkbox'},

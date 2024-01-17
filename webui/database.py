@@ -358,14 +358,18 @@ def get_videos():
 #查询失踪人口
 @app.route('/api/missing', methods=['GET'])
 def get_missing_people():
+    is_pending = request.args.get('isPending', 'false')
     location = request.args.get('location')
+    with_session = request.args.get('withSession')
 
     if not db.open:
         db.ping(reconnect=True)
 
-    queries = ['flag = 1']
+    queries = ['flag = {f:d}'.format(f=0 if is_pending == 'true' else 1)]
     if location:
         queries.append("province LIKE '%{loc:s}%'".format(loc=location))
+    if with_session == 'true':
+        queries.append("userid = {id:s}".format(id=session['userid']))
 
     cursor.execute("SELECT * FROM pictable WHERE {cond:s}".format(
         cond=' AND '.join(map(lambda x: '(%s)' % x, queries))
@@ -580,87 +584,20 @@ def reward_test():
 # 用户悬赏管理界面
 @app.route('/user_reward_manage')
 def user_reward_manage():
-    if not db.open:
-        db.ping(reconnect=True)
-    cursor.execute("SELECT * FROM pictable WHERE flag = 1")
-    results = cursor.fetchall()
-    # print(results)
-    tasks = []
-    for row in results:
-        task = {
-            'pictureid': row[0],
-            'name': row[2],
-            'age': row[3],
-            'province': row[4],
-            'price': row[5]
-        }
-        tasks.append(task)
-
-    data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
-    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-    path_json = os.path.join(this_path, "static/json/reward_data.json")
-    with open(path_json, "w", encoding='utf-8') as f:
-        json.dump(data_json, f, indent=4, ensure_ascii=False)
-        f.close()
-
     return render_template('user_reward_manage.html')
 
+
+# 我的悬赏
 @app.route('/user_reward_manage/my_reward')
 def user_my_reward():
-    if not db.open:
-        db.ping(reconnect=True)
-    userid = session['userid']
-    cursor.execute("SELECT * FROM pictable WHERE userid = %s and flag = 1", (userid,))
-    # cursor.execute("SELECT * FROM pictable WHERE userid = '%s' and flag = 1" % userid)
-    # cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 1" % userid)
-    results = cursor.fetchall()
-    # print(results)
-    tasks = []
-    for row in results:
-        task = {
-            'pictureid': row[0],
-            'name': row[2],
-            'age': row[3],
-            'province': row[4],
-            'price': row[5]
-        }
-        tasks.append(task)
-
-    data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
-    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-    path_json = os.path.join(this_path, "static/json/reward_data.json")
-    with open(path_json, "w", encoding='utf-8') as f:
-        json.dump(data_json, f, indent=4, ensure_ascii=False)
-        f.close()
     return render_template('user_my_reward.html')
 
+
+# 带审核的悬赏
 @app.route('/user_reward_manage/pending_review/')
 def user_reward_pending_review():
-    if not db.open:
-        db.ping(reconnect=True)
-    userid = session['userid']
-    cursor.execute("SELECT * FROM pictable WHERE userid = %s and flag = 0", (userid,))
-    # cursor.execute("SELECT * FROM pictable WHERE userid = %d and flag = 0" % userid)
-    results = cursor.fetchall()
-    # print(results)
-    tasks = []
-    for row in results:
-        task = {
-            'pictureid': row[0],
-            'name': row[2],
-            'age': row[3],
-            'province': row[4],
-            'price': row[5]
-        }
-        tasks.append(task)
-
-    data_json = {"code": 0, "msg": "响应失败？", "count": len(tasks), "data": tasks}
-    this_path = os.path.normpath(os.path.dirname(os.path.abspath(__file__)))
-    path_json = os.path.join(this_path, "static/json/reward_data.json")
-    with open(path_json, "w", encoding='utf-8') as f:
-        json.dump(data_json, f, indent=4, ensure_ascii=False)
-        f.close()
     return render_template('user_reward_pending_review.html')
+
 
 @app.route('/user_delete_reward', methods=['POST'])
 def user_delete_reward():
