@@ -1,11 +1,10 @@
 {
     "code": 0,
     "msg": "响应失败？",
-    "count": 6,
+    "count": 7,
     "data": [
         {
             "pictureid": 2.0,
-            "image": "/static/test/2.jpg",
             "name": "果果",
             "age": "4",
             "province": "天津市武清区\r\n杨村街道  ",
@@ -13,7 +12,6 @@
         },
         {
             "pictureid": 3.0,
-            "image": "/static/test/3.jpg",
             "name": "红红",
             "age": "9",
             "province": "上海市徐汇区凌云街道 ",
@@ -21,7 +19,6 @@
         },
         {
             "pictureid": 4.0,
-            "image": "/static/test/4.jpg",
             "name": "绿绿",
             "age": "6",
             "province": "河北省邢台市北大街街道",
@@ -29,7 +26,6 @@
         },
         {
             "pictureid": 5.0,
-            "image": "/static/test/5.jpg",
             "name": "泡泡",
             "age": "7",
             "province": "河南省郑州市融创街道",
@@ -37,7 +33,6 @@
         },
         {
             "pictureid": 6.0,
-            "image": "/static/test/6.jpg",
             "name": "果果",
             "age": "9",
             "province": "北京市怀柔区怀北镇",
@@ -45,11 +40,17 @@
         },
         {
             "pictureid": 8.0,
-            "image": "/static/test/8.jpg",
             "name": "跳跳",
             "age": "7",
             "province": "山东省德州市电锯街区",
             "price": "6532"
+        },
+        {
+            "pictureid": 10.0,
+            "name": "小太阳",
+            "age": "5",
+            "province": "四川省成都市",
+            "price": "6666"
         }
     ]
 }
